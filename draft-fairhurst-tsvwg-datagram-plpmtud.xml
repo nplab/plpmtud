@@ -70,292 +70,243 @@
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
 <rfc category="std"
-     docName="draft-fairhurst-tsvwg-datagram-plpmtud-00.txt"
+     docName="draft-fairhurst-tsvwg-datagram-plpmtud-01-to-be.txt"
      ipr="trust200902">
-  <!-- category values: std, bcp, info, exp, and historic
-    ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
-       or pre5378Trust200902
+<!-- category values: std, bcp, info, exp, and historic
+     ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
+                 or pre5378Trust200902
     you can add the attributes updates="NNNN" and obsoletes="NNNN" 
     they will automatically be output with "(if approved)" -->
 
-  <!-- ***** FRONT MATTER ***** -->
+<!-- ***** FRONT MATTER ***** -->
 
-  <front>
-    <!-- The abbreviated title is used in the page header - it is only necessary if the 
-full title is longer than 39 characters -->
+<front>
+<!-- The abbreviated title is used in the page header - it is only necessary if the 
+     full title is longer than 39 characters -->
 
-    <title abbrev="Datagram PLPMTUD ">Packetization Layer Path MTU Discovery
-    for Datagram Transports</title>
+<title abbrev="Datagram PLPMTUD ">
+Packetization Layer Path MTU Discovery for Datagram Transports
+</title>
 
-    <!-- add 'role="editor"' below for the editors if appropriate -->
+<!-- add 'role="editor"' below for the editors if appropriate -->
+<!-- Another author who claims to be an editor -->
 
-    <!-- Another author who claims to be an editor -->
+<author fullname="Godred Fairhurst" initials="G" surname="Fairhurst">
+<organization>University of Aberdeen</organization>
+<address>
+<postal>
+<street>School of Engineering</street>
+<street>Fraser Noble Building</street>
+<city>Aberdeen</city>
+<region></region>
+<code>AB24 3UE</code>
+<country>UK</country>
+</postal>
+<email>gorry@erg.abdn.ac.uk</email>
+</address>
+</author>
 
-    <author fullname="Godred Fairhurst" initials="G" surname="Fairhurst">
-      <organization>University of Aberdeen</organization>
+<author fullname="Tom Jones" initials="T" surname="Jones">
+<organization>University of Aberdeen</organization>
+<address>
+<postal>
+<street>School of Engineering</street>
+<street>Fraser Noble Building</street>
+<city>Aberdeen</city>
+<region></region>
+<code>AB24 3UE</code>
+<country>UK</country>
+</postal>
+<email>tom@erg.abdn.ac.uk</email>
+</address>
+</author>
 
-      <address>
-        <postal>
-          <street>School of Engineering</street>
+<author fullname="Michael Tuexen" initials="M" surname="Tuexen">
+<organization>Muenster University of Applied Sciences</organization>
+<address>
+<postal>
+<street>Stegerwaldstrasse 39</street>
+<code>48565</code>
+<city>Steinfurt</city>
+<region></region>
+<country>DE</country>
+</postal>
+<email>tuexen@fh-muenster.de</email>
+</address>
+</author>
 
-          <street>Fraser Noble Building</street>
+<author fullname="Irene Ruengeler" initials="I" surname="Ruengeler">
+<organization>Muenster University of Applied Sciences</organization>
+<address>
+<postal>
+<street>Stegerwaldstrasse 39</street>
+<code>48565</code>
+<city>Steinfurt</city>
+<region></region>
+<country>DE</country>
+</postal>
+<email>i.ruengeler@fh-muenster.de</email>
+</address>
+</author>
 
-          <!-- Reorder these if your country does things differently -->
+<date />
 
-          <city>Fraser Noble Building Aberdeen</city>
+<!-- Meta-data Declarations -->
 
-          <region></region>
+<area>Transport</area>
 
-          <code>AB24 3UE</code>
-
-          <country>UK</country>
-        </postal>
-
-        <email>gorry@erg.abdn.ac.uk</email>
-
-        <!-- uri and facsimile elements may also be added -->
-      </address>
-    </author>
-
-    <author fullname="Tom Jones" initials="T" surname="Jones">
-      <organization>University of Aberdeen</organization>
-
-      <address>
-        <postal>
-          <street>School of Engineering</street>
-
-          <street>Fraser Noble Building</street>
-
-          <!-- Reorder these if your country does things differently -->
-
-          <city>Aberdeen</city>
-
-          <region></region>
-
-          <code>AB24 3UE</code>
-
-          <country>UK</country>
-        </postal>
-
-        <email>tom@erg.abdn.ac.uk</email>
-
-        <!-- uri and facsimile elements may also be added -->
-      </address>
-    </author>
-
-    <author fullname="Michael Tuexen" initials="M" surname="Tuexen">
-      <organization>Muenster University of Applied Sciences</organization>
-
-      <address>
-        <postal>
-          <street>Stegerwaldstrasse 39</street>
-
-          <!-- Reorder these if your country does things differently -->
-
-          <city>Steinfurt</city>
-
-          <region></region>
-
-          <code>48565</code>
-
-          <country>DE</country>
-        </postal>
-
-        <email>tuexen@fh-muenster.de</email>
-
-        <!-- uri and facsimile elements may also be added -->
-      </address>
-    </author>
-
-    <author fullname="Irene Ruengeler" initials="I" surname="Ruengeler">
-      <organization>Muenster University of Applied Sciences</organization>
-
-      <address>
-        <postal>
-          <street>Stegerwaldstrasse 39</street>
-
-          <!-- Reorder these if your country does things differently -->
-
-          <city>Steinfurt</city>
-
-          <region></region>
-
-          <code>48565</code>
-
-          <country>DE</country>
-        </postal>
-
-        <email>i.ruengeler@fh-muenster.de</email>
-
-        <!-- uri and facsimile elements may also be added -->
-      </address>
-    </author>
-
-    <date day="03" month="July" year="2017" />
-
-    <!-- If the month and year are both specified and are the current ones,
-		 xml2rfc will fill in the current day for you. If only the current year
-		 is specified, xml2rfc will fill in the current day and month for you.
-		 If the year is not the current one, it is necessary to specify at
-		 least a month (xml2rfc assumes day="1" if not specified for the
-		 purpose of calculating the expiry date).  With drafts it is normally
-		 sufficient to specify just the year. -->
-
-    <!-- Meta-data Declarations -->
-
-    <area>Transport</area>
-
-    <workgroup>Internet Engineering Task Force</workgroup>
+<workgroup>Internet Engineering Task Force</workgroup>
 
     <!-- WG name at the upperleft corner of the doc,
 		IETF is fine for individual submissions.  If this element is not
 		present, the default is "Network Working Group", which is used by the
 		RFC Editor as a nod to the history of the IETF. -->
 
-    <keyword>UDP SCTP Transport PMTUD PLPMTUD</keyword>
+<keyword>UDP SCTP Transport PMTUD PLPMTUD</keyword>
 
     <!-- Keywords will be incorporated into HTML output
 		files in a meta tag but they have no effect on text or nroff output. If
 		you submit your draft to the RFC Editor, the keywords will be used for
 		the search engine. -->
 
-    <abstract>
-      <t>This document describes a robust method for Path MTU Discovery
-      (PMTUD) for datagram packetization layers. It allows these layers to
-      probe an Internet path with progressively larger packets to determine a
-      maximum packet size This method is described as an extension to RFC 1191
-      and RFC 1981, which specify ICMP-based Path MTU Discovery for IP
-      versions 4 and 6. The document provides functionally for datagram
-      transports that is equivalent to the packetization layer PMTUD
-      specification for TCP, specified in RFC4821.</t>
-    </abstract>
-  </front>
+<abstract>
+<t>This document describes a robust method for Path MTU Discovery (PMTUD) for
+datagram packetization layers.
+It allows these layers to probe an Internet path with progressively larger
+packets to determine a maximum packet size This method is described as an
+extension to RFC 1191 and RFC 1981, which specify ICMP-based Path MTU Discovery
+for IP versions 4 and 6.
+The document provides functionally for datagram transports that is equivalent
+to the packetization layer PMTUD specification for TCP, specified in RFC4821.</t>
+</abstract>
+</front>
 
-  <middle>
-    <section title="Introduction">
-      <t>The IETF has specified datagram transport using UDP, SCTP, SCTP/UDP,
-      DCCP, and DCCP/UDP as well as upper layer protocols layered on top of
-      these transports. </t>
+<middle>
+<section title="Introduction">
+<t>The IETF has specified datagram transport using UDP, SCTP, SCTP/UDP, DCCP,
+and DCCP/UDP as well as upper layer protocols layered on top of these
+transports. </t>
 
-      <t>Classical Path MTU Discovery (PMTUD) can be used with any transport
-      that is able to process ICMP Packet Too Big (PTB) messages (e.g., <xref
-      target="RFC1191"></xref><xref
-      target="I-D.ietf-6man-rfc1981bis"></xref>). It adjusts the Effective
-      Path MTU (PMTU), based on reception of ICMP PTB messages to decrease the
-      PMTU when this is larger than the value supported along a path, and a
-      method that increases the packet size in attempt to discover an increase
-      in the supported PMTU. However, ICMP messages are being increasingly
-      filtered by middleboxes (including Firewalls) <xref
-      target="RFC4890"></xref>. Classical PMTUD is therefore subject to
-      protocol failures (e.g., traffic using a packet size larger than the
-      actual supported PMTU is blackholed when ICMP PTB messages are not
-      delivered for some reason <xref target="RFC2923"></xref>).</t>
+<t>Classical Path MTU Discovery (PMTUD) can be used with any transport that is
+able to process ICMP Packet Too Big (PTB) messages (e.g.,
+<xref target="RFC1191"/> and <xref target="I-D.ietf-6man-rfc1981bis"/>).
+It adjusts the Effective Path MTU (PMTU), based on reception of ICMP PTB
+messages to decrease the PMTU when this is larger than the value supported along
+a path, and a method that increases the packet size in attempt to discover an
+increase in the supported PMTU.
+However, ICMP messages are being increasingly filtered by middleboxes
+(including Firewalls) <xref target="RFC4890"/>.
+Classical PMTUD is therefore subject to protocol failures (e.g., traffic using
+a packet size larger than the actual supported PMTU is blackholed when ICMP PTB
+messages are not delivered for some reason <xref target="RFC2923"></xref>).</t>
 
-      <t>Packetization Layer Path MTU Discovery (PLPMTUD) <xref
-      target="RFC4821"></xref> does not rely upon network or transport support
-      for ICMP messages and is therefore considered more robust than Classical
-      PMTUD. This has become the preferred approach for TCP traffic. The
-      general strategy is for the Packetization Layer to find an appropriate
-      PMTU by sending probe packets along the path with a progressively larger
-      packet size. If a probe packet is successfully delivered (as determined
-      by the PL), then the effective Path MTU is raised to the probe size.
-      PLPMTUD introduces flexibility in the implementation of classical PMTUD.
-      It can be configured to only perform ICMP black hole recovery to
-      increase the robustness of classical PMTUD, or at the other extreme, all
-      ICMP processing can be disabled and PLPMTUD can completely replace
-      classical Path MTU Discovery. Using PLPMTUD, classical Path MTU
-      Discovery can also be modified to include additional consistency checks
-      without increasing the risk of connection hangs due to spurious failures
-      of the additional checks.</t>
+<t>Packetization Layer Path MTU Discovery (PLPMTUD) <xref target="RFC4821"/>
+does not rely upon network or transport support for ICMP messages and is
+therefore considered more robust than Classical PMTUD.
+This has become the preferred approach for TCP traffic.
+The general strategy is for the Packetization Layer to find an appropriate
+PMTU by sending probe packets along the path with a progressively larger
+packet size.
+If a probe packet is successfully delivered (as determined by the PL), then
+the effective Path MTU is raised to the probe size.
+PLPMTUD introduces flexibility in the implementation of classical PMTUD.
+It can be configured to only perform ICMP black hole recovery to increase the
+robustness of classical PMTUD, or at the other extreme, all ICMP processing can
+be disabled and PLPMTUD can completely replace classical Path MTU Discovery.
+Using PLPMTUD, classical Path MTU Discovery can also be modified to include
+additional consistency checks without increasing the risk of connection hangs
+due to spurious failures of the additional checks.</t>
 
-      <t>The UDP-Guidelines <xref target="RFC8085"></xref> state "an
-      application SHOULD either use the path MTU information provided by the
-      IP layer or implement Path MTU Discovery (PMTUD)", but does not provide
-      a mechanism for discovering the largest size of unfragmented datagram
-      than can be used on a path. This specification describes how these
-      datagram transports perform PLPMTUD. This mechanism has not currently
-      been specified for UDP, while Section 10.2 of <xref
-      target="RFC4821"></xref> specifies a recommended PLPMTUD probing method
-      for SCTP. </t>
+<t>The UDP-Guidelines <xref target="RFC8085"></xref> state "an application
+SHOULD either use the path MTU information provided by the IP layer or implement
+Path MTU Discovery (PMTUD)", but does not provide a mechanism for discovering
+the largest size of unfragmented datagram than can be used on a path.
+This specification describes how these datagram transports perform PLPMTUD.
+This mechanism has not currently been specified for UDP, while Section 10.2 of
+<xref target="RFC4821"/> specifies a recommended PLPMTUD probing method for
+SCTP.</t>
 
-      <t>Section <xref target="Spec"></xref> of this document presents a set
-      of algorithms for datagram protocols to discover the maximum
-      transmission unit possible on a path at the packetization layer. The
-      methods described rely on features of transport protocols and apply to
-      transport protocols over IPv4 and IPv6. They do not require cooperation
-      from the lower layers (except that they are consistent about which
-      packet sizes are acceptable) or from peers.</t>
-    </section>
+<t>Section <xref target="Spec"></xref> of this document presents a set of
+algorithms for datagram protocols to discover the maximum transmission unit
+possible on a path at the packetization layer.
+The methods described rely on features of transport protocols and apply to
+transport protocols over IPv4 and IPv6.
+They do not require cooperation from the lower layers (except that they are
+consistent about which packet sizes are acceptable) or from peers.</t>
+</section>
 
-    <section title="Terminology">
-      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-      "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-      document are to be interpreted as described in <xref
-      target="RFC2119"></xref>.</t>
+<section title="Terminology">
+<t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+document are to be interpreted as described in <xref target="RFC2119"/>.</t>
 
-      <t>Other terminology is directly copied from <xref
-      target="RFC4821"></xref>, the EMTU definitions are from <xref
-      target="RFC1122"></xref>.</t>
+<t>Other terminology is directly copied from <xref target="RFC4821"/>, the EMTU
+definitions are from <xref target="RFC1122"/>.</t>
 
-      <t><list style="hanging">
+<t><list style="hanging">
           <t hangText="Address:">An IP Layer identifier for an interface or a
           set of interfaces.</t>
 
-          <t hangText="Classical Path MTU Discovery:">The process described in
-          <xref target="RFC1191"></xref> and <xref
-          target="I-D.ietf-6man-rfc1981bis"></xref>, in which nodes rely on
-          ICMP PTB messages to learn the MTU of a path.</t>
+<t hangText="Classical Path MTU Discovery:">
+The process described in <xref target="RFC1191"/> and
+<xref target="I-D.ietf-6man-rfc1981bis"/>, in which nodes rely on ICMP PTB
+messages to learn the MTU of a path.</t>
 
-          <t hangText="Datagram:">A transport-layer protocol data unit,
-          transmitted in the payload of an IP packet.</t>
+<t hangText="Datagram:">
+A transport-layer protocol data unit, transmitted in the payload of an
+IP packet.</t>
 
-          <t hangText="Effective PMTU:">The current estimated value for PMTU
-          used by a Packetization Layer.</t>
+<t hangText="Effective PMTU:">
+The current estimated value for PMTU used by a Packetization Layer.</t>
 
-          <t hangText="EMTU_S:">The Effective MTU for sending (EMTU_S) is
-          designated in <xref target="RFC1122"></xref> as " the maximum IP
-          datagram size that may be sent, for a particular combination of IP
-          source and destination addresses..."</t>
+<t hangText="EMTU_S:">
+The Effective MTU for sending (EMTU_S) is designated in <xref target="RFC1122"/>
+as "the maximum IP datagram size that may be sent, for a particular combination
+of IP ource and destination addresses..."</t>
 
-          <t hangText="EMTU_R:">The Effective MTU for receiving (EMTU_R) is
-          designated in <xref target="RFC1122"></xref> as "the largest
-          datagram size that can be reassembled by EMTU_R ("Effective MTU to
-          receive")"</t>
+<t hangText="EMTU_R:">
+The Effective MTU for receiving (EMTU_R) is designated in
+<xref target="RFC1122"/> as "the largest datagram size that can be reassembled
+by EMTU_R ("Effective MTU to receive")"</t>
 
-          <t hangText="Interface:">A node's attachment to a link.</t>
+<t hangText="Interface:">
+A node's attachment to a link.</t>
 
-          <t hangText="Link:">A communication facility or medium over which
-          nodes can communicate at the link layer, i.e., the layer immediately
-          below IP. Examples are Ethernet LANs and Internet (or higher) layer
-          and tunnels.</t>
+<t hangText="Link:">
+A communication facility or medium over which nodes can communicate at the link
+layer, i.e., the layer immediately below IP.
+Examples are Ethernet LANs and Internet (or higher) layer and tunnels.</t>
 
-          <t hangText="Link MTU:">Maximum Transmission Unit, the size in bytes
-          of the largest IP packet, including the IP header and payload, that
-          can be transmitted on a link or path. Note that this could more
-          properly be called the IP MTU, to be consistent with how other
-          standards organizations use the acronym MTU. This includes the IP
-          header, but excludes link layer headers and other framing that is
-          not part of IP or the IP payload. Be aware that other standards
-          organizations generally define link MTU to include the link layer
-          headers.</t>
+<t hangText="Link MTU:">
+Maximum Transmission Unit, the size in bytes of the largest IP packet, including
+the IP header and payload, that can be transmitted on a link or path.
+Note that this could more properly be called the IP MTU, to be consistent with
+how other standards organizations use the acronym MTU.
+This includes the IP header, but excludes link layer headers and other framing
+that is not part of IP or the IP payload.
+Be aware that other standards organizations generally define link MTU to include
+the link layer headers.</t>
 
-          <t hangText="Packet:">An IP header plus the IP payload.</t>
+<t hangText="Packet:">
+An IP header plus the IP payload.</t>
 
-          <t hangText="Packetization Layer:">The layer of the network stack
-          that places data into packets and performs transport protocol
-          functions.</t>
+<t hangText="Packetization Layer:">
+The layer of the network stack that places data into packets and performs
+transport protocol functions.</t>
 
-          <t hangText="Path:">The set of links traversed by a packet between a
-          source node and a destination node.</t>
+<t hangText="Path:">
+The set of links traversed by a packet between a source node and a destination
+node.</t>
 
-          <t hangText="Path MTU, or PMTU:">The minimum link MTU of all the
-          links in a path between a source node and a destination node.</t>
+<t hangText="Path MTU, or PMTU:">
+The minimum link MTU of all the links in a path between a source node and a
+destination node.</t>
 
-          <t hangText="PLPMTUD:">Packetization Layer Path MTU Discovery, the
-          method described in this document, which is an extension to
-          classical PMTU Discovery.</t>
-        </list></t>
-    </section>
+<t hangText="PLPMTUD:">
+Packetization Layer Path MTU Discovery, the method described in this document,
+which is an extension to classical PMTU Discovery.</t>
+</list></t>
+</section>
 
 <section title="Requirements">
 <t>All of the requirements in <xref target="RFC4821"></xref> apply.
@@ -583,68 +534,65 @@ Therefore it is not possible to process ICMP PTB messages.</t>
 </section>
 </section>
 
-      <section title="DCCP">
-        <t>DCCP <xref target="RFC4340"></xref> implementations are required to
-        support classical PMTUD and states that a DCCP sender "MUST maintain
-        the maximum packet size (MPS) allowed for each active DCCP session"
-        and also defines "current congestion control mechanism (CCMPS), the
-        maximum packet size supported by the path's links". It recommends use
-        of PMTUD, and suggests use of DCCP-Sync packets as path probes,
-        because they do not risk application data loss. It does not currently
-        specify the use of PLPMTUD methods that could work independently of
-        the ability to utilise ICMP PTB messages.</t>
+<section title="DCCP">
+<t>DCCP <xref target="RFC4340"></xref> implementations are required to support
+classical PMTUD and states that a DCCP sender "MUST maintain the maximum packet
+size (MPS) allowed for each active DCCP session" and also defines
+"current congestion control mechanism (CCMPS), the maximum packet size
+supported by the path's links".
+It recommends use of PMTUD, and suggests use of DCCP-Sync packets as path
+probes, because they do not risk application data loss.
+It does not currently specify the use of PLPMTUD methods that could work
+independently of the ability to utilise ICMP PTB messages.</t>
+<t>&lt;&lt; This section will be completed in a future revision of
+this ID &gt;&gt;</t>
 
-        <t>&lt;&lt; This section will be completed in a future revision of
-        this ID &gt;&gt;</t>
+<section title="DCCP/UDP">
+<t>DCCP/UDP is a UDP-based transport that permits padding to be added to
+datagrams, and can provide reception feedback.</t>
+<t>&lt;&lt; This section will be completed in a future revision of
+this ID &gt;&gt;</t>
+</section>
+</section>
 
-        <section title="DCCP/UDP">
-          <t>DCCP/UDP is a UDP-based transport that permits padding to be
-          added to datagrams, and can provide reception feedback.</t>
+<section title="QUIC">
+<t>QUIC is a UDP-based transport that provides reception feedback
+[draft-ietf-quic-transport].</t>
 
-          <t>&lt;&lt; This section will be completed in a future revision of
-          this ID &gt;&gt;</t>
-        </section>
-      </section>
+<t>&lt;&lt; This section will be completed in a future revision of
+this ID &gt;&gt;</t>
+</section>
+</section>
 
-      <section title="QUIC">
-        <t>QUIC is a UDP-based transport that provides reception feedback
-        [draft-ietf-quic-transport].</t>
+<section anchor="Acknowledgements" title="Acknowledgements">
+<t>This work was partially funded by the European Union's Horizon 2020
+research and innovation programme under grant agreement No. 644334 (NEAT).
+The views expressed are solely those of the author(s).</t>
+</section>
 
-        <t>&lt;&lt; This section will be completed in a future revision of
-        this ID &gt;&gt;</t>
-      </section>
-    </section>
+<section anchor="IANA" title="IANA Considerations">
+<t>This memo includes no request to IANA.</t>
 
-    <section anchor="Acknowledgements" title="Acknowledgements">
-      <t>This work was partially funded by the European Union's Horizon 2020
-      research and innovation programme under grant agreement No. 644334
-      (NEAT). The views expressed are solely those of the author(s).</t>
-    </section>
+<t>If there are no requirements for IANA, the section will be removed during
+conversion into an RFC by the RFC Editor.</t>
+</section>
 
-    <section anchor="IANA" title="IANA Considerations">
-      <t>This memo includes no request to IANA.</t>
+<section anchor="Security" title="Security Considerations">
+<t>The security considerations for the use of UDP and SCTP are provided in the
+references RFCs. Security guidance for applications using UDP is
+provided in the UDP-Guidelines <xref target="RFC8085"></xref>.</t>
 
-      <t>If there are no requirements for IANA, the section will be removed
-      during conversion into an RFC by the RFC Editor.</t>
-    </section>
-
-    <section anchor="Security" title="Security Considerations">
-      <t>The security considerations for the use of UDP and SCTP are provided
-      in the references RFCs. Security guidance for applications using UDP is
-      provided in the UDP-Guidelines <xref target="RFC8085"></xref>.</t>
-
-      <t>ICMP PTB messages could potentially be used to cause a node to
-      inappropriately reduce the PMTU. A node supporting PLPMTUD SHOULD
-      appropriately validate the payload of ICMP PTB messages to ensure these
-      are received in response to transmitted traffic (i.e., a reported error
-      condition that corresponds to a datagram actually sent by the path
-      layer.</t>
-    </section>
-  </middle>
+<t>ICMP PTB messages could potentially be used to cause a node to
+inappropriately reduce the PMTU.
+A node supporting PLPMTUD SHOULD appropriately validate the payload of ICMP PTB
+messages to ensure these are received in response to transmitted traffic
+(i.e., a reported error condition that corresponds to a datagram actually sent
+by the path layer.</t>
+</section>
+</middle>
 
 <back>
 <!-- References split into informative and normative -->
-
 <references title="Normative References">
 <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
 
