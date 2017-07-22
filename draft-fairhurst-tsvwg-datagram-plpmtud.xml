@@ -43,6 +43,7 @@
 <!ENTITY I-D.ietf-6man-rfc1981bis SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-6man-rfc1981bis-08.xml">
 <!ENTITY I-D.ietf-tsvwg-udp-options SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-tsvwg-udp-options-01.xml">
 <!ENTITY I-D.ietf-tsvwg-sctp-dtls-encaps SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-tsvwg-sctp-dtls-encaps-09.xml">
+<!ENTITY I-D.ietf-quic-transport SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-quic-transport-04.xml">
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <!-- used by XSLT processors -->
@@ -557,7 +558,7 @@ this ID &gt;&gt;</t>
 
 <section title="QUIC">
 <t>QUIC is a UDP-based transport that provides reception feedback
-[draft-ietf-quic-transport].</t>
+<xref target="I-D.ietf-quic-transport"/>.</t>
 
 <t>&lt;&lt; This section will be completed in a future revision of
 this ID &gt;&gt;</t>
@@ -615,6 +616,8 @@ by the path layer.</t>
 &I-D.ietf-tsvwg-udp-options;
 
 &I-D.ietf-tsvwg-sctp-dtls-encaps;
+
+&I-D.ietf-quic-transport;
 </references>
 
 <references title="Informative References">
