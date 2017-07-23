@@ -158,17 +158,17 @@ Packetization Layer Path MTU Discovery for Datagram Transports
 
 <workgroup>Internet Engineering Task Force</workgroup>
 
-    <!-- WG name at the upperleft corner of the doc,
-		IETF is fine for individual submissions.  If this element is not
-		present, the default is "Network Working Group", which is used by the
-		RFC Editor as a nod to the history of the IETF. -->
+<!-- WG name at the upperleft corner of the doc,
+     IETF is fine for individual submissions. If this element is not
+     present, the default is "Network Working Group", which is used by the
+     RFC Editor as a nod to the history of the IETF. -->
 
 <keyword>UDP SCTP Transport PMTUD PLPMTUD</keyword>
 
-    <!-- Keywords will be incorporated into HTML output
-		files in a meta tag but they have no effect on text or nroff output. If
-		you submit your draft to the RFC Editor, the keywords will be used for
-		the search engine. -->
+<!-- Keywords will be incorporated into HTML output
+     files in a meta tag but they have no effect on text or nroff output. If
+     you submit your draft to the RFC Editor, the keywords will be used for
+     the search engine. -->
 
 <abstract>
 <t>This document describes a robust method for Path MTU Discovery (PMTUD) for
@@ -245,8 +245,8 @@ document are to be interpreted as described in <xref target="RFC2119"/>.</t>
 definitions are from <xref target="RFC1122"/>.</t>
 
 <t><list style="hanging">
-          <t hangText="Address:">An IP Layer identifier for an interface or a
-          set of interfaces.</t>
+<t hangText="Address:">
+An IP Layer identifier for an interface or a set of interfaces.</t>
 
 <t hangText="Classical Path MTU Discovery:">
 The process described in <xref target="RFC1191"/> and
@@ -263,12 +263,12 @@ The current estimated value for PMTU used by a Packetization Layer.</t>
 <t hangText="EMTU_S:">
 The Effective MTU for sending (EMTU_S) is designated in <xref target="RFC1122"/>
 as "the maximum IP datagram size that may be sent, for a particular combination
-of IP ource and destination addresses..."</t>
+of IP source and destination addresses...".</t>
 
 <t hangText="EMTU_R:">
 The Effective MTU for receiving (EMTU_R) is designated in
 <xref target="RFC1122"/> as "the largest datagram size that can be reassembled
-by EMTU_R ("Effective MTU to receive")"</t>
+by EMTU_R ("Effective MTU to receive")".</t>
 
 <t hangText="Interface:">
 A node's attachment to a link.</t>
@@ -331,7 +331,7 @@ this (unless a transport offers benefit from multiplexing multiple applications
 PDUs into the same datagram.)</t>
 
 <t>Effective PMTU: A datagram application MUST be able to choose
-the size of datagrams sent to the network,  based on the effective MTU.
+the size of datagrams sent to the network, based on the effective MTU.
 This value is managed by the PMTUD method, and sets the maximum size of
 datagram that an application can send.
 The effective PMTU (specified in Section 1 of <xref target="RFC1191"></xref>)
@@ -431,9 +431,9 @@ These three operations are protocol specific and are described in
 &gt;&gt;</t>
 </section>
 
-<section title="Specification or Protocol Specific Methods"
+<section title="Specification of Protocol Specific Methods"
          anchor="protocol_specific_methods">
-         
+ 
 <t>&lt;&lt; In future revisions of this document, this section may be divided
 into PMTUD and PLPMTUD methods &gt;&gt;</t>
 
