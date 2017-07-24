@@ -1,0 +1,49 @@
+// PMTUD, icmp MTB is sent: base < icmp_mtu < probed_mtu (1200 < 1300 < 1492)
+// SEARCH_UP: probe 1500 -> icmp 1300 -> BASE
+0.0 `sysctl -w net.inet.sctp.pmtu_raise_time=20`
++0.05 `sysctl -w net.inet.sctp.plpmtud_enable=1`
++0.0 socket(..., SOCK_STREAM, IPPROTO_SCTP) = 3
++0.0 fcntl(3, F_GETFL) = 0x2 (flags O_RDWR)
++0.0 fcntl(3, F_SETFL, O_RDWR|O_NONBLOCK) = 0
+// Check the handshake with an empty(!) cookie.
++0.1 connect(3, ..., ...) = -1 EINPROGRESS (Operation now in progress)
++0.0 > sctp: INIT[flgs=0, tag=1, a_rwnd=..., os=..., is=..., tsn=0, ...]
++0.1 < sctp: INIT_ACK[flgs=0, tag=2, a_rwnd=4500, os=1, is =1, tsn=3, STATE_COOKIE[len=4, val=...]]
++0.0 > sctp: COOKIE_ECHO[flgs=0, len=4, val=...]
++0.1 < sctp: COOKIE_ACK[flgs=0]
++0.0 getsockopt(3, SOL_SOCKET, SO_ERROR, [0], [4]) = 0
+
+// Send Base probe
+// 1124 for 1200
+*    > sctp: HEARTBEAT[flgs=0, HEARTBEAT_INFORMATION[len=..., val=...]]; PAD[flgs=0, len=..., val=...]
++0	< sctp: HEARTBEAT_ACK[flgs=0, HEARTBEAT_INFORMATION[len=..., val=...]]
+
+// 1416 for 1492
+*    > sctp: HEARTBEAT[flgs=0, HEARTBEAT_INFORMATION[len=..., val=...]]; PAD[flgs=0, len=..., val=...]
++0	< sctp: HEARTBEAT_ACK[flgs=0, HEARTBEAT_INFORMATION[len=..., val=...]]
+
+// 1424 for 1500
+*    > sctp: HEARTBEAT[flgs=0, HEARTBEAT_INFORMATION[len=..., val=...]]; PAD[flgs=0, len=..., val=...]
+
+// Reduce the PMTU.
++0.5 < [sctp(2)] icmp unreachable frag_needed mtu 1300
+
+// 1124 for 1200
+*    > sctp: HEARTBEAT[flgs=0, HEARTBEAT_INFORMATION[len=..., val=...]]; PAD[flgs=0, len=..., val=...]
++0	< sctp: HEARTBEAT_ACK[flgs=0, HEARTBEAT_INFORMATION[len=..., val=...]]
+
+// 1224 for 1300
+*    > sctp: HEARTBEAT[flgs=0, HEARTBEAT_INFORMATION[len=..., val=...]]; PAD[flgs=0, len=..., val=...]
++0	< sctp: HEARTBEAT_ACK[flgs=0, HEARTBEAT_INFORMATION[len=..., val=...]]
+
+// Send some data and get it acknowledged.
++0.25 write(3, ..., 2000) = 2000
++0.0 > sctp: DATA[flgs=B, len=1268, tsn=0, sid=0, ssn=0, ppid=0]
++0.0 > sctp: DATA[flgs=E, len=764,  tsn=1, sid=0, ssn=0, ppid=0]
++0.1 < sctp: SACK[flgs=0, cum_tsn=1, a_rwnd=45000, gaps=[], dups=[]]
+
+// Tear down the association
++0.0 close(3) = 0
++0.0 > sctp: SHUTDOWN[flgs=0, cum_tsn=2]
++0.1 < sctp: SHUTDOWN_ACK[flgs=0]
++0.0 > sctp: SHUTDOWN_COMPLETE[flgs=0]
