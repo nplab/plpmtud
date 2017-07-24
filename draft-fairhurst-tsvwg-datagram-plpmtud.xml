@@ -3,7 +3,7 @@
     which is available here: http://xml.resource.org. -->
 <!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
 <!-- One method to get references from the online citation libraries.
-    There has to be one entity for each item to be referenced. 
+    There has to be one entity for each item to be referenced.
     An alternate method (rfc include) is described in the references. -->
 <!ENTITY RFC678 SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.0678.xml">
 <!ENTITY RFC768 SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.0768.xml">
@@ -47,7 +47,7 @@
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <!-- used by XSLT processors -->
-<!-- For a complete list and description of processing instructions (PIs), 
+<!-- For a complete list and description of processing instructions (PIs),
     please see http://xml.resource.org/authoring/README.html. -->
 <!-- Below are generally applicable Processing Instructions (PIs) that most I-Ds might want to use.
     (Here they are set differently than their defaults in xml2rfc v1.32) -->
@@ -63,7 +63,7 @@
 <!-- use symbolic references tags, i.e, [RFC2119] instead of [1] -->
 <?rfc sortrefs="yes" ?>
 <!-- sort the reference entries alphabetically -->
-<!-- control vertical white space 
+<!-- control vertical white space
     (using these PIs as follows is recommended by the RFC Editor) -->
 <?rfc compact="yes" ?>
 <!-- do not start each main section on a new page -->
@@ -76,13 +76,13 @@
 <!-- category values: std, bcp, info, exp, and historic
      ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
                  or pre5378Trust200902
-    you can add the attributes updates="NNNN" and obsoletes="NNNN" 
+    you can add the attributes updates="NNNN" and obsoletes="NNNN"
     they will automatically be output with "(if approved)" -->
 
 <!-- ***** FRONT MATTER ***** -->
 
 <front>
-<!-- The abbreviated title is used in the page header - it is only necessary if the 
+<!-- The abbreviated title is used in the page header - it is only necessary if the
      full title is longer than 39 characters -->
 
 <title abbrev="Datagram PLPMTUD ">
@@ -433,7 +433,7 @@ These three operations are protocol specific and are described in
 
 <section title="Specification of Protocol Specific Methods"
          anchor="protocol_specific_methods">
- 
+
 <t>&lt;&lt; In future revisions of this document, this section may be divided
 into PMTUD and PLPMTUD methods &gt;&gt;</t>
 
@@ -465,11 +465,11 @@ It recommends use of the PAD chunk, defined in <xref target="RFC4820"/> to
 be attached to a minimum length HEARTBEAT chunk to build a probe packet.
 This allows to perform probing without affecting the transfer of
 user messages and without interfering with congestion control.
-Therefore it is preferred to the use of DATA chunks (with padding
+Therefore, it is preferred to the use of DATA chunks (with padding
 as required) to serve as path probes.</t>
 
 <t>&lt;&lt; We might define a parameter contained in the INIT and INIT ACK chunk
-to indicated the MTU to the peer. However, multihoming makes this a bit complex,
+to indicate the MTU to the peer. However, multihoming makes this a bit complex,
 so it might not be worth doing.&gt;&gt;</t>
 
 <section title="SCTP/IP4 and SCTP/IPv6"
@@ -483,6 +483,23 @@ and a PAD chunk.
 The PAD chunk is used to control the length of the probe packet.
 The HEARTBEAT chunk is used to trigger the sending of a HEARTBEAT ACK chunk.
 The reception of the HEARTBEAT ACK chunk signals the successful probing.</t>
+<t>The HEARTBEAT chunk carries a Heartbeat
+Information parameter which should include, besides the information suggested in
+<xref target="RFC4960"/>, the probing size, which is the MTU size the complete
+datagram will add up to. The size of the PAD chunk is therefore computed by reducing
+the probing size by the IPv4 or IPv6 header size, the SCTP common header, the
+HEARTBEAT request and the PAD chunk header. The payload of the PAD chunk contains
+arbitrary data.</t>
+<t>To avoid the fragmentation of retransmitted data, probing starts right after
+the handshake before data is sent. Assuming normal behaviour (i.e., the PMTU is smaller
+than or equal to the interface MTU), this process will take a few RTTs depending on
+the number of MTU sizes probed. A PMTU smaller than the interface MTU is detected
+either upon a packet-loss timeout for probe packets or when an ICMP PTB message
+arrives. Each path has to be probed independently and every address change triggers a
+new phase of MTU probing. A timer must be started when a probe packet is sent and stopped
+when it is acknowledged.
+When the timer expires the probe packet should be retransmitted. When the number of
+retransmissions exceeds a threshold, another state is entered.</t>
 </section>
 
 <section title="PTB Message Handling"
@@ -491,6 +508,10 @@ The reception of the HEARTBEAT ACK chunk signals the successful probing.</t>
 <xref target="RFC4960"/>. This requires that the first 8 bytes of the SCTP
 common header are contained in the ICMP packet, which is normally fulfilled by
 ICMPv4 and ICMPv6.</t>
+<t>Relying solely on PTB messages, i.e. without probing, means that data has to be retransmitted which has a negative influence on the performance.</t>
+<t>A better approach is to combine active probing with the analysis of the PTB
+messages. At best the middlebox also includes its MTU to shorten the process of
+probing.</t>
 </section>
 
 </section>
@@ -501,7 +522,8 @@ ICMPv4 and ICMPv6.</t>
 <section title="Probing"
          anchor="sctp_over_udp_probing">
 <t>The probing can be performed as specified in
-<xref target='sctp_over_ip_probing'/>.</t>
+<xref target='sctp_over_ip_probing'/>. The maximum payload is reduced by 8 bytes, which
+has to be considered when filling the PAD chunk.</t>
 </section>
 
 <section title="PTB Message Handling"
