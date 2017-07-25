@@ -423,12 +423,227 @@ effective PMTU to reduce the need for retransmission.</t>
 
 <section title="Specification of PMTUD for Packetization Layers"
          anchor="Spec">
-<t>&lt;&lt;
-Fill in a generic algorithm based on sending probe packets, receiving
-success indications and possibly handling PTB messages.
-These three operations are protocol specific and are described in
-<xref target='protocol_specific_methods'/> for various protocols.
-&gt;&gt;</t>
+<t>The central idea of Path MTU discovery is probing. Packets of increasing sizes
+are sent to find out the maximum size of a user message being completely transferred from the sender to the receiver. The probing should be started right after the connection setup to prevent the loss of user data. </t>
+<t>The involved transport protocols must be able to send packets with or without user
+data of arbitrary sizes. The reception of these packets must be acknowledged by the
+receiver to confirm the successful delivery. The probe packets should include
+the probing size which should be reflected in the acknowledgment to match the
+corresponding packets.</t>
+<t>In the case of packet loss a retransmission algorithm has to be implemented which
+is usually performed by using timers.</t>
+<t>The probe timer is started when a probe packet is sent to the peer and stopped when
+the acknowlegment arrives. A maximum number (MAX-PROBES) of retransmissions per probing
+size it configured. When the probe timer expires the probe error counter is increased.
+When the value of the probe error counter exceeds MAX-PROBES, probing will be stopped
+and the last successfully probed MTU is set as PMTU.
+</t>
+<t>The PMTU raise timer is needed for long lasting connections to trigger a
+periodical new probing in case the infrastructure of the path has changed. It is set
+to a value of about 600 secs.</t>
+<t>If ICMP feedback is provided by the middleboxes, this information can be used to
+shorten the probing process.
+Yet, relying solely on PTB messages, i.e. without probing, means that data has to be retransmitted which has a negative influence on the performance.</t>
+<t>A better approach is to combine active probing with the analysis of the PTB
+messages. At best the middlebox also includes its MTU to shorten the process of
+probing. However, the probing mechanism can also be fulfilled without
+this feedback.</t>
+
+<section title="State Machine"
+         anchor="States">
+<t>A state machine as depicted in <xref target="fig-states"/> and explained
+below has to be implemented. If multihoming is supported a state machine is needed
+for each path.</t>
+
+<figure title="State machine for PLPMTUD"
+        anchor="fig-states">
+<artwork align="center"><![CDATA[
+                            +------------+
+                            | PROBE-NONE |
+                            +------------+
+                                   |  Address confirmed
+                                   v
+                   ---------- +------------+ -- Probe timer expired
+Max MTU acked     |           | PROBE-BASE |  | (Counts < MAX-PROBES)
+ICMP (= Base MTU) |    -----> +------------+ <-
+  ----------------     |          /\   |  |
+  |                    |           |   |  | ICMP
+  |    PMTU raise timer|           |   |  | (< probed MTU ||
+  |             expired|           |   |  | probed MTU < ICMP
+  |                    |           |   |  | < probe)
+  |        -------------           |   |   \
+  |        |                   ICMP|   |    \  Probe timer expired
+  |        |         (< probed MTU)|   |     \ (Counts >= MAX-PROBES)
+  |        |                       |   |      ---------------
+  |        |                       |   |                     |
+  |        |                       |   | Probe               |
+  |        |       ICMP            |   | acked               |
+  v        |    (probed MTU <      |   v                     v
++------------+  ICMP < probe) +--------------+  Probe +-------------+
+| PROBE-DONE |<-------------- | PROBE-SEARCH |<-------| PROBE-ERROR |
++------------+  Max MTU acked +--------------+  acked +-------------+
+            Probe timer expired   /\      |
+          (Counts >= MAX-PROBES)   |      |
+                                   |      | ICMP (Max MTU reached)
+                                   |      |
+                                    ------
+                              Probe timer expired
+                             (Counts < MAX-PROBES)
+]]></artwork>
+</figure>
+
+<t>The following states are defined to reflect the probing process.</t>
+
+<t><list style="hanging">
+<t hangText="PROBE-NONE:">
+This state is the initial state a path enters before probing is started.</t>
+
+<t hangText="PROBE-ERROR:">
+This state is entered when the suggested MTU drops below the base MTU or if the ICMP PTB
+message announces a very small MTU.
+This is taken as an indication of a path failure. The reachability is checked and probing
+is started with MTUs below the base MTU. A minimum MTU is set as a starting point.</t>
+
+<t hangText="PROBE-BASE:">
+This state is characterised by a basic value. The base MTU is set to a size that should
+work in most cases. In the case of IPv6 this value is 1280 bytes as specified in
+<xref target="RFC2460"/>. When using IPv4 a minimum size of 1200 is suggested.
+The state PROBE-BASE is reached for the first time, when a path has been confirmed, i.e.
+when a packet has arrived on this path. It is a divider between MTU
+sizes that appear too small and those that are acceptable. Sizes smaller than base are
+only probed when the PROBE-ERROR state was reached before.</t>
+
+<t hangText="PROBE-SEARCH:">
+This state is the main probing state. It is either entered when probing the base MTU was
+successful or when the reachability test in PROBE-ERROR was successful. If the probing
+of an MTU size is successful, the probing size is increased. An upper bound for the
+possible MTU size is the MTU of the outgoing interface. This maximum MTU might be reduced
+by tunneling protocols.</t>
+
+<t hangText="PROBE-DONE:">
+This state indicates the successful end of a probing phase. It will be left again when
+the PMTU raise timer expires.</t>
+</list></t>
+</section>
+
+<section title="Event-driven state changes" anchor="StateChanges">
+<t>We distinguish between the following events.</t>
+
+<t><list style="hanging">
+<t hangText="Path Setup:">
+When a new path is initiated, its state is set to PROBE-NONE. As soon as the path
+is confirmed, the state changes to PROBE-BASE and the probing mechanism for this path
+is started. A probe packet with the size of the base MTU is sent.</t>
+
+<t hangText="Arrival of an Acknowledgment:">
+Depending on the probing state, the reaction differs according to
+<xref target="fig-acks"/>, which is just a simplification of <xref target="fig-states"/>
+focusing on this event.
+
+<figure title="State changes at the arrival of an acknowledgment"
+        anchor="fig-acks">
+<artwork align="center"><![CDATA[
++--------------+
+|  PROBE-NONE  | --------------
++--------------+               \
+                                \
++--------------+                 \
+| PROBE-ERROR  | ---------------  \
++--------------+                \  \
+                                 \  \
++--------------+                  \  \              +--------------+
+|  PROBE-BASE  | --1----------     \  ------------> |  PROBE-BASE  |
++--------------+ --2-----     \     \               +--------------+
+                         \     \     \
++--------------+          \     \     ------------> +--------------+
+| PROBE-SEARCH | --2---    \     -----------------> | PROBE-SEARCH |
++--------------+ --1---\----\---------------------> +--------------+
+                        \    \
++--------------+         \    \                     +--------------+
+|  PROBE-DONE  |          \    -------------------> |  PROBE-DONE  |
++--------------+           -----------------------> +--------------+
+
+]]></artwork>
+<postamble>
+Condition 1: The maximum MTU size has not been reached yet.
+Condition 2: The maximum MTU size has been reached.
+</postamble>
+</figure>
+</t>
+
+<t hangText="Probing timeout:">
+When a probing packet is sent, the probing timer is started. It is stopped when an
+acknowledgment arrives. If the probe packet is not acknowledged, the probe timer expires
+and the state is either changed or kept as it is, when the probe error counter has
+not exceeded MAX-PROBES. The state transitions are illustrated in
+<xref target="fig-probeTimer"/>, which is just a simplification of
+<xref target="fig-states"/> focusing on this event.
+
+<figure title="State changes at the expiration of the probe timer"
+        anchor="fig-probeTimer">
+<artwork align="center"><![CDATA[
++--------------+
+|  PROBE-NONE  |
++--------------+
+
++--------------+                                    +--------------+
+| PROBE-ERROR  |                 -----------------> | PROBE-ERROR  |
++--------------+                /                   +--------------+
+                               /
++--------------+ --2----------/                     +--------------+
+|  PROBE-BASE  | --1------------------------------> |  PROBE-BASE  |
++--------------+                                    +--------------+
+
++--------------+                                    +--------------+
+| PROBE-SEARCH | --1------------------------------> | PROBE-SEARCH |
++--------------+ --2---------                       +--------------+
+                             \
++--------------+              \                     +--------------+
+|  PROBE-DONE  |               -------------------> |  PROBE-DONE  |
++--------------+                                    +--------------+
+
+]]></artwork>
+<postamble>
+Condition 1: The maximum number of probes has not been reached.
+Condition 2: The maximum number of probes has been reached.
+</postamble>
+</figure>
+</t>
+
+<t hangText="PMTU raise timer timeout:">
+The configuration of the network can change over time, a broken link can work
+again and the PMTU can increase again. Therefore, a PMTU raise timer is started
+with a timeout of 600 secs as recommended by <xref target="RFC4821"/> to start a periodic
+probing of the link.
+When the timer expires probing is started with the base MTU and the state is changed
+to PROBE-BASE.</t>
+
+<t hangText="Arrival of an ICMP message:">
+The active probing of the link might be supported by the arrival of ICMP messages
+that are sent back by routers whose MTU is smaller than the probe. If the ICMP
+packet includes the router's MTU, it is handled like the maximum possible MTU. Three
+cases can be distinguished:</t>
+
+<t><list style="numbers">
+<t>The new ICMP MTU is between the already probed and confirmed MTU and the probe
+that caused the ICMP message.</t>
+<t>The ICMP MTU is smaller than the confirmed MTU.</t>
+<t>The ICMP MTU is equal to the base MTU.</t>
+</list></t>
+
+<t>In case 1 PROBE-BASE leads to PROBE-ERROR. In PROBE-SEARCH a new probe is sent with the
+ICMP MTU. Its result is handled according to the former events. In the second case, a
+network reconfiguration is assumed. If the ICMP MTU is greater than the base MTU,
+probing starts again at PROBE-BASE. Otherwise the state PROBE-ERROR
+is entered. In the third case the maximum possible MTU is reached.
+It is probed again because there might be a router on the further path with a smaller MTU.
+
+Not all routers include the MTU in their ICMP messages. If the ICMP MTU is not
+provided the probe is handled like Condition 2
+of <xref target="fig-probeTimer"/>.</t>
+</list></t>
+
+</section>
 </section>
 
 <section title="Specification of Protocol Specific Methods"
@@ -461,7 +676,7 @@ similar to that offered by other transports.</t>
 <section title="SCTP">
 <t>Section 10.2 of <xref target="RFC4821"/> specifies a recommended PLPMTUD
 probing method for SCTP.
-It recommends use of the PAD chunk, defined in <xref target="RFC4820"/> to
+It recommends the use of the PAD chunk, defined in <xref target="RFC4820"/> to
 be attached to a minimum length HEARTBEAT chunk to build a probe packet.
 This allows to perform probing without affecting the transfer of
 user messages and without interfering with congestion control.
@@ -493,13 +708,8 @@ arbitrary data.</t>
 <t>To avoid the fragmentation of retransmitted data, probing starts right after
 the handshake before data is sent. Assuming normal behaviour (i.e., the PMTU is smaller
 than or equal to the interface MTU), this process will take a few RTTs depending on
-the number of MTU sizes probed. A PMTU smaller than the interface MTU is detected
-either upon a packet-loss timeout for probe packets or when an ICMP PTB message
-arrives. Each path has to be probed independently and every address change triggers a
-new phase of MTU probing. A timer must be started when a probe packet is sent and stopped
-when it is acknowledged.
-When the timer expires the probe packet should be retransmitted. When the number of
-retransmissions exceeds a threshold, another state is entered.</t>
+the number of MTU sizes probed. The Heartbeat timer can be used as probe timer.
+</t>
 </section>
 
 <section title="PTB Message Handling"
@@ -508,10 +718,6 @@ retransmissions exceeds a threshold, another state is entered.</t>
 <xref target="RFC4960"/>. This requires that the first 8 bytes of the SCTP
 common header are contained in the ICMP packet, which is normally fulfilled by
 ICMPv4 and ICMPv6.</t>
-<t>Relying solely on PTB messages, i.e. without probing, means that data has to be retransmitted which has a negative influence on the performance.</t>
-<t>A better approach is to combine active probing with the analysis of the PTB
-messages. At best the middlebox also includes its MTU to shorten the process of
-probing.</t>
 </section>
 
 </section>
@@ -622,6 +828,8 @@ by the path layer.</t>
 &RFC1122;
 
 &RFC2119;
+
+&RFC2460;
 
 &RFC3828;
 
