@@ -32,6 +32,7 @@
 // Send some data and get it acknowledged.
 +0.05 write(3, ..., 2000) = 2000
 +0.0 > sctp: DATA[flgs=B, len=1460, tsn=0, sid=0, ssn=0, ppid=0]
++0.0 < sctp: SACK[flgs=0, cum_tsn=0, a_rwnd=45000, gaps=[], dups=[]]
 +0.0 > sctp: DATA[flgs=E, len=572,  tsn=1, sid=0, ssn=0, ppid=0]
 +0.1 < sctp: SACK[flgs=0, cum_tsn=1, a_rwnd=45000, gaps=[], dups=[]]
 
@@ -50,6 +51,7 @@
 // Send some data and get it acknowledged.
 +0.1 write(3, ..., 2000) = 2000
 +0.0 > sctp: DATA[flgs=B, len=1468, tsn=2, sid=0, ssn=1, ppid=0]
++0.0 < sctp: SACK[flgs=0, cum_tsn=2, a_rwnd=45000, gaps=[], dups=[]]
 +0.0 > sctp: DATA[flgs=E, len=564,  tsn=3, sid=0, ssn=1, ppid=0]
 +0.1 < sctp: SACK[flgs=0, cum_tsn=3, a_rwnd=45000, gaps=[], dups=[]]
 
