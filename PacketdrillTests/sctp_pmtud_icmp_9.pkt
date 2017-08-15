@@ -47,7 +47,7 @@
 +0	< sctp: HEARTBEAT_ACK[flgs=0, HEARTBEAT_INFORMATION[len=..., val=...]]
 
 // Send some data and get it acknowledged.
-+0.25 write(3, ..., 2000) = 2000
++3.0 write(3, ..., 2000) = 2000
 +0.0 > sctp: DATA[flgs=B, len=1468, tsn=2, sid=0, ssn=1, ppid=0]
 +0.0 < sctp: SACK[flgs=0, cum_tsn=2, a_rwnd=45000, gaps=[], dups=[]]
 +0.0 > sctp: DATA[flgs=E, len=564,  tsn=3, sid=0, ssn=1, ppid=0]

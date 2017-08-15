@@ -12,12 +12,15 @@
 +0.1 < sctp: COOKIE_ACK[flgs=0]
 +0.0 getsockopt(3, SOL_SOCKET, SO_ERROR, [0], [4]) = 0
 
+// 1124 for 1200
 *    > sctp: HEARTBEAT[flgs=0, HEARTBEAT_INFORMATION[len=..., val=...]]; PAD[flgs=0, len=..., val=...]
 +0	< sctp: HEARTBEAT_ACK[flgs=0, HEARTBEAT_INFORMATION[len=..., val=...]]
 
+// 1416 for 1492
 *    > sctp: HEARTBEAT[flgs=0, HEARTBEAT_INFORMATION[len=..., val=...]]; PAD[flgs=0, len=..., val=...]
 +0	< sctp: HEARTBEAT_ACK[flgs=0, HEARTBEAT_INFORMATION[len=..., val=...]]
 
+// 1424 for 1500
 *    > sctp: HEARTBEAT[flgs=0, HEARTBEAT_INFORMATION[len=..., val=...]]; PAD[flgs=0, len=..., val=...]
 +0	< sctp: HEARTBEAT_ACK[flgs=0, HEARTBEAT_INFORMATION[len=..., val=...]]
 

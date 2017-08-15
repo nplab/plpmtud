@@ -1,17 +1,17 @@
-diff --git a/sys/netinet/sctp_constants.h b/sys/netinet/sctp_constants.h
-index dca34cc..a0044ed 100644
---- a/sys/netinet/sctp_constants.h
-+++ b/sys/netinet/sctp_constants.h
-@@ -700,7 +700,7 @@ __FBSDID("$FreeBSD$");
+diff --git a/netinet/sctp_constants.h b/netinet/sctp_constants.h
+index 9afc9bd..b6cba8d 100755
+--- a/netinet/sctp_constants.h
++++ b/netinet/sctp_constants.h
+@@ -720,7 +720,7 @@ extern void getwintimeofday(struct timeval *tv);
  
  #define SCTP_INITIAL_CWND 4380
  
--#define SCTP_DEFAULT_MTU 1500	/* emergency default MTU */
+-#define SCTP_DEFAULT_MTU 1500 /* emergency default MTU */
 +#define SCTP_DEFAULT_MTU 1200	/* emergency default MTU */
  /* amount peer is obligated to have in rwnd or I will abort */
  #define SCTP_MIN_RWND	1500
  
-@@ -717,6 +717,21 @@ __FBSDID("$FreeBSD$");
+@@ -737,6 +737,21 @@ extern void getwintimeofday(struct timeval *tv);
  #define SCTP_NUMBER_OF_SECRETS	8	/* or 8 * 4 = 32 octets */
  #define SCTP_SECRET_SIZE	32	/* number of octets in a 256 bits */
  
@@ -33,7 +33,7 @@ index dca34cc..a0044ed 100644
  
  /*
   * SCTP upper layer notifications
-@@ -816,6 +831,10 @@ __FBSDID("$FreeBSD$");
+@@ -836,6 +851,10 @@ extern void getwintimeofday(struct timeval *tv);
  #define SCTP_LOC_33 0x00000021
  #define SCTP_LOC_34 0x00000022
  #define SCTP_LOC_35 0x00000023
@@ -44,11 +44,11 @@ index dca34cc..a0044ed 100644
  
  
  /* Free assoc codes */
-diff --git a/sys/netinet/sctp_header.h b/sys/netinet/sctp_header.h
-index b650d93..9b20729 100644
---- a/sys/netinet/sctp_header.h
-+++ b/sys/netinet/sctp_header.h
-@@ -92,7 +92,8 @@ struct sctp_heartbeat_info_param {
+diff --git a/netinet/sctp_header.h b/netinet/sctp_header.h
+index 20031e9..4cd6654 100755
+--- a/netinet/sctp_header.h
++++ b/netinet/sctp_header.h
+@@ -104,7 +104,8 @@ struct sctp_heartbeat_info_param {
  	uint8_t addr_family;
  	uint8_t addr_len;
  	/* make sure that this structure is 4 byte aligned */
@@ -56,36 +56,41 @@ index b650d93..9b20729 100644
 +	/* uint8_t padding[2]; */
 +	uint16_t probe_mtu;
  	char address[SCTP_ADDRMAX];
- }                         SCTP_PACKED;
+ } SCTP_PACKED;
  
-@@ -316,6 +317,12 @@ struct sctp_shutdown_ack_chunk {
+@@ -335,6 +336,11 @@ struct sctp_shutdown_ack_chunk {
  	struct sctp_chunkhdr ch;
- }                       SCTP_PACKED;
+ } SCTP_PACKED;
  
 +/* Padding Chunk (PAD) */
 +struct sctp_pad_chunk {
 +	struct sctp_chunkhdr ch;
 +	uint8_t padding_data;
-+}		SCTP_PACKED;
-+
++} SCTP_PACKED;
  
  /* Operation Error (ERROR) */
  struct sctp_error_chunk {
-diff --git a/sys/netinet/sctp_input.c b/sys/netinet/sctp_input.c
-index 07d4e85..bed29b2 100644
---- a/sys/netinet/sctp_input.c
-+++ b/sys/netinet/sctp_input.c
-@@ -608,7 +608,7 @@ sctp_handle_heartbeat_ack(struct sctp_heartbeat_chunk *cp,
- 	    (r_net->heartbeat_random1 == cp->heartbeat.hb_info.random_value1) &&
- 	    (r_net->heartbeat_random2 == cp->heartbeat.hb_info.random_value2)) {
- 		/*
--		 * If the its a HB and it's random value is correct when can
-+		 * If it's a HB and its random value is correct we can
- 		 * confirm the destination.
- 		 */
- 		r_net->dest_state &= ~SCTP_ADDR_UNCONFIRMED;
-@@ -689,6 +689,105 @@ sctp_handle_heartbeat_ack(struct sctp_heartbeat_chunk *cp,
- 			    stcb->asoc.deleted_primary);
+@@ -485,10 +491,10 @@ struct sctp_stream_reset_response_tsn {
+ } SCTP_PACKED;
+ 
+ struct sctp_stream_reset_add_strm {
+-  struct sctp_paramhdr ph;
+-  uint32_t request_seq;
+-  uint16_t number_of_streams;
+-  uint16_t reserved;
++	struct sctp_paramhdr ph;
++	uint32_t request_seq;
++	uint16_t number_of_streams;
++	uint16_t reserved;
+ } SCTP_PACKED;
+ 
+ #define SCTP_STREAM_RESET_RESULT_NOTHING_TO_DO   0x00000000 /* XXX: unused */
+diff --git a/netinet/sctp_input.c b/netinet/sctp_input.c
+index 0649ec2..9cc418f 100755
+--- a/netinet/sctp_input.c
++++ b/netinet/sctp_input.c
+@@ -766,6 +766,105 @@ sctp_handle_heartbeat_ack(struct sctp_heartbeat_chunk *cp,
+ 					stcb->asoc.deleted_primary);
  		}
  	}
 +	if (stcb->sctp_ep->plpmtud_supported) {
@@ -118,11 +123,11 @@ index 07d4e85..bed29b2 100644
 +				break;
 +			case SCTP_PROBE_BASE:
 +				r_net->probed_mtu = r_net->probe_mtu;
-+				r_net->mtu = r_net->probe_mtu;
 +				if (r_net->probed_mtu == r_net->max_mtu) {
 +					sctp_pathmtu_adjustment(stcb, r_net->mtu);
 +					r_net->mtu_probing = 0;
 +					r_net->probing_state = SCTP_PROBE_DONE;
++					r_net->mtu = r_net->max_mtu;
 +					sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT, stcb->sctp_ep, stcb, r_net, SCTP_FROM_SCTP_INPUT + SCTP_LOC_7);
 +					sctp_timer_start(SCTP_TIMER_TYPE_HEARTBEAT, stcb->sctp_ep, stcb, r_net);
 +					if (SCTP_OS_TIMER_PENDING(&r_net->pmtu_timer.timer)) {
@@ -144,8 +149,8 @@ index 07d4e85..bed29b2 100644
 +				break;
 +			case SCTP_PROBE_SEARCH_UP:
 +				r_net->probed_mtu = r_net->probe_mtu;
-+				r_net->mtu = r_net->probe_mtu;
 +				if (r_net->probed_mtu == r_net->max_mtu) {
++					r_net->mtu = r_net->max_mtu;
 +					sctp_pathmtu_adjustment(stcb, r_net->mtu);
 +					r_net->mtu_probing = 0;
 +					r_net->probing_state = SCTP_PROBE_DONE;
@@ -158,7 +163,7 @@ index 07d4e85..bed29b2 100644
 +					sctp_timer_start(SCTP_TIMER_TYPE_PATHMTURAISE, stcb->sctp_ep, stcb, r_net);
 +					break;
 +				}
-+				uint32_t next_mtu = sctp_get_next_mtu(net->mtu);
++				uint32_t next_mtu = sctp_get_next_mtu(r_net->probed_mtu);
 +
 +				if (next_mtu > r_net->probe_mtu)
 +					r_net->probe_mtu = next_mtu;
@@ -190,25 +195,25 @@ index 07d4e85..bed29b2 100644
  }
  
  static int
-@@ -796,7 +895,7 @@ sctp_handle_abort(struct sctp_abort_chunk *abort,
+@@ -866,7 +965,7 @@ sctp_handle_abort(struct sctp_abort_chunk *abort,
  	}
  	/* stop any receive timers */
  	sctp_timer_stop(SCTP_TIMER_TYPE_RECV, stcb->sctp_ep, stcb, net,
--	    SCTP_FROM_SCTP_INPUT + SCTP_LOC_7);
-+	    SCTP_FROM_SCTP_INPUT + SCTP_LOC_13);
+-	                SCTP_FROM_SCTP_INPUT + SCTP_LOC_7);
++	                SCTP_FROM_SCTP_INPUT + SCTP_LOC_13);
  	/* notify user of the abort and clean up... */
  	sctp_abort_notification(stcb, 1, error, abort, SCTP_SO_NOT_LOCKED);
  	/* free the tcb */
-@@ -818,7 +917,7 @@ sctp_handle_abort(struct sctp_abort_chunk *abort,
+@@ -888,7 +987,7 @@ sctp_handle_abort(struct sctp_abort_chunk *abort,
  #endif
  	stcb->asoc.state |= SCTP_STATE_WAS_ABORTED;
  	(void)sctp_free_assoc(stcb->sctp_ep, stcb, SCTP_NORMAL_PROC,
--	    SCTP_FROM_SCTP_INPUT + SCTP_LOC_8);
-+	    SCTP_FROM_SCTP_INPUT + SCTP_LOC_14);
+-			      SCTP_FROM_SCTP_INPUT + SCTP_LOC_8);
++			      SCTP_FROM_SCTP_INPUT + SCTP_LOC_14);
  #if defined(__APPLE__) || defined(SCTP_SO_LOCK_TESTING)
  	SCTP_SOCKET_UNLOCK(so, 1);
  #endif
-@@ -842,8 +941,28 @@ sctp_start_net_timers(struct sctp_tcb *stcb)
+@@ -914,8 +1013,28 @@ sctp_start_net_timers(struct sctp_tcb *stcb)
  		sctp_timer_start(SCTP_TIMER_TYPE_HEARTBEAT, stcb->sctp_ep, stcb, net);
  		if ((net->dest_state & SCTP_ADDR_UNCONFIRMED) &&
  		    (cnt_hb_sent < SCTP_BASE_SYSCTL(sctp_hb_maxburst))) {
@@ -237,131 +242,131 @@ index 07d4e85..bed29b2 100644
  		}
  	}
  	if (cnt_hb_sent) {
-@@ -955,7 +1074,7 @@ sctp_handle_shutdown(struct sctp_shutdown_chunk *cp,
+@@ -1024,7 +1143,7 @@ sctp_handle_shutdown(struct sctp_shutdown_chunk *cp,
  		 * SHUTDOWN-ACK-SENT.
  		 */
  		sctp_timer_stop(SCTP_TIMER_TYPE_SHUTDOWN, stcb->sctp_ep, stcb,
--		    net, SCTP_FROM_SCTP_INPUT + SCTP_LOC_9);
-+		    net, SCTP_FROM_SCTP_INPUT + SCTP_LOC_15);
+-		                net, SCTP_FROM_SCTP_INPUT + SCTP_LOC_9);
++		                net, SCTP_FROM_SCTP_INPUT + SCTP_LOC_15);
  	}
  	/* Now is there unsent data on a stream somewhere? */
  	some_on_streamwheel = sctp_is_there_unsent_data(stcb, SCTP_SO_NOT_LOCKED);
-@@ -1052,7 +1171,7 @@ sctp_handle_shutdown_ack(struct sctp_shutdown_ack_chunk *cp SCTP_UNUSED,
+@@ -1121,7 +1240,7 @@ sctp_handle_shutdown_ack(struct sctp_shutdown_ack_chunk *cp SCTP_UNUSED,
  #endif
  	/* stop the timer */
  	sctp_timer_stop(SCTP_TIMER_TYPE_SHUTDOWN, stcb->sctp_ep, stcb, net,
--	    SCTP_FROM_SCTP_INPUT + SCTP_LOC_10);
-+	    SCTP_FROM_SCTP_INPUT + SCTP_LOC_16);
+-	                SCTP_FROM_SCTP_INPUT + SCTP_LOC_10);
++	                SCTP_FROM_SCTP_INPUT + SCTP_LOC_16);
  	/* send SHUTDOWN-COMPLETE */
  	sctp_send_shutdown_complete(stcb, net, 0);
  	/* notify upper layer protocol */
-@@ -1073,7 +1192,7 @@ sctp_handle_shutdown_ack(struct sctp_shutdown_ack_chunk *cp SCTP_UNUSED,
+@@ -1142,7 +1261,7 @@ sctp_handle_shutdown_ack(struct sctp_shutdown_ack_chunk *cp SCTP_UNUSED,
  	atomic_subtract_int(&stcb->asoc.refcnt, 1);
  #endif
  	(void)sctp_free_assoc(stcb->sctp_ep, stcb, SCTP_NORMAL_PROC,
--	    SCTP_FROM_SCTP_INPUT + SCTP_LOC_11);
-+	    SCTP_FROM_SCTP_INPUT + SCTP_LOC_17);
+-			      SCTP_FROM_SCTP_INPUT + SCTP_LOC_11);
++			      SCTP_FROM_SCTP_INPUT + SCTP_LOC_17);
  #if defined(__APPLE__) || defined(SCTP_SO_LOCK_TESTING)
  	SCTP_SOCKET_UNLOCK(so, 1);
  #endif
-@@ -1232,7 +1351,7 @@ sctp_handle_error(struct sctp_chunkhdr *ch,
+@@ -1301,7 +1420,7 @@ sctp_handle_error(struct sctp_chunkhdr *ch,
  					atomic_subtract_int(&stcb->asoc.refcnt, 1);
  #endif
  					(void)sctp_free_assoc(stcb->sctp_ep, stcb, SCTP_NORMAL_PROC,
--					    SCTP_FROM_SCTP_INPUT + SCTP_LOC_12);
-+					    SCTP_FROM_SCTP_INPUT + SCTP_LOC_18);
+-							      SCTP_FROM_SCTP_INPUT + SCTP_LOC_12);
++							      SCTP_FROM_SCTP_INPUT + SCTP_LOC_18);
  #if defined(__APPLE__) || defined(SCTP_SO_LOCK_TESTING)
  					SCTP_SOCKET_UNLOCK(so, 1);
  #endif
-@@ -1584,10 +1703,10 @@ sctp_process_cookie_existing(struct mbuf *m, int iphlen, int offset,
- 			/* we have already processed the INIT so no problem */
- 			sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT, inp,
- 			    stcb, net,
--			    SCTP_FROM_SCTP_INPUT + SCTP_LOC_13);
-+			    SCTP_FROM_SCTP_INPUT + SCTP_LOC_19);
- 			sctp_timer_stop(SCTP_TIMER_TYPE_INIT, inp,
- 			    stcb, net,
--			    SCTP_FROM_SCTP_INPUT + SCTP_LOC_14);
-+			    SCTP_FROM_SCTP_INPUT + SCTP_LOC_20);
- 			/* update current state */
- 			if (SCTP_GET_STATE(asoc) == SCTP_STATE_COOKIE_ECHOED)
- 				SCTP_STAT_INCR_COUNTER32(sctps_activeestab);
-@@ -1746,7 +1865,7 @@ sctp_process_cookie_existing(struct mbuf *m, int iphlen, int offset,
+@@ -1673,10 +1792,10 @@ sctp_process_cookie_existing(struct mbuf *m, int iphlen, int offset,
+ 				/* we have already processed the INIT so no problem */
+ 				sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT, inp,
+ 				                stcb, net,
+-				                SCTP_FROM_SCTP_INPUT + SCTP_LOC_13);
++				                SCTP_FROM_SCTP_INPUT + SCTP_LOC_19);
+ 				sctp_timer_stop(SCTP_TIMER_TYPE_INIT, inp,
+ 				                stcb, net,
+-				                SCTP_FROM_SCTP_INPUT + SCTP_LOC_14);
++				                SCTP_FROM_SCTP_INPUT + SCTP_LOC_20);
+ 				/* update current state */
+ 				if (SCTP_GET_STATE(asoc) == SCTP_STATE_COOKIE_ECHOED)
+ 					SCTP_STAT_INCR_COUNTER32(sctps_activeestab);
+@@ -1835,7 +1954,7 @@ sctp_process_cookie_existing(struct mbuf *m, int iphlen, int offset,
  		if (how_indx < sizeof(asoc->cookie_how))
  			asoc->cookie_how[how_indx] = 8;
  		sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT, inp, stcb, net,
--		    SCTP_FROM_SCTP_INPUT + SCTP_LOC_15);
-+		    SCTP_FROM_SCTP_INPUT + SCTP_LOC_21);
+-		                SCTP_FROM_SCTP_INPUT + SCTP_LOC_15);
++		                SCTP_FROM_SCTP_INPUT + SCTP_LOC_21);
  		sctp_stop_all_cookie_timers(stcb);
  		/*
  		 * since we did not send a HB make sure we don't double
-@@ -1889,9 +2008,9 @@ sctp_process_cookie_existing(struct mbuf *m, int iphlen, int offset,
+@@ -1977,9 +2096,9 @@ sctp_process_cookie_existing(struct mbuf *m, int iphlen, int offset,
  		if (how_indx < sizeof(asoc->cookie_how))
  			asoc->cookie_how[how_indx] = 12;
  		sctp_timer_stop(SCTP_TIMER_TYPE_INIT, inp, stcb, net,
--		    SCTP_FROM_SCTP_INPUT + SCTP_LOC_16);
-+		    SCTP_FROM_SCTP_INPUT + SCTP_LOC_22);
+-		                SCTP_FROM_SCTP_INPUT + SCTP_LOC_16);
++		                SCTP_FROM_SCTP_INPUT + SCTP_LOC_22);
  		sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT, inp, stcb, net,
--		    SCTP_FROM_SCTP_INPUT + SCTP_LOC_17);
-+		    SCTP_FROM_SCTP_INPUT + SCTP_LOC_23);
+-		                SCTP_FROM_SCTP_INPUT + SCTP_LOC_17);
++		                SCTP_FROM_SCTP_INPUT + SCTP_LOC_23);
  
  		/* notify upper layer */
  		*notification = SCTP_NOTIFY_ASSOC_RESTART;
-@@ -2162,7 +2281,7 @@ sctp_process_cookie_new(struct mbuf *m, int iphlen, int offset,
+@@ -2268,7 +2387,7 @@ sctp_process_cookie_new(struct mbuf *m, int iphlen, int offset,
  		atomic_subtract_int(&stcb->asoc.refcnt, 1);
  #endif
  		(void)sctp_free_assoc(inp, stcb, SCTP_NORMAL_PROC,
--		    SCTP_FROM_SCTP_INPUT + SCTP_LOC_18);
-+		    SCTP_FROM_SCTP_INPUT + SCTP_LOC_24);
+-				      SCTP_FROM_SCTP_INPUT + SCTP_LOC_18);
++				      SCTP_FROM_SCTP_INPUT + SCTP_LOC_24);
  #if defined(__APPLE__) || defined(SCTP_SO_LOCK_TESTING)
  		SCTP_SOCKET_UNLOCK(so, 1);
  #endif
-@@ -2194,7 +2313,7 @@ sctp_process_cookie_new(struct mbuf *m, int iphlen, int offset,
+@@ -2300,7 +2419,7 @@ sctp_process_cookie_new(struct mbuf *m, int iphlen, int offset,
  		atomic_subtract_int(&stcb->asoc.refcnt, 1);
  #endif
  		(void)sctp_free_assoc(inp, stcb, SCTP_NORMAL_PROC,
--		    SCTP_FROM_SCTP_INPUT + SCTP_LOC_19);
-+		    SCTP_FROM_SCTP_INPUT + SCTP_LOC_25);
+-		                      SCTP_FROM_SCTP_INPUT + SCTP_LOC_19);
++		                      SCTP_FROM_SCTP_INPUT + SCTP_LOC_25);
  #if defined(__APPLE__) || defined(SCTP_SO_LOCK_TESTING)
  		SCTP_SOCKET_UNLOCK(so, 1);
  #endif
-@@ -2212,7 +2331,7 @@ sctp_process_cookie_new(struct mbuf *m, int iphlen, int offset,
+@@ -2318,7 +2437,7 @@ sctp_process_cookie_new(struct mbuf *m, int iphlen, int offset,
  		atomic_subtract_int(&stcb->asoc.refcnt, 1);
  #endif
  		(void)sctp_free_assoc(inp, stcb, SCTP_NORMAL_PROC,
--		    SCTP_FROM_SCTP_INPUT + SCTP_LOC_20);
-+		    SCTP_FROM_SCTP_INPUT + SCTP_LOC_26);
+-		                      SCTP_FROM_SCTP_INPUT + SCTP_LOC_20);
++		                      SCTP_FROM_SCTP_INPUT + SCTP_LOC_26);
  #if defined(__APPLE__) || defined(SCTP_SO_LOCK_TESTING)
  		SCTP_SOCKET_UNLOCK(so, 1);
  #endif
-@@ -2242,7 +2361,7 @@ sctp_process_cookie_new(struct mbuf *m, int iphlen, int offset,
+@@ -2348,7 +2467,7 @@ sctp_process_cookie_new(struct mbuf *m, int iphlen, int offset,
  			atomic_subtract_int(&stcb->asoc.refcnt, 1);
  #endif
  			(void)sctp_free_assoc(inp, stcb, SCTP_NORMAL_PROC,
--			    SCTP_FROM_SCTP_INPUT + SCTP_LOC_21);
-+			    SCTP_FROM_SCTP_INPUT + SCTP_LOC_27);
+-			                      SCTP_FROM_SCTP_INPUT + SCTP_LOC_21);
++			                      SCTP_FROM_SCTP_INPUT + SCTP_LOC_27);
  #if defined(__APPLE__) || defined(SCTP_SO_LOCK_TESTING)
  			SCTP_SOCKET_UNLOCK(so, 1);
  #endif
-@@ -2292,7 +2411,7 @@ sctp_process_cookie_new(struct mbuf *m, int iphlen, int offset,
+@@ -2414,7 +2533,7 @@ sctp_process_cookie_new(struct mbuf *m, int iphlen, int offset,
  		atomic_subtract_int(&stcb->asoc.refcnt, 1);
  #endif
  		(void)sctp_free_assoc(inp, stcb, SCTP_NORMAL_PROC,
--		    SCTP_FROM_SCTP_INPUT + SCTP_LOC_22);
-+		    SCTP_FROM_SCTP_INPUT + SCTP_LOC_28);
+-		                      SCTP_FROM_SCTP_INPUT + SCTP_LOC_22);
++		                      SCTP_FROM_SCTP_INPUT + SCTP_LOC_28);
  #if defined(__APPLE__) || defined(SCTP_SO_LOCK_TESTING)
  		SCTP_SOCKET_UNLOCK(so, 1);
  #endif
-@@ -2769,7 +2888,7 @@ sctp_handle_cookie_echo(struct mbuf *m, int iphlen, int offset,
+@@ -2950,7 +3069,7 @@ sctp_handle_cookie_echo(struct mbuf *m, int iphlen, int offset,
  				atomic_subtract_int(&(*stcb)->asoc.refcnt, 1);
  #endif
  				(void)sctp_free_assoc(*inp_p, *stcb, SCTP_NORMAL_PROC,
--				    SCTP_FROM_SCTP_INPUT + SCTP_LOC_23);
-+				    SCTP_FROM_SCTP_INPUT + SCTP_LOC_29);
+-				                      SCTP_FROM_SCTP_INPUT + SCTP_LOC_23);
++				                      SCTP_FROM_SCTP_INPUT + SCTP_LOC_29);
  #if defined(__APPLE__) || defined(SCTP_SO_LOCK_TESTING)
  				SCTP_SOCKET_UNLOCK(pcb_so, 1);
  #endif
-@@ -2801,6 +2920,7 @@ sctp_handle_cookie_echo(struct mbuf *m, int iphlen, int offset,
+@@ -2982,6 +3101,7 @@ sctp_handle_cookie_echo(struct mbuf *m, int iphlen, int offset,
  			inp->reconfig_supported = (*inp_p)->reconfig_supported;
  			inp->nrsack_supported = (*inp_p)->nrsack_supported;
  			inp->pktdrop_supported = (*inp_p)->pktdrop_supported;
@@ -369,83 +374,83 @@ index 07d4e85..bed29b2 100644
  			inp->partial_delivery_point = (*inp_p)->partial_delivery_point;
  			inp->sctp_context = (*inp_p)->sctp_context;
  			inp->local_strreset_support = (*inp_p)->local_strreset_support;
-@@ -3201,7 +3321,7 @@ sctp_handle_shutdown_complete(struct sctp_shutdown_complete_chunk *cp SCTP_UNUSE
+@@ -3384,7 +3504,7 @@ sctp_handle_shutdown_complete(struct sctp_shutdown_complete_chunk *cp SCTP_UNUSE
  #endif
  	/* stop the timer */
  	sctp_timer_stop(SCTP_TIMER_TYPE_SHUTDOWNACK, stcb->sctp_ep, stcb, net,
--	    SCTP_FROM_SCTP_INPUT + SCTP_LOC_24);
-+	    SCTP_FROM_SCTP_INPUT + SCTP_LOC_30);
+-	                SCTP_FROM_SCTP_INPUT + SCTP_LOC_24);
++	                SCTP_FROM_SCTP_INPUT + SCTP_LOC_30);
  	SCTP_STAT_INCR_COUNTER32(sctps_shutdown);
  	/* free the TCB */
  	SCTPDBG(SCTP_DEBUG_INPUT2,
-@@ -3215,7 +3335,7 @@ sctp_handle_shutdown_complete(struct sctp_shutdown_complete_chunk *cp SCTP_UNUSE
+@@ -3398,7 +3518,7 @@ sctp_handle_shutdown_complete(struct sctp_shutdown_complete_chunk *cp SCTP_UNUSE
  	atomic_subtract_int(&stcb->asoc.refcnt, 1);
  #endif
  	(void)sctp_free_assoc(stcb->sctp_ep, stcb, SCTP_NORMAL_PROC,
--	    SCTP_FROM_SCTP_INPUT + SCTP_LOC_25);
-+	    SCTP_FROM_SCTP_INPUT + SCTP_LOC_31);
+-	                      SCTP_FROM_SCTP_INPUT + SCTP_LOC_25);
++	                      SCTP_FROM_SCTP_INPUT + SCTP_LOC_31);
  #if defined(__APPLE__) || defined(SCTP_SO_LOCK_TESTING)
  	SCTP_SOCKET_UNLOCK(so, 1);
  #endif
-@@ -3324,7 +3444,7 @@ process_chunk_drop(struct sctp_tcb *stcb, struct sctp_chunk_desc *desc,
- 				/* restart the timer */
- 				sctp_timer_stop(SCTP_TIMER_TYPE_SEND, stcb->sctp_ep,
- 				    stcb, tp1->whoTo,
--				    SCTP_FROM_SCTP_INPUT + SCTP_LOC_26);
-+				    SCTP_FROM_SCTP_INPUT + SCTP_LOC_32);
- 				sctp_timer_start(SCTP_TIMER_TYPE_SEND, stcb->sctp_ep,
- 				    stcb, tp1->whoTo);
+@@ -3507,7 +3627,7 @@ process_chunk_drop(struct sctp_tcb *stcb, struct sctp_chunk_desc *desc,
+ 			/* restart the timer */
+ 			sctp_timer_stop(SCTP_TIMER_TYPE_SEND, stcb->sctp_ep,
+ 					stcb, tp1->whoTo,
+-			                SCTP_FROM_SCTP_INPUT + SCTP_LOC_26);
++			                SCTP_FROM_SCTP_INPUT + SCTP_LOC_32);
+ 			sctp_timer_start(SCTP_TIMER_TYPE_SEND, stcb->sctp_ep,
+ 					 stcb, tp1->whoTo);
  
-@@ -3393,7 +3513,7 @@ process_chunk_drop(struct sctp_tcb *stcb, struct sctp_chunk_desc *desc,
+@@ -3576,7 +3696,7 @@ process_chunk_drop(struct sctp_tcb *stcb, struct sctp_chunk_desc *desc,
  			 */
  			sctp_timer_stop(SCTP_TIMER_TYPE_INIT, stcb->sctp_ep,
- 			    stcb, net,
--			    SCTP_FROM_SCTP_INPUT + SCTP_LOC_27);
-+			    SCTP_FROM_SCTP_INPUT + SCTP_LOC_33);
+ 					stcb, net,
+-			                SCTP_FROM_SCTP_INPUT + SCTP_LOC_27);
++			                SCTP_FROM_SCTP_INPUT + SCTP_LOC_33);
  			sctp_send_initiate(stcb->sctp_ep, stcb, SCTP_SO_NOT_LOCKED);
  		}
  		break;
-@@ -3596,7 +3716,7 @@ sctp_clean_up_stream_reset(struct sctp_tcb *stcb)
+@@ -3776,7 +3896,7 @@ sctp_clean_up_stream_reset(struct sctp_tcb *stcb)
  	asoc = &stcb->asoc;
  
  	sctp_timer_stop(SCTP_TIMER_TYPE_STRRESET, stcb->sctp_ep, stcb,
--	    chk->whoTo, SCTP_FROM_SCTP_INPUT + SCTP_LOC_28);
-+	    chk->whoTo, SCTP_FROM_SCTP_INPUT + SCTP_LOC_34);
+-	                chk->whoTo, SCTP_FROM_SCTP_INPUT + SCTP_LOC_28);
++	                chk->whoTo, SCTP_FROM_SCTP_INPUT + SCTP_LOC_34);
  	TAILQ_REMOVE(&asoc->control_send_queue,
  	    chk,
  	    sctp_next);
-@@ -4880,7 +5000,7 @@ process_control_chunks:
+@@ -5072,7 +5192,7 @@ sctp_process_control(struct mbuf *m, int iphlen, int *offset, int length,
  						atomic_subtract_int(&stcb->asoc.refcnt, 1);
  #endif
  						(void)sctp_free_assoc(inp, stcb, SCTP_NORMAL_PROC,
--						    SCTP_FROM_SCTP_INPUT + SCTP_LOC_29);
-+						    SCTP_FROM_SCTP_INPUT + SCTP_LOC_35);
+-						                      SCTP_FROM_SCTP_INPUT + SCTP_LOC_29);
++						                      SCTP_FROM_SCTP_INPUT + SCTP_LOC_35);
  #if defined(__APPLE__) || defined(SCTP_SO_LOCK_TESTING)
  						SCTP_SOCKET_UNLOCK(so, 1);
  #endif
-@@ -5313,7 +5433,7 @@ process_control_chunks:
+@@ -5508,7 +5628,7 @@ sctp_process_control(struct mbuf *m, int iphlen, int *offset, int length,
  					atomic_subtract_int(&stcb->asoc.refcnt, 1);
  #endif
  					(void)sctp_free_assoc(inp, stcb, SCTP_NORMAL_PROC,
--					    SCTP_FROM_SCTP_INPUT + SCTP_LOC_30);
-+					    SCTP_FROM_SCTP_INPUT + SCTP_LOC_36);
+-					                      SCTP_FROM_SCTP_INPUT + SCTP_LOC_30);
++					                      SCTP_FROM_SCTP_INPUT + SCTP_LOC_36);
  #if defined(__APPLE__) || defined(SCTP_SO_LOCK_TESTING)
  					SCTP_SOCKET_UNLOCK(so, 1);
  #endif
-@@ -5493,7 +5613,7 @@ process_control_chunks:
+@@ -5689,7 +5809,7 @@ sctp_process_control(struct mbuf *m, int iphlen, int *offset, int length,
  					atomic_subtract_int(&stcb->asoc.refcnt, 1);
  #endif
  					(void)sctp_free_assoc(inp, stcb, SCTP_NORMAL_PROC,
--					    SCTP_FROM_SCTP_INPUT + SCTP_LOC_31);
-+					    SCTP_FROM_SCTP_INPUT + SCTP_LOC_37);
+-					                      SCTP_FROM_SCTP_INPUT + SCTP_LOC_31);
++					                      SCTP_FROM_SCTP_INPUT + SCTP_LOC_37);
  #if defined(__APPLE__) || defined(SCTP_SO_LOCK_TESTING)
  					SCTP_SOCKET_UNLOCK(so, 1);
  #endif
-diff --git a/sys/netinet/sctp_output.c b/sys/netinet/sctp_output.c
-index 2baaef8..2f604b3 100644
---- a/sys/netinet/sctp_output.c
-+++ b/sys/netinet/sctp_output.c
-@@ -7055,6 +7055,7 @@ sctp_clean_up_ctl(struct sctp_tcb *stcb, struct sctp_association *asoc, int so_l
+diff --git a/netinet/sctp_output.c b/netinet/sctp_output.c
+index 90b0bf3..cd6ce2a 100755
+--- a/netinet/sctp_output.c
++++ b/netinet/sctp_output.c
+@@ -7552,6 +7552,7 @@ sctp_clean_up_ctl(struct sctp_tcb *stcb, struct sctp_association *asoc, int so_l
  		    (chk->rec.chunk_id.id == SCTP_NR_SELECTIVE_ACK) ||	/* EY */
  		    (chk->rec.chunk_id.id == SCTP_HEARTBEAT_REQUEST) ||
  		    (chk->rec.chunk_id.id == SCTP_HEARTBEAT_ACK) ||
@@ -453,7 +458,7 @@ index 2baaef8..2f604b3 100644
  		    (chk->rec.chunk_id.id == SCTP_FORWARD_CUM_TSN) ||
  		    (chk->rec.chunk_id.id == SCTP_SHUTDOWN) ||
  		    (chk->rec.chunk_id.id == SCTP_SHUTDOWN_ACK) ||
-@@ -8370,6 +8371,12 @@ again_one_more_time:
+@@ -8874,6 +8875,12 @@ again_one_more_time:
  				}
  				SCTP_STAT_INCR_COUNTER64(sctps_outcontrolchunks);
  				/* update our MTU size */
@@ -466,15 +471,33 @@ index 2baaef8..2f604b3 100644
  				if (mtu > (chk->send_size + omtu))
  					mtu -= (chk->send_size + omtu);
  				else
-@@ -8386,6 +8393,7 @@ again_one_more_time:
- 				    (chk->rec.chunk_id.id == SCTP_NR_SELECTIVE_ACK) ||	/* EY */
+@@ -8890,6 +8897,7 @@ again_one_more_time:
+ 				    (chk->rec.chunk_id.id == SCTP_NR_SELECTIVE_ACK) || /* EY */
  				    (chk->rec.chunk_id.id == SCTP_HEARTBEAT_REQUEST) ||
  				    (chk->rec.chunk_id.id == SCTP_HEARTBEAT_ACK) ||
 +				    (chk->rec.chunk_id.id == SCTP_PAD_CHUNK) ||
  				    (chk->rec.chunk_id.id == SCTP_SHUTDOWN) ||
  				    (chk->rec.chunk_id.id == SCTP_SHUTDOWN_ACK) ||
  				    (chk->rec.chunk_id.id == SCTP_OPERATION_ERROR) ||
-@@ -11403,6 +11411,11 @@ sctp_send_hb(struct sctp_tcb *stcb, struct sctp_nets *net, int so_locked
+@@ -10700,7 +10708,7 @@ do_it_again:
+ 			 */
+ 			un_sent = stcb->asoc.total_output_queue_size - stcb->asoc.total_flight;
+ 			if ((un_sent < (int)(stcb->asoc.smallest_mtu - SCTP_MIN_OVERHEAD)) &&
+-			    (stcb->asoc.total_flight > 0)) { 
++			    (stcb->asoc.total_flight > 0)) {
+ /*	&&		     sctp_is_feature_on(inp, SCTP_PCB_FLAGS_EXPLICIT_EOR))) {*/
+ 				break;
+ 			}
+@@ -10837,7 +10845,7 @@ send_forward_tsn(struct sctp_tcb *stcb,
+ 	}
+ 	asoc->fwd_tsn_cnt++;
+ 	chk->copy_by_ref = 0;
+-	/* 
++	/*
+ 	 * We don't do the old thing here since
+ 	 * this is used not for on-wire but to
+ 	 * tell if we are sending a fwd-tsn by
+@@ -12145,6 +12153,11 @@ sctp_send_hb(struct sctp_tcb *stcb, struct sctp_nets *net,int so_locked
  		return;
  		break;
  	}
@@ -486,7 +509,7 @@ index 2baaef8..2f604b3 100644
  	net->hb_responded = 0;
  	TAILQ_INSERT_TAIL(&stcb->asoc.control_send_queue, chk, sctp_next);
  	stcb->asoc.ctrl_queue_cnt++;
-@@ -11410,6 +11423,56 @@ sctp_send_hb(struct sctp_tcb *stcb, struct sctp_nets *net, int so_locked
+@@ -12152,6 +12165,56 @@ sctp_send_hb(struct sctp_tcb *stcb, struct sctp_nets *net,int so_locked
  	return;
  }
  
@@ -542,46 +565,12 @@ index 2baaef8..2f604b3 100644
 +
  void
  sctp_send_ecn_echo(struct sctp_tcb *stcb, struct sctp_nets *net,
-     uint32_t high_tsn)
-diff --git a/sys/netinet/sctp_output.h b/sys/netinet/sctp_output.h
-index 32f968c..3152046 100644
---- a/sys/netinet/sctp_output.h
-+++ b/sys/netinet/sctp_output.h
-@@ -72,7 +72,7 @@ int
- int
-     sctp_v4src_match_nexthop(struct sctp_ifa *sifa, sctp_route_t *ro);
- 
--void 
-+void
- sctp_send_initiate(struct sctp_inpcb *, struct sctp_tcb *, int
- #if !defined(__APPLE__) && !defined(SCTP_SO_LOCK_TESTING)
-     SCTP_UNUSED
-@@ -115,7 +115,7 @@ void sctp_send_shutdown_ack(struct sctp_tcb *, struct sctp_nets *);
- 
- void sctp_send_shutdown_complete(struct sctp_tcb *, struct sctp_nets *, int);
- 
--void 
-+void
- sctp_send_shutdown_complete2(struct sockaddr *, struct sockaddr *,
-     struct sctphdr *,
-     uint8_t, uint32_t, uint16_t,
-@@ -144,13 +144,13 @@ int
- sctp_output(struct sctp_inpcb *, struct mbuf *, struct sockaddr *,
-     struct mbuf *, struct thread *, int);
- 
--void 
-+void
- sctp_chunk_output(struct sctp_inpcb *, struct sctp_tcb *, int, int
- #if !defined(__APPLE__) && !defined(SCTP_SO_LOCK_TESTING)
-     SCTP_UNUSED
- #endif
- );
--void 
-+void
- sctp_send_abort_tcb(struct sctp_tcb *, struct mbuf *, int
- #if !defined(__APPLE__) && !defined(SCTP_SO_LOCK_TESTING)
-     SCTP_UNUSED
-@@ -163,6 +163,8 @@ void sctp_send_sack(struct sctp_tcb *, int);
+ 		   uint32_t high_tsn)
+diff --git a/netinet/sctp_output.h b/netinet/sctp_output.h
+index dfae447..8172f59 100755
+--- a/netinet/sctp_output.h
++++ b/netinet/sctp_output.h
+@@ -190,6 +190,8 @@ void sctp_send_sack(struct sctp_tcb *, int);
  
  void sctp_send_hb(struct sctp_tcb *, struct sctp_nets *, int);
  
@@ -590,28 +579,35 @@ index 32f968c..3152046 100644
  void sctp_send_ecn_echo(struct sctp_tcb *, struct sctp_nets *, uint32_t);
  
  
-@@ -199,7 +201,7 @@ sctp_send_abort(struct mbuf *, int, struct sockaddr *, struct sockaddr *,
-     uint8_t, uint32_t, uint16_t,
-     uint32_t, uint16_t);
- 
--void 
-+void
- sctp_send_operr_to(struct sockaddr *, struct sockaddr *,
-     struct sctphdr *, uint32_t, struct mbuf *,
-     uint8_t, uint32_t, uint16_t,
-diff --git a/sys/netinet/sctp_pcb.c b/sys/netinet/sctp_pcb.c
-index d9abbf9..df41d29 100644
---- a/sys/netinet/sctp_pcb.c
-+++ b/sys/netinet/sctp_pcb.c
-@@ -2458,6 +2458,7 @@ sctp_inpcb_alloc(struct socket *so, uint32_t vrf_id)
+diff --git a/netinet/sctp_pcb.c b/netinet/sctp_pcb.c
+index 9e9fca0..74e48d5 100755
+--- a/netinet/sctp_pcb.c
++++ b/netinet/sctp_pcb.c
+@@ -2832,6 +2832,7 @@ sctp_inpcb_alloc(struct socket *so, uint32_t vrf_id)
  	inp->reconfig_supported = (uint8_t)SCTP_BASE_SYSCTL(sctp_reconfig_enable);
  	inp->nrsack_supported = (uint8_t)SCTP_BASE_SYSCTL(sctp_nrsack_enable);
  	inp->pktdrop_supported = (uint8_t)SCTP_BASE_SYSCTL(sctp_pktdrop_enable);
 +	inp->plpmtud_supported = (uint8_t) SCTP_BASE_SYSCTL(sctp_plpmtud_enable);
  	inp->idata_supported = 0;
  
- 	inp->fibnum = so->so_fibnum;
-@@ -3896,6 +3897,11 @@ sctp_add_remote_addr(struct sctp_tcb *stcb, struct sockaddr *newaddr,
+ #if defined(__FreeBSD__)
+@@ -4146,13 +4147,14 @@ sctp_inpcb_free(struct sctp_inpcb *inp, int immediate, int from)
+ 		SCTP_INP_INFO_WUNLOCK();
+ 		return;
+ 	}
++
+ 	if (SCTP_INP_LOCK_CONTENDED(inp))
+ 		being_refed++;
+ 	if (SCTP_INP_READ_CONTENDED(inp))
+ 		being_refed++;
+ 	if (SCTP_ASOC_CREATE_LOCK_CONTENDED(inp))
+ 		being_refed++;
+-
++	
+ 	if ((inp->refcount) ||
+ 	    (being_refed) ||
+ 	    (inp->sctp_flags & SCTP_PCB_FLAGS_CLOSE_IP)) {
+@@ -4595,6 +4597,11 @@ sctp_add_remote_addr(struct sctp_tcb *stcb, struct sockaddr *newaddr,
  	net->RTO_measured = 0;
  	stcb->asoc.numnets++;
  	net->ref_count = 1;
@@ -623,10 +619,12 @@ index d9abbf9..df41d29 100644
  	net->cwr_window_tsn = net->last_cwr_tsn = stcb->asoc.sending_seq - 1;
  	net->port = port;
  	net->dscp = stcb->asoc.default_dscp;
-@@ -3962,7 +3968,15 @@ sctp_add_remote_addr(struct sctp_tcb *stcb, struct sockaddr *newaddr,
- 				 */
+@@ -4676,8 +4683,16 @@ sctp_add_remote_addr(struct sctp_tcb *stcb, struct sockaddr *newaddr,
+ 			if (rmtu == 0) {
+ 				/* Start things off to match mtu of interface please. */
  				SCTP_SET_MTU_OF_ROUTE(&net->ro._l_addr.sa,
- 				    net->ro.ro_rt, net->mtu);
+-				                      net->ro.ro_rt, net->mtu);
++				    net->ro.ro_rt, net->mtu);
 +			}  else {
 +				if (stcb->asoc.plpmtud_supported) {
 +					net->mtu = min(rmtu, SCTP_DEFAULT_MTU);
@@ -638,11 +636,14 @@ index d9abbf9..df41d29 100644
 +				net->max_mtu = max(net->mtu, rmtu);
  		}
  	}
- 	if (net->mtu == 0) {
-@@ -4090,6 +4104,29 @@ sctp_add_remote_addr(struct sctp_tcb *stcb, struct sockaddr *newaddr,
+ #endif
+@@ -4827,7 +4842,30 @@ sctp_add_remote_addr(struct sctp_tcb *stcb, struct sockaddr *newaddr,
+ 		TAILQ_REMOVE(&stcb->asoc.nets,
+ 			     stcb->asoc.primary_destination, sctp_next);
  		TAILQ_INSERT_HEAD(&stcb->asoc.nets,
- 		    stcb->asoc.primary_destination, sctp_next);
- 	}
+-				  stcb->asoc.primary_destination, sctp_next);
++			    stcb->asoc.primary_destination, sctp_next);
++	}
 +	if (stcb->asoc.plpmtud_supported) {
 +		net->probing_state = SCTP_PROBE_NONE;
 +		net->probe_mtu = 0;
@@ -665,15 +666,14 @@ index d9abbf9..df41d29 100644
 +		net->probe_counts = 0;
 +		sctp_send_a_probe(stcb->sctp_ep, stcb, net);
 +		}
-+	}
+ 	}
  	return (0);
  }
- 
-diff --git a/sys/netinet/sctp_pcb.h b/sys/netinet/sctp_pcb.h
-index 86fae1f..1003e11 100644
---- a/sys/netinet/sctp_pcb.h
-+++ b/sys/netinet/sctp_pcb.h
-@@ -414,6 +414,7 @@ struct sctp_inpcb {
+diff --git a/netinet/sctp_pcb.h b/netinet/sctp_pcb.h
+index b938625..911f286 100755
+--- a/netinet/sctp_pcb.h
++++ b/netinet/sctp_pcb.h
+@@ -501,6 +501,7 @@ struct sctp_inpcb {
  	uint8_t reconfig_supported;
  	uint8_t nrsack_supported;
  	uint8_t pktdrop_supported;
@@ -681,29 +681,11 @@ index 86fae1f..1003e11 100644
  	struct sctp_nonpad_sndrcvinfo def_send;
  	/*-
  	 * These three are here for the sosend_dgram
-@@ -525,7 +526,7 @@ void sctp_free_ifn(struct sctp_ifn *sctp_ifnp);
- void sctp_free_ifa(struct sctp_ifa *sctp_ifap);
- 
- 
--void 
-+void
- sctp_del_addr_from_vrf(uint32_t vrfid, struct sockaddr *addr,
-     uint32_t ifn_index, const char *if_name);
- 
-@@ -535,7 +536,7 @@ struct sctp_nets *sctp_findnet(struct sctp_tcb *, struct sockaddr *);
- 
- struct sctp_inpcb *sctp_pcb_findep(struct sockaddr *, int, int, uint32_t);
- 
--int 
-+int
- sctp_inpcb_bind(struct socket *, struct sockaddr *,
-     struct sctp_ifa *, struct thread *);
- 
-diff --git a/sys/netinet/sctp_peeloff.c b/sys/netinet/sctp_peeloff.c
-index b702476..ad6e4bd 100644
---- a/sys/netinet/sctp_peeloff.c
-+++ b/sys/netinet/sctp_peeloff.c
-@@ -125,6 +125,7 @@ sctp_do_peeloff(struct socket *head, struct socket *so, sctp_assoc_t assoc_id)
+diff --git a/netinet/sctp_peeloff.c b/netinet/sctp_peeloff.c
+index 7c55aa3..7962a12 100755
+--- a/netinet/sctp_peeloff.c
++++ b/netinet/sctp_peeloff.c
+@@ -132,6 +132,7 @@ sctp_do_peeloff(struct socket *head, struct socket *so, sctp_assoc_t assoc_id)
  	n_inp->reconfig_supported = inp->reconfig_supported;
  	n_inp->nrsack_supported = inp->nrsack_supported;
  	n_inp->pktdrop_supported = inp->pktdrop_supported;
@@ -711,14 +693,14 @@ index b702476..ad6e4bd 100644
  	n_inp->partial_delivery_point = inp->partial_delivery_point;
  	n_inp->sctp_context = inp->sctp_context;
  	n_inp->max_cwnd = inp->max_cwnd;
-diff --git a/sys/netinet/sctp_structs.h b/sys/netinet/sctp_structs.h
-index f737174..a7e1710 100644
---- a/sys/netinet/sctp_structs.h
-+++ b/sys/netinet/sctp_structs.h
-@@ -384,6 +384,12 @@ struct sctp_nets {
- 	uint8_t rto_needed;
+diff --git a/netinet/sctp_structs.h b/netinet/sctp_structs.h
+index b5f3ef2..b66b704 100755
+--- a/netinet/sctp_structs.h
++++ b/netinet/sctp_structs.h
+@@ -442,6 +442,12 @@ struct sctp_nets {
  	uint32_t flowid;
  	uint8_t flowtype;
+ #endif
 +	uint32_t probe_mtu; /* actual mtu probing size */
 +	uint32_t probed_mtu; /* mtu that has last been probed */
 +	uint32_t max_mtu;
@@ -728,7 +710,7 @@ index f737174..a7e1710 100644
  };
  
  
-@@ -1187,6 +1193,7 @@ struct sctp_association {
+@@ -1244,6 +1250,7 @@ struct sctp_association {
  	uint8_t reconfig_supported;
  	uint8_t nrsack_supported;
  	uint8_t pktdrop_supported;
@@ -736,39 +718,44 @@ index f737174..a7e1710 100644
  	uint8_t idata_supported;
  
  	/* Did the peer make the stream config (add out) request */
-diff --git a/sys/netinet/sctp_sysctl.c b/sys/netinet/sctp_sysctl.c
-index 50d9da6..81f2263 100644
---- a/sys/netinet/sctp_sysctl.c
-+++ b/sys/netinet/sctp_sysctl.c
-@@ -63,6 +63,7 @@ sctp_init_sysctls()
+diff --git a/netinet/sctp_sysctl.c b/netinet/sctp_sysctl.c
+index 1846475..4520a53 100755
+--- a/netinet/sctp_sysctl.c
++++ b/netinet/sctp_sysctl.c
+@@ -72,11 +72,7 @@ sctp_init_sysctls()
  	SCTP_BASE_SYSCTL(sctp_reconfig_enable) = SCTPCTL_RECONFIG_ENABLE_DEFAULT;
  	SCTP_BASE_SYSCTL(sctp_nrsack_enable) = SCTPCTL_NRSACK_ENABLE_DEFAULT;
  	SCTP_BASE_SYSCTL(sctp_pktdrop_enable) = SCTPCTL_PKTDROP_ENABLE_DEFAULT;
+-#if !(defined(__FreeBSD__) && __FreeBSD_version >= 800000)
+-#if !defined(SCTP_WITH_NO_CSUM)
+-	SCTP_BASE_SYSCTL(sctp_no_csum_on_loopback) = SCTPCTL_LOOPBACK_NOCSUM_DEFAULT;
+-#endif
+-#endif
 +	SCTP_BASE_SYSCTL(sctp_plpmtud_enable) = SCTPCTL_PLPMTUD_ENABLE_DEFAULT;
  	SCTP_BASE_SYSCTL(sctp_peer_chunk_oh) = SCTPCTL_PEER_CHKOH_DEFAULT;
  	SCTP_BASE_SYSCTL(sctp_max_burst_default) = SCTPCTL_MAXBURST_DEFAULT;
  	SCTP_BASE_SYSCTL(sctp_fr_max_burst_default) = SCTPCTL_FRMAXBURST_DEFAULT;
-@@ -868,6 +869,7 @@ SYSCTL_PROC(_net_inet_sctp, OID_AUTO, asconf_enable, CTLFLAG_VNET | CTLTYPE_UINT
+@@ -1220,6 +1216,7 @@ SYSCTL_PROC(_net_inet_sctp, OID_AUTO, asconf_enable, CTLFLAG_VNET|CTLTYPE_UINT|C
  SCTP_UINT_SYSCTL(reconfig_enable, sctp_reconfig_enable, SCTPCTL_RECONFIG_ENABLE)
  SCTP_UINT_SYSCTL(nrsack_enable, sctp_nrsack_enable, SCTPCTL_NRSACK_ENABLE)
  SCTP_UINT_SYSCTL(pktdrop_enable, sctp_pktdrop_enable, SCTPCTL_PKTDROP_ENABLE)
 +SCTP_UINT_SYSCTL(plpmtud_enable, sctp_plpmtud_enable, SCTPCTL_PLPMTUD_ENABLE)
- SCTP_UINT_SYSCTL(peer_chkoh, sctp_peer_chunk_oh, SCTPCTL_PEER_CHKOH)
- SCTP_UINT_SYSCTL(maxburst, sctp_max_burst_default, SCTPCTL_MAXBURST)
- SCTP_UINT_SYSCTL(fr_maxburst, sctp_fr_max_burst_default, SCTPCTL_FRMAXBURST)
-diff --git a/sys/netinet/sctp_sysctl.h b/sys/netinet/sctp_sysctl.h
-index 959bd1e..730da8b 100644
---- a/sys/netinet/sctp_sysctl.h
-+++ b/sys/netinet/sctp_sysctl.h
-@@ -51,6 +51,7 @@ struct sctp_sysctl {
+ #if defined(__APPLE__)
+ #if !defined(SCTP_WITH_NO_CSUM)
+ SCTP_UINT_SYSCTL(loopback_nocsum, sctp_no_csum_on_loopback, SCTPCTL_LOOPBACK_NOCSUM)
+diff --git a/netinet/sctp_sysctl.h b/netinet/sctp_sysctl.h
+index cbd29e3..2f48615 100755
+--- a/netinet/sctp_sysctl.h
++++ b/netinet/sctp_sysctl.h
+@@ -53,6 +53,7 @@ struct sctp_sysctl {
  	uint32_t sctp_reconfig_enable;
  	uint32_t sctp_nrsack_enable;
  	uint32_t sctp_pktdrop_enable;
 +	uint32_t sctp_plpmtud_enable;
  	uint32_t sctp_fr_max_burst_default;
- 	uint32_t sctp_peer_chunk_oh;
- 	uint32_t sctp_max_burst_default;
-@@ -191,6 +192,12 @@ struct sctp_sysctl {
+ #if !(defined(__FreeBSD__) && __FreeBSD_version >= 800000)
+ #if !defined(SCTP_WITH_NO_CSUM)
+@@ -216,6 +217,12 @@ struct sctp_sysctl {
  #define SCTPCTL_PKTDROP_ENABLE_MAX	1
  #define SCTPCTL_PKTDROP_ENABLE_DEFAULT	0
  
@@ -781,18 +768,18 @@ index 959bd1e..730da8b 100644
  /* loopback_nocsum: Enable NO Csum on packets sent on loopback */
  #define SCTPCTL_LOOPBACK_NOCSUM_DESC	"Enable NO Csum on packets sent on loopback"
  #define SCTPCTL_LOOPBACK_NOCSUM_MIN	0
-diff --git a/sys/netinet/sctp_timer.c b/sys/netinet/sctp_timer.c
-index 4c87ee6..1acd4d8 100644
---- a/sys/netinet/sctp_timer.c
-+++ b/sys/netinet/sctp_timer.c
-@@ -1442,7 +1442,70 @@ sctp_heartbeat_timer(struct sctp_inpcb *inp, struct sctp_tcb *stcb,
+diff --git a/netinet/sctp_timer.c b/netinet/sctp_timer.c
+index 9507c71..8fb04fa 100755
+--- a/netinet/sctp_timer.c
++++ b/netinet/sctp_timer.c
+@@ -1455,7 +1455,66 @@ sctp_heartbeat_timer(struct sctp_inpcb *inp, struct sctp_tcb *stcb,
  		} else {
  			ms_gone_by = 0xffffffff;
  		}
 -		if ((ms_gone_by >= net->heart_beat_delay) ||
 +
 +		if (inp->plpmtud_supported && net->mtu_probing) {
-+			uint32_t base;
++			uint32_t base = SCTP_PROBE_MTU_V4_BASE;
 +			if ((++net->probe_counts < SCTP_PROBE_MAX_PROBES)
 +			    && net->probing_state > SCTP_PROBE_ERROR
 +			    && net->probing_state < SCTP_PROBE_DONE) {
@@ -845,10 +832,6 @@ index 4c87ee6..1acd4d8 100644
 +						net->mtu = SCTP_PROBE_MIN;
 +						sctp_pathmtu_adjustment(stcb, net->mtu);
 +						sctp_send_hb(stcb, net, SCTP_SO_NOT_LOCKED);
-+					} else {
-+						net->probe_mtu = net->max_mtu;
-+						net->probe_counts = 0;
-+						sctp_send_a_probe(inp, stcb, net);
 +					}
 +					break;
 +				}
@@ -857,7 +840,7 @@ index 4c87ee6..1acd4d8 100644
  		    (net->dest_state & SCTP_ADDR_PF)) {
  			sctp_send_hb(stcb, net, SCTP_SO_NOT_LOCKED);
  		}
-@@ -1455,59 +1518,119 @@ sctp_pathmtu_timer(struct sctp_inpcb *inp,
+@@ -1468,71 +1527,135 @@ sctp_pathmtu_timer(struct sctp_inpcb *inp,
      struct sctp_tcb *stcb,
      struct sctp_nets *net)
  {
@@ -873,7 +856,7 @@ index 4c87ee6..1acd4d8 100644
 -				sctp_free_ifa(net->ro._s_addr);
 -				net->ro._s_addr = NULL;
 -				net->src_addr_selected = 0;
--			} else if (net->ro._s_addr == NULL) {
+-			} else  if (net->ro._s_addr == NULL) {
 +	uint32_t next_mtu = 0, mtu = 0;
 +
 +	if (inp->plpmtud_supported) {
@@ -882,7 +865,6 @@ index 4c87ee6..1acd4d8 100644
 +			net->probe_mtu = net->mtu;
 +			net->probing_state = SCTP_PROBE_BASE;
 +			net->probe_counts = 0;
-+			mtu = net->mtu;
 +			if ((net->src_addr_selected == 0) ||
 +				(net->ro._s_addr == NULL) ||
 +				(net->ro._s_addr->localifa_flags & SCTP_BEING_DELETED)) {
@@ -894,31 +876,45 @@ index 4c87ee6..1acd4d8 100644
  #if defined(INET6) && defined(SCTP_EMBEDDED_V6_SCOPE)
 -				if (net->ro._l_addr.sa.sa_family == AF_INET6) {
 -					struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)&net->ro._l_addr;
+-					/* KAME hack: embed scopeid */
 +					if (net->ro._l_addr.sa.sa_family == AF_INET6) {
 +						struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)&net->ro._l_addr;
- 
--					/* KAME hack: embed scopeid */
+ #if defined(__APPLE__)
+ #if defined(APPLE_LEOPARD) || defined(APPLE_SNOWLEOPARD)
+-					(void)in6_embedscope(&sin6->sin6_addr, sin6, NULL, NULL);
++						in6_embedscope(&sin6->sin6_addr, sin6, NULL, NULL);
+ #else
+-					(void)in6_embedscope(&sin6->sin6_addr, sin6, NULL, NULL, NULL);
++						in6_embedscope(&sin6->sin6_addr, sin6, NULL, NULL, NULL);
+ #endif
+ #elif defined(SCTP_KAME)
 -					(void)sa6_embedscope(sin6, MODULE_GLOBAL(ip6_use_defzone));
-+						/* KAME hack: embed scopeid */
 +						(void)sa6_embedscope(sin6, MODULE_GLOBAL(ip6_use_defzone));
-+					}
+ #else
+-					(void)in6_embedscope(&sin6->sin6_addr, sin6);
++						in6_embedscope(&sin6->sin6_addr, sin6);
 +#endif
++					}
+ #endif
 +net->ro._s_addr = sctp_source_address_selection(inp,
 +						stcb,
 +						(sctp_route_t *) & net->ro,
 +						net, 0, stcb->asoc.vrf_id);
-+	#if defined(INET6) && defined(SCTP_EMBEDDED_V6_SCOPE)
++#if defined(INET6) && defined(SCTP_EMBEDDED_V6_SCOPE)
 +					if (net->ro._l_addr.sa.sa_family == AF_INET6) {
 +						struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)&net->ro._l_addr;
-+
++#ifdef SCTP_KAME
 +						(void)sa6_recoverscope(sin6);
++#else
++						(void)in6_recoverscope(sin6, &sin6->sin6_addr, NULL);
++#endif	/* SCTP_KAME */
 +					}
 +#endif				/* INET6 */
 +				}
 +				if (net->ro._s_addr)
 +					net->src_addr_selected = 1;
 +			}
-+			if (net->ro._s_addr) {
++if (net->ro._s_addr) {
 +				mtu = SCTP_GATHER_MTU_FROM_ROUTE(net->ro._s_addr, &net->ro._s_addr.sa, net->ro.ro_rt);
 +#if defined(INET) || defined(INET6)
 +				if (net->port) {
@@ -928,14 +924,8 @@ index 4c87ee6..1acd4d8 100644
 +				net->max_mtu = max(mtu, net->max_mtu);
 +			}
 +			sctp_send_a_probe(inp, stcb, net);
-+			/*	if (mtu > next_mtu) {
-+					net->mtu = next_mtu;
-+				}
-+			} else {
-+				net->mtu = mtu;
-+			}*/
 +		} else {
-+		/* restart the timer */
++			/* restart the timer */
 +			sctp_timer_start(SCTP_TIMER_TYPE_PATHMTURAISE, inp, stcb, net);
 +		}
 +	} else {
@@ -949,35 +939,48 @@ index 4c87ee6..1acd4d8 100644
 +					sctp_free_ifa(net->ro._s_addr);
 +					net->ro._s_addr = NULL;
 +					net->src_addr_selected = 0;
-+				} else if (net->ro._s_addr == NULL) {
++				} else  if (net->ro._s_addr == NULL) {
 +#if defined(INET6) && defined(SCTP_EMBEDDED_V6_SCOPE)
 +					if (net->ro._l_addr.sa.sa_family == AF_INET6) {
 +						struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)&net->ro._l_addr;
- 
--				net->ro._s_addr = sctp_source_address_selection(inp,
--				    stcb,
--				    (sctp_route_t *)&net->ro,
--				    net, 0, stcb->asoc.vrf_id);
 +						/* KAME hack: embed scopeid */
++#if defined(__APPLE__)
++#if defined(APPLE_LEOPARD) || defined(APPLE_SNOWLEOPARD)
++						(void)in6_embedscope(&sin6->sin6_addr, sin6, NULL, NULL);
++#else
++						(void)in6_embedscope(&sin6->sin6_addr, sin6, NULL, NULL, NULL);
++#endif
++#elif defined(SCTP_KAME)
 +						(void)sa6_embedscope(sin6, MODULE_GLOBAL(ip6_use_defzone));
++#else
++						(void)in6_embedscope(&sin6->sin6_addr, sin6);
++#endif
 +					}
 +#endif
-+
+ 
+-				net->ro._s_addr = sctp_source_address_selection(inp,
+-										stcb,
+-										(sctp_route_t *)&net->ro,
+-										net, 0, stcb->asoc.vrf_id);
 +					net->ro._s_addr = sctp_source_address_selection(inp,
-+					    stcb,
-+					    (sctp_route_t *)&net->ro,
-+					    net, 0, stcb->asoc.vrf_id);
++											stcb,
++											(sctp_route_t *)&net->ro,
++											net, 0, stcb->asoc.vrf_id);
  #if defined(INET6) && defined(SCTP_EMBEDDED_V6_SCOPE)
 -				if (net->ro._l_addr.sa.sa_family == AF_INET6) {
 -					struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)&net->ro._l_addr;
 +					if (net->ro._l_addr.sa.sa_family == AF_INET6) {
 +						struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)&net->ro._l_addr;
- 
+ #ifdef SCTP_KAME
 -					(void)sa6_recoverscope(sin6);
--				}
 +						(void)sa6_recoverscope(sin6);
+ #else
+-					(void)in6_recoverscope(sin6, &sin6->sin6_addr, NULL);
++						(void)in6_recoverscope(sin6, &sin6->sin6_addr, NULL);
+ #endif	/* SCTP_KAME */
+-				}
 +					}
- #endif				/* INET6 */
+ #endif	/* INET6 */
 +				}
 +				if (net->ro._s_addr)
 +					net->src_addr_selected = 1;
@@ -1016,27 +1019,28 @@ index 4c87ee6..1acd4d8 100644
  }
  
  void
-diff --git a/sys/netinet/sctp_usrreq.c b/sys/netinet/sctp_usrreq.c
-index 1d1a805..a48c010 100644
---- a/sys/netinet/sctp_usrreq.c
-+++ b/sys/netinet/sctp_usrreq.c
-@@ -107,6 +107,7 @@ sctp_pathmtu_adjustment(struct sctp_tcb *stcb, uint16_t nxtsz)
+diff --git a/netinet/sctp_usrreq.c b/netinet/sctp_usrreq.c
+index 619eee5..fc7ad3c 100755
+--- a/netinet/sctp_usrreq.c
++++ b/netinet/sctp_usrreq.c
+@@ -305,7 +305,7 @@ sctp_notify(struct sctp_inpcb *inp,
+ #if defined(__APPLE__) || defined(SCTP_SO_LOCK_TESTING)
+ 	struct socket *so;
+ #endif
+-	int timer_stopped;
++	int timer_stopped = 0;
  
- 	/* Adjust that too */
- 	stcb->asoc.smallest_mtu = nxtsz;
-+	printf("%s:%d: set smallest_mtu to %d\n", __func__, __LINE__, stcb->asoc.smallest_mtu);
- 	/* now off to subtract IP_DF flag if needed */
- 	overhead = IP_HDR_SIZE + sizeof(struct sctphdr);
- 	if (sctp_auth_is_required_chunk(SCTP_DATA, stcb->asoc.peer_auth_chunks)) {
-@@ -195,13 +196,164 @@ sctp_notify(struct sctp_inpcb *inp,
+ 	if (icmp_type != ICMP_UNREACH) {
+ 		/* We only care about unreachable */
+@@ -349,13 +349,165 @@ sctp_notify(struct sctp_inpcb *inp,
  		atomic_subtract_int(&stcb->asoc.refcnt, 1);
  #endif
  		(void)sctp_free_assoc(inp, stcb, SCTP_NORMAL_PROC,
--		    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_2);
-+		    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_1);
+-		                      SCTP_FROM_SCTP_USRREQ + SCTP_LOC_2);
++		                      SCTP_FROM_SCTP_USRREQ + SCTP_LOC_1);
  #if defined(__APPLE__) || defined(SCTP_SO_LOCK_TESTING)
  		SCTP_SOCKET_UNLOCK(so, 1);
- 		/* SCTP_TCB_UNLOCK(stcb); MT: I think this is not needed. */
+ 		/* SCTP_TCB_UNLOCK(stcb); MT: I think this is not needed.*/
  #endif
  		/* no need to unlock here, since the TCB is gone */
  	} else if (icmp_code == ICMP_UNREACH_NEEDFRAG) {
@@ -1083,6 +1087,7 @@ index 1d1a805..a48c010 100644
 +					sctp_timer_stop(SCTP_TIMER_TYPE_PATHMTURAISE, stcb->sctp_ep, stcb, net,
 +					SCTP_FROM_SCTP_USRREQ + SCTP_LOC_4);
 +				}
++				sctp_pathmtu_adjustment(stcb, net->mtu);
 +				sctp_timer_start(SCTP_TIMER_TYPE_PATHMTURAISE, stcb->sctp_ep, stcb, net);
 +				break;
 +			case SCTP_PROBE_SEARCH_DOWN:
@@ -1194,7 +1199,7 @@ index 1d1a805..a48c010 100644
  		/* Find the next (smaller) MTU */
  		if (next_mtu == 0) {
  			/*
-@@ -211,25 +363,20 @@ sctp_notify(struct sctp_inpcb *inp,
+@@ -366,14 +518,7 @@ sctp_notify(struct sctp_inpcb *inp,
  			 */
  			next_mtu = sctp_get_prev_mtu(ip_len);
  		}
@@ -1202,7 +1207,7 @@ index 1d1a805..a48c010 100644
 -		if (SCTP_OS_TIMER_PENDING(&net->pmtu_timer.timer)) {
 -			timer_stopped = 1;
 -			sctp_timer_stop(SCTP_TIMER_TYPE_PATHMTURAISE, inp, stcb, net,
--			    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_1);
+-			                SCTP_FROM_SCTP_USRREQ + SCTP_LOC_1);
 -		} else {
 -			timer_stopped = 0;
 -		}
@@ -1210,20 +1215,7 @@ index 1d1a805..a48c010 100644
  		/* Update the path MTU. */
  		if (net->port) {
  			next_mtu -= sizeof(struct udphdr);
- 		}
- 		if (net->mtu > next_mtu) {
- 			net->mtu = next_mtu;
-+#if defined(__FreeBSD__)
- 			if (net->port) {
- 				sctp_hc_set_mtu(&net->ro._l_addr, inp->fibnum, next_mtu + sizeof(struct udphdr));
- 			} else {
- 				sctp_hc_set_mtu(&net->ro._l_addr, inp->fibnum, next_mtu);
- 			}
-+#endif
- 		}
- 		/* Update the association MTU */
- 		if (stcb->asoc.smallest_mtu > next_mtu) {
-@@ -240,8 +387,7 @@ sctp_notify(struct sctp_inpcb *inp,
+@@ -397,8 +542,7 @@ sctp_notify(struct sctp_inpcb *inp,
  			sctp_timer_start(SCTP_TIMER_TYPE_PATHMTURAISE, inp, stcb, net);
  		}
  		SCTP_TCB_UNLOCK(stcb);
@@ -1232,165 +1224,165 @@ index 1d1a805..a48c010 100644
 +		}
  	}
  }
- 
-@@ -723,7 +869,7 @@ sctp_disconnect(struct socket *so)
+ #endif
+@@ -1155,7 +1299,7 @@ sctp_disconnect(struct socket *so)
  					SCTP_STAT_DECR_GAUGE32(sctps_currestab);
  				}
  				(void)sctp_free_assoc(inp, stcb, SCTP_NORMAL_PROC,
--				    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_3);
-+				    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_9);
+-				                      SCTP_FROM_SCTP_USRREQ + SCTP_LOC_3);
++				                      SCTP_FROM_SCTP_USRREQ + SCTP_LOC_9);
  				/* No unlock tcb assoc is gone */
  				return (0);
  			}
-@@ -790,7 +936,7 @@ sctp_disconnect(struct socket *so)
- 
- 			abort_anyway:
+@@ -1220,7 +1364,7 @@ sctp_disconnect(struct socket *so)
+ 					struct mbuf *op_err;
+ 				abort_anyway:
  					op_err = sctp_generate_cause(SCTP_CAUSE_USER_INITIATED_ABT, "");
 -					stcb->sctp_ep->last_abort_code = SCTP_FROM_SCTP_USRREQ + SCTP_LOC_4;
 +					stcb->sctp_ep->last_abort_code = SCTP_FROM_SCTP_USRREQ + SCTP_LOC_10;
  					sctp_send_abort_tcb(stcb, op_err, SCTP_SO_LOCKED);
  					SCTP_STAT_INCR_COUNTER32(sctps_aborted);
  					if ((SCTP_GET_STATE(&stcb->asoc) == SCTP_STATE_OPEN) ||
-@@ -799,7 +945,7 @@ sctp_disconnect(struct socket *so)
+@@ -1229,7 +1373,7 @@ sctp_disconnect(struct socket *so)
  					}
  					SCTP_INP_RUNLOCK(inp);
  					(void)sctp_free_assoc(inp, stcb, SCTP_NORMAL_PROC,
--					    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_5);
-+					    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_11);
+-					                      SCTP_FROM_SCTP_USRREQ + SCTP_LOC_5);
++					                      SCTP_FROM_SCTP_USRREQ + SCTP_LOC_11);
  					return (0);
  				} else {
  					sctp_chunk_output(inp, stcb, SCTP_OUTPUT_FROM_CLOSING, SCTP_SO_LOCKED);
-@@ -972,7 +1118,7 @@ sctp_shutdown(struct socket *so)
- 
- 		abort_anyway:
+@@ -1405,7 +1549,7 @@ sctp_shutdown(struct socket *so)
+ 				struct mbuf *op_err;
+ 			abort_anyway:
  				op_err = sctp_generate_cause(SCTP_CAUSE_USER_INITIATED_ABT, "");
 -				stcb->sctp_ep->last_abort_code = SCTP_FROM_SCTP_USRREQ + SCTP_LOC_6;
 +				stcb->sctp_ep->last_abort_code = SCTP_FROM_SCTP_USRREQ + SCTP_LOC_12;
  				sctp_abort_an_association(stcb->sctp_ep, stcb,
- 				    op_err, SCTP_SO_LOCKED);
+ 							  op_err, SCTP_SO_LOCKED);
  				SCTP_INP_RUNLOCK(inp);
-@@ -1483,7 +1629,7 @@ sctp_do_connect_x(struct socket *so, struct sctp_inpcb *inp, void *optval,
+@@ -2074,7 +2218,7 @@ sctp_do_connect_x(struct socket *so, struct sctp_inpcb *inp, void *optval,
  	/* Fill in the return id */
  	if (error) {
  		(void)sctp_free_assoc(inp, stcb, SCTP_PCBFREE_FORCE,
--		    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_7);
-+		    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_13);
+-		                      SCTP_FROM_SCTP_USRREQ + SCTP_LOC_7);
++		                      SCTP_FROM_SCTP_USRREQ + SCTP_LOC_13);
  		goto out_now;
  	}
  	a_id = (sctp_assoc_t *)optval;
-@@ -4877,7 +5023,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
- 				(void)SCTP_GETTIME_TIMEVAL(&stcb->asoc.time_entered);
- 				sctp_timer_stop(SCTP_TIMER_TYPE_INIT, inp, stcb,
- 				    stcb->asoc.primary_destination,
--				    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_8);
-+				    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_14);
- 				sctp_send_initiate(inp, stcb, SCTP_SO_LOCKED);
- 			} else {
- 				/*
-@@ -5280,7 +5426,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
- 						if (!(net->dest_state & SCTP_ADDR_UNCONFIRMED) &&
- 						    !(net->dest_state & SCTP_ADDR_NOHB)) {
- 							sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT, inp, stcb, net,
--							    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_9);
-+							    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_15);
- 						}
- 						net->dest_state |= SCTP_ADDR_NOHB;
- 					}
-@@ -5291,7 +5437,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
- 							net->heart_beat_delay = 0;
- 						}
+@@ -5673,7 +5817,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
+ 			(void)SCTP_GETTIME_TIMEVAL(&stcb->asoc.time_entered);
+ 			sctp_timer_stop(SCTP_TIMER_TYPE_INIT, inp, stcb,
+ 					stcb->asoc.primary_destination,
+-					SCTP_FROM_SCTP_USRREQ + SCTP_LOC_8);
++					SCTP_FROM_SCTP_USRREQ + SCTP_LOC_14);
+ 			sctp_send_initiate(inp, stcb, SCTP_SO_LOCKED);
+ 		} else {
+ 			/*
+@@ -6091,7 +6235,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
+ 					if (!(net->dest_state & SCTP_ADDR_UNCONFIRMED) &&
+ 					    !(net->dest_state & SCTP_ADDR_NOHB)) {
  						sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT, inp, stcb, net,
--						    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_10);
-+						    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_16);
- 						sctp_timer_start(SCTP_TIMER_TYPE_HEARTBEAT, inp, stcb, net);
- 						net->dest_state &= ~SCTP_ADDR_NOHB;
+-								SCTP_FROM_SCTP_USRREQ + SCTP_LOC_9);
++								SCTP_FROM_SCTP_USRREQ + SCTP_LOC_15);
  					}
-@@ -5304,7 +5450,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
- 					if ((paddrp->spp_flags & SPP_PMTUD_DISABLE) && (paddrp->spp_pathmtu >= SCTP_SMALLEST_PMTU)) {
- 						if (SCTP_OS_TIMER_PENDING(&net->pmtu_timer.timer)) {
- 							sctp_timer_stop(SCTP_TIMER_TYPE_PATHMTURAISE, inp, stcb, net,
--							    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_11);
-+							    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_17);
- 						}
- 						net->dest_state |= SCTP_ADDR_NO_PMTUD;
- 						net->mtu = paddrp->spp_pathmtu;
-@@ -5344,7 +5490,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
- 								sctp_send_hb(stcb, net, SCTP_SO_LOCKED);
- 								sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT,
- 								    stcb->sctp_ep, stcb, net,
--								    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_12);
-+								    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_18);
- 								sctp_timer_start(SCTP_TIMER_TYPE_HEARTBEAT, stcb->sctp_ep, stcb, net);
- 							}
- 						}
-@@ -5389,7 +5535,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
- 									sctp_send_hb(stcb, net, SCTP_SO_LOCKED);
- 									sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT,
- 									    stcb->sctp_ep, stcb, net,
--									    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_13);
-+									    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_19);
- 									sctp_timer_start(SCTP_TIMER_TYPE_HEARTBEAT, stcb->sctp_ep, stcb, net);
- 								}
- 							}
-@@ -5424,7 +5570,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
- 								net->dest_state &= ~SCTP_ADDR_NOHB;
- 							}
- 							sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT, inp, stcb, net,
--							    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_14);
-+							    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_20);
- 							sctp_timer_start(SCTP_TIMER_TYPE_HEARTBEAT, inp, stcb, net);
- 						}
- 						sctp_stcb_feature_off(inp, stcb, SCTP_PCB_FLAGS_DONOT_HEARTBEAT);
-@@ -5436,7 +5582,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
- 								if (!(net->dest_state & SCTP_ADDR_UNCONFIRMED)) {
- 									sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT,
- 									    inp, stcb, net,
--									    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_15);
-+									    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_21);
- 								}
- 							}
- 						}
-@@ -5446,7 +5592,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
- 						TAILQ_FOREACH(net, &stcb->asoc.nets, sctp_next) {
- 							if (SCTP_OS_TIMER_PENDING(&net->pmtu_timer.timer)) {
- 								sctp_timer_stop(SCTP_TIMER_TYPE_PATHMTURAISE, inp, stcb, net,
--								    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_16);
-+								    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_22);
- 							}
- 							net->dest_state |= SCTP_ADDR_NO_PMTUD;
- 							net->mtu = paddrp->spp_pathmtu;
-@@ -6323,7 +6469,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
+ 					net->dest_state |= SCTP_ADDR_NOHB;
+ 				}
+@@ -6102,7 +6246,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
+ 						net->heart_beat_delay = 0;
+ 					}
+ 					sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT, inp, stcb, net,
+-					                SCTP_FROM_SCTP_USRREQ + SCTP_LOC_10);
++					                SCTP_FROM_SCTP_USRREQ + SCTP_LOC_16);
+ 					sctp_timer_start(SCTP_TIMER_TYPE_HEARTBEAT, inp, stcb, net);
+ 					net->dest_state &= ~SCTP_ADDR_NOHB;
+ 				}
+@@ -6115,7 +6259,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
+ 				if ((paddrp->spp_flags & SPP_PMTUD_DISABLE) && (paddrp->spp_pathmtu >= SCTP_SMALLEST_PMTU)) {
+ 					if (SCTP_OS_TIMER_PENDING(&net->pmtu_timer.timer)) {
+ 						sctp_timer_stop(SCTP_TIMER_TYPE_PATHMTURAISE, inp, stcb, net,
+-								SCTP_FROM_SCTP_USRREQ + SCTP_LOC_11);
++								SCTP_FROM_SCTP_USRREQ + SCTP_LOC_17);
+ 					}
+ 					net->dest_state |= SCTP_ADDR_NO_PMTUD;
+ 					net->mtu = paddrp->spp_pathmtu;
+@@ -6155,7 +6299,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
  							sctp_send_hb(stcb, net, SCTP_SO_LOCKED);
  							sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT,
- 							    stcb->sctp_ep, stcb, net,
--							    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_17);
-+							    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_23);
+ 							                stcb->sctp_ep, stcb, net,
+-							                SCTP_FROM_SCTP_USRREQ + SCTP_LOC_12);
++							                SCTP_FROM_SCTP_USRREQ + SCTP_LOC_18);
  							sctp_timer_start(SCTP_TIMER_TYPE_HEARTBEAT, stcb->sctp_ep, stcb, net);
  						}
  					}
-@@ -6354,7 +6500,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
+@@ -6200,7 +6344,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
  								sctp_send_hb(stcb, net, SCTP_SO_LOCKED);
  								sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT,
- 								    stcb->sctp_ep, stcb, net,
--								    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_18);
-+								    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_24);
+ 								                stcb->sctp_ep, stcb, net,
+-								                SCTP_FROM_SCTP_USRREQ + SCTP_LOC_13);
++								                SCTP_FROM_SCTP_USRREQ + SCTP_LOC_19);
  								sctp_timer_start(SCTP_TIMER_TYPE_HEARTBEAT, stcb->sctp_ep, stcb, net);
  							}
  						}
-@@ -7264,7 +7410,7 @@ sctp_accept(struct socket *so, struct sockaddr **addr)
+@@ -6236,7 +6380,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
+ 							net->dest_state &= ~SCTP_ADDR_NOHB;
+ 						}
+ 						sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT, inp, stcb, net,
+-								SCTP_FROM_SCTP_USRREQ + SCTP_LOC_14);
++								SCTP_FROM_SCTP_USRREQ + SCTP_LOC_20);
+ 						sctp_timer_start(SCTP_TIMER_TYPE_HEARTBEAT, inp, stcb, net);
+ 					}
+ 					sctp_stcb_feature_off(inp, stcb, SCTP_PCB_FLAGS_DONOT_HEARTBEAT);
+@@ -6248,7 +6392,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
+ 							if (!(net->dest_state & SCTP_ADDR_UNCONFIRMED)) {
+ 								sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT,
+ 								                inp, stcb, net,
+-								                SCTP_FROM_SCTP_USRREQ + SCTP_LOC_15);
++								                SCTP_FROM_SCTP_USRREQ + SCTP_LOC_21);
+ 							}
+ 						}
+ 					}
+@@ -6258,7 +6402,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
+ 					TAILQ_FOREACH(net, &stcb->asoc.nets, sctp_next) {
+ 						if (SCTP_OS_TIMER_PENDING(&net->pmtu_timer.timer)) {
+ 							sctp_timer_stop(SCTP_TIMER_TYPE_PATHMTURAISE, inp, stcb, net,
+-									SCTP_FROM_SCTP_USRREQ + SCTP_LOC_16);
++									SCTP_FROM_SCTP_USRREQ + SCTP_LOC_22);
+ 						}
+ 						net->dest_state |= SCTP_ADDR_NO_PMTUD;
+ 						net->mtu = paddrp->spp_pathmtu;
+@@ -7201,7 +7345,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
+ 						sctp_send_hb(stcb, net, SCTP_SO_LOCKED);
+ 						sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT,
+ 						                stcb->sctp_ep, stcb, net,
+-						                SCTP_FROM_SCTP_USRREQ + SCTP_LOC_17);
++						                SCTP_FROM_SCTP_USRREQ + SCTP_LOC_23);
+ 						sctp_timer_start(SCTP_TIMER_TYPE_HEARTBEAT, stcb->sctp_ep, stcb, net);
+ 					}
+ 				}
+@@ -7232,7 +7376,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
+ 							sctp_send_hb(stcb, net, SCTP_SO_LOCKED);
+ 							sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT,
+ 							                stcb->sctp_ep, stcb, net,
+-							                SCTP_FROM_SCTP_USRREQ + SCTP_LOC_18);
++							                SCTP_FROM_SCTP_USRREQ + SCTP_LOC_24);
+ 							sctp_timer_start(SCTP_TIMER_TYPE_HEARTBEAT, stcb->sctp_ep, stcb, net);
+ 						}
+ 					}
+@@ -8536,7 +8680,7 @@ sctp_accept(struct socket *so, struct mbuf *nam)
  	if (stcb->asoc.state & SCTP_STATE_ABOUT_TO_BE_FREED) {
  		SCTP_TCB_LOCK(stcb);
  		sctp_free_assoc(inp, stcb, SCTP_NORMAL_PROC,
--		    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_19);
-+		    SCTP_FROM_SCTP_USRREQ + SCTP_LOC_25);
+-		                SCTP_FROM_SCTP_USRREQ + SCTP_LOC_19);
++		                SCTP_FROM_SCTP_USRREQ + SCTP_LOC_25);
  	}
  	return (0);
  }
-diff --git a/sys/netinet/sctputil.c b/sys/netinet/sctputil.c
-index f61a3ed..9ca920b 100644
---- a/sys/netinet/sctputil.c
-+++ b/sys/netinet/sctputil.c
-@@ -770,7 +770,7 @@ static uint32_t sctp_mtu_sizes[] = {
+diff --git a/netinet/sctputil.c b/netinet/sctputil.c
+index 88cc6d4..4054616 100755
+--- a/netinet/sctputil.c
++++ b/netinet/sctputil.c
+@@ -839,7 +839,7 @@ static uint32_t sctp_mtu_sizes[] = {
  	1492,
  	1500,
  	1536,
@@ -1399,7 +1391,7 @@ index f61a3ed..9ca920b 100644
  	2048,
  	4352,
  	4464,
-@@ -797,7 +797,7 @@ sctp_get_prev_mtu(uint32_t val)
+@@ -866,7 +866,7 @@ sctp_get_prev_mtu(uint32_t val)
  			break;
  		}
  	}
@@ -1408,7 +1400,7 @@ index f61a3ed..9ca920b 100644
  }
  
  /*
-@@ -811,8 +811,8 @@ sctp_get_next_mtu(uint32_t val)
+@@ -880,8 +880,8 @@ sctp_get_next_mtu(uint32_t val)
  	uint32_t i;
  
  	for (i = 0; i < (sizeof(sctp_mtu_sizes) / sizeof(uint32_t)); i++) {
@@ -1419,7 +1411,7 @@ index f61a3ed..9ca920b 100644
  		}
  	}
  	return (val);
-@@ -978,6 +978,7 @@ sctp_init_asoc(struct sctp_inpcb *inp, struct sctp_tcb *stcb,
+@@ -1046,6 +1046,7 @@ sctp_init_asoc(struct sctp_inpcb *inp, struct sctp_tcb *stcb,
  	asoc->reconfig_supported = inp->reconfig_supported;
  	asoc->nrsack_supported = inp->nrsack_supported;
  	asoc->pktdrop_supported = inp->pktdrop_supported;
@@ -1427,7 +1419,7 @@ index f61a3ed..9ca920b 100644
  	asoc->idata_supported = inp->idata_supported;
  	asoc->sctp_cmt_pf = (uint8_t)0;
  	asoc->sctp_frag_point = inp->sctp_frag_point;
-@@ -2059,7 +2060,8 @@ sctp_timer_start(int t_type, struct sctp_inpcb *inp, struct sctp_tcb *stcb,
+@@ -2178,7 +2179,8 @@ sctp_timer_start(int t_type, struct sctp_inpcb *inp, struct sctp_tcb *stcb,
  				to_ticks = to_ticks - jitter;
  			}
  			if (!(net->dest_state & SCTP_ADDR_UNCONFIRMED) &&
@@ -1437,19 +1429,10 @@ index f61a3ed..9ca920b 100644
  				to_ticks += net->heart_beat_delay;
  			}
  			/*
-@@ -6132,7 +6134,7 @@ sctp_m_free(struct mbuf *m)
- 	return (m_free(m));
- }
- 
--void 
-+void
- sctp_m_freem(struct mbuf *mb)
- {
- 	while (mb != NULL)
-@@ -7326,3 +7328,48 @@ sctp_hc_get_mtu(union sctp_sockstore *addr, uint16_t fibnum)
- 	}
+@@ -8261,3 +8263,50 @@ sctp_hc_get_mtu(union sctp_sockstore *addr, uint16_t fibnum)
  	return ((uint32_t)tcp_hc_getmtu(&inc));
  }
+ #endif
 +
 +void
 +sctp_send_a_probe(struct sctp_inpcb *inp,
@@ -1468,10 +1451,12 @@ index f61a3ed..9ca920b 100644
 +	} else {
 +		ovh = SCTP_MIN_V4_OVERHEAD;
 +	}
++#if defined(__FreeBSD__)
 +#if defined(INET) || defined(INET6)
 +	if (net->port) {
 +		net->probe_mtu -= sizeof(struct udphdr);
 +	}
++#endif
 +#endif
 +	sctp_send_hb(stcb, net, SCTP_SO_NOT_LOCKED);
 +	sctp_timer_stop(SCTP_TIMER_TYPE_HEARTBEAT, stcb->sctp_ep, stcb, net, SCTP_FROM_SCTPUTIL + SCTP_LOC_11);
@@ -1495,56 +1480,11 @@ index f61a3ed..9ca920b 100644
 +	}
 +	sctp_timer_start(SCTP_TIMER_TYPE_PATHMTURAISE, stcb->sctp_ep, stcb, net);
 +}
-diff --git a/sys/netinet/sctputil.h b/sys/netinet/sctputil.h
-index 97b3365..2ea1c0a 100644
---- a/sys/netinet/sctputil.h
-+++ b/sys/netinet/sctputil.h
-@@ -151,7 +151,7 @@ struct mbuf *
- struct mbuf *
-      sctp_pad_lastmbuf(struct mbuf *, int, struct mbuf *);
- 
--void 
-+void
- sctp_ulp_notify(uint32_t, struct sctp_tcb *, uint32_t, void *, int
- #if !defined(__APPLE__) && !defined(SCTP_SO_LOCK_TESTING)
-     SCTP_UNUSED
-@@ -166,7 +166,7 @@ sctp_pull_off_control_to_new_inp(struct sctp_inpcb *old_inp,
- 
- void sctp_stop_timers_for_shutdown(struct sctp_tcb *);
- 
--void 
-+void
- sctp_report_all_outbound(struct sctp_tcb *, uint16_t, int, int
- #if !defined(__APPLE__) && !defined(SCTP_SO_LOCK_TESTING)
-     SCTP_UNUSED
-@@ -175,7 +175,7 @@ sctp_report_all_outbound(struct sctp_tcb *, uint16_t, int, int
- 
- int sctp_expand_mapping_array(struct sctp_association *, uint32_t);
- 
--void 
-+void
- sctp_abort_notification(struct sctp_tcb *, uint8_t, uint16_t,
-     struct sctp_abort_chunk *, int
- #if !defined(__APPLE__) && !defined(SCTP_SO_LOCK_TESTING)
-@@ -201,7 +201,7 @@ sctp_abort_an_association(struct sctp_inpcb *, struct sctp_tcb *,
- #endif
- );
- 
--void 
-+void
- sctp_handle_ootb(struct mbuf *, int, int,
-     struct sockaddr *, struct sockaddr *,
-     struct sctphdr *, struct sctp_inpcb *,
-@@ -209,7 +209,7 @@ sctp_handle_ootb(struct mbuf *, int, int,
-     uint8_t, uint32_t, uint16_t,
-     uint32_t, uint16_t);
- 
--int 
-+int
- sctp_connectx_helper_add(struct sctp_tcb *stcb, struct sockaddr *addr,
-     int totaddr, int *error);
- 
-@@ -245,6 +245,9 @@ int sctp_cmpaddr(struct sockaddr *, struct sockaddr *);
+diff --git a/netinet/sctputil.h b/netinet/sctputil.h
+index 59dd364..548af75 100755
+--- a/netinet/sctputil.h
++++ b/netinet/sctputil.h
+@@ -273,6 +273,9 @@ int sctp_cmpaddr(struct sockaddr *, struct sockaddr *);
  
  void sctp_print_address(struct sockaddr *);
  
@@ -1554,17 +1494,3 @@ index 97b3365..2ea1c0a 100644
  int
  sctp_release_pr_sctp_chunk(struct sctp_tcb *, struct sctp_tmit_chunk *,
      uint8_t, int
-@@ -256,11 +259,11 @@ sctp_release_pr_sctp_chunk(struct sctp_tcb *, struct sctp_tmit_chunk *,
- struct mbuf *sctp_generate_cause(uint16_t, char *);
- struct mbuf *sctp_generate_no_user_data_cause(uint32_t);
- 
--void 
-+void
- sctp_bindx_add_address(struct socket *so, struct sctp_inpcb *inp,
-     struct sockaddr *sa, sctp_assoc_t assoc_id,
-     uint32_t vrf_id, int *error, void *p);
--void 
-+void
- sctp_bindx_delete_address(struct sctp_inpcb *inp,
-     struct sockaddr *sa, sctp_assoc_t assoc_id,
-     uint32_t vrf_id, int *error);
