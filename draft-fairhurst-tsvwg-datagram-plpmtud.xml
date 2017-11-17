@@ -7,6 +7,8 @@
     An alternate method (rfc include) is described in the references. -->
 <!ENTITY RFC678 SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.0678.xml">
 <!ENTITY RFC768 SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.0768.xml">
+<!ENTITY RFC792 SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.0792.xml">
+<!ENTITY RFC1812 SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.1812.xml">
 <!ENTITY RFC1122 SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.1122.xml">
 <!ENTITY RFC1123 SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.1123.xml">
 <!ENTITY RFC1191 SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.1191.xml">
@@ -240,7 +242,7 @@
       this verification (e.g., when the PTB message does not include
       sufficient information, often the case for IPv4; or where the
       information corresponds to an encrypted packet).
-      Most routers implement RFC792 <xref target="RFC792"></xref>,
+      Most routers implement RFC792 <xref target="RFC0792"></xref>,
       which requires them to return only the
       first 64 bits of the IP payload of the packet, whereas
       RFC1812 <xref target="RFC1812"></xref> requires routers to return
@@ -1058,6 +1060,10 @@ Reachability probe acked      PROBE_TIMER expiry
 
     <references title="Normative References">
       <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
+
+      &RFC792;
+
+      &RFC1812;
 
       &RFC1122;
 
