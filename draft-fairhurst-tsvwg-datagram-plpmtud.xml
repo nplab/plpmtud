@@ -694,14 +694,17 @@
 
         <figure anchor="fig-states" title="State machine for Datagram PLPMTUD">
           <artwork align="center"><![CDATA[
-                            +------------+
-                            | PROBE_NONE |
-                            +------------+
-                                   |  Connectivity confirmed
+                                      PROBE_TIMER expiry
+                                   (PROBE_COUNT = MAX_PROBES)
+						+-------------+				   +--------------+
+				 	  ->| PROBE_START |--------------->|PROBE_DISABLED|
+  PROBE_TIMER expiry |  +-------------+				   +--------------+
+ (PROBE_COUNT =      |     |       |  
+         MAX_PROBES)  -----        |  Connectivity confirmed
                                    v
                    ---------- +------------+ -- PROBE_TIMER expiry
-MAX_PMTU acked    |           | PROBE_BASE |  | (PROBE_COUNT < MAX_PROBES)
-PTB (>= BASE_PMTU)|    -----> +------------+ <-
+MAX_PMTU acked    |           | PROBE_BASE |  | (PROBE_COUNT < 
+PTB (>= BASE_PMTU)|    -----> +------------+ <-             MAX_PROBES)
   ----------------     |          /\   |  |
   |                    |           |   |  | PTB
   |    PMTU_RAISE_TIMER|           |   |  | (PTB_SIZE < BASE_PMTU)
@@ -726,8 +729,8 @@ PTB (>= BASE_PMTU)|    -----> +------------+ <-
   -----                              ------
 Reachability probe acked      PROBE_TIMER expiry                     
  or PROBE_TIMER expiry      (PROBE_COUNT < MAX_PROBES)
-(PROBE_COUNT < MAX_PROBES)
-
+(PROBE_COUNT < MAX_PROBES)            or
+                                Probe acked
 ]]></artwork>
         </figure>
 
