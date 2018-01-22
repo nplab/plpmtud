@@ -758,7 +758,19 @@
             along the path.</t>
           </list></t>
 
-        <t>XXX step granularity XXX</t>
+      </section>
+
+      <section title="Selecting Probe Size">
+		  <t>XXX There are serveral things to consider when selecting the size
+		  to probe XXX</t>
+	  	  <t><list>
+		  <t> step granularity </t>
+		  <t> should probe sizes come from a table or via a search algorithm, or
+		  is a hybrid approach at different times perffered. </t>
+		  <t> How many bytes is it worth probing for, it is probably greater
+		  than 4 </t>
+		  <t> How much overhead be chosen </t>
+		  </list></t>
       </section>
 
       <section anchor="States" title="State Machine">
@@ -812,8 +824,6 @@ Reachability probe acked      PROBE_TIMER expiry
 
         <t>XXX State machine to be updated for PTB messages - to probe for PTB
         size XXX</t>
-
-        <t>XXX How does the state machine choose probe size values XXX</t>
 
         <t>The following states are defined to reflect the probing
         process:</t>
