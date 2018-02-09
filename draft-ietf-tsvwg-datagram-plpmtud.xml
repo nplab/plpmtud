@@ -45,7 +45,8 @@
 <!ENTITY RFC8201 SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8201.xml">
 <!ENTITY I-D.ietf-tsvwg-udp-options SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-tsvwg-udp-options-01.xml">
 <!ENTITY I-D.ietf-tsvwg-sctp-dtls-encaps SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-tsvwg-sctp-dtls-encaps-09.xml">
-<!ENTITY I-D.ietf-quic-transport SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-quic-transport-04.xml"> ]>
+<!ENTITY I-D.ietf-quic-transport SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-quic-transport-04.xml">
+]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <!-- used by XSLT processors -->
 <!-- For a complete list and description of processing instructions (PIs),
@@ -71,7 +72,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-00"
+<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-01-tobe"
      ipr="trust200902">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
@@ -176,7 +177,7 @@
       </address>
     </author>
 
-    <date day="23" month="January" year="2018" />
+    <date day="09" month="February" year="2018" />
 
     <!-- Meta-data Declarations -->
 
@@ -199,13 +200,13 @@
     <abstract>
       <t>This document describes a robust method for Path MTU Discovery
       (PMTUD) for datagram Packetization layers. The method allows a
-      Packetization layer (or a datagram application that uses it) to probe an
-      network path with progressively larger packets to determine a maximum
-      packet size. The document describes as an extension to RFC 1191 and RFC
-      8201, which specify ICMP-based Path MTU Discovery for IPv4 and IPv6.
-      This provides functionally for datagram transports that is equivalent to
-      the Packetization layer PMTUD specification for TCP, specified in
-      RFC4821.</t>
+      Packetization Layer (PL), or a datagram application that uses a PL) ,to
+      probe an network path with progressively larger packets to determine a
+      maximum packet size. The document describes as an extension to RFC 1191
+      and RFC 8201, which specify ICMP-based Path MTU Discovery for IPv4 and
+      IPv6. This provides functionally for datagram transports that is
+      equivalent to the Packetization layer PMTUD specification for TCP,
+      specified in RFC4821.</t>
 
       <t>When published, this specification updates RFC4821.</t>
     </abstract>
@@ -217,105 +218,146 @@
       as well as protocols layered on top of these transports (e.g., SCTP/UDP,
       DCCP/UDP).</t>
 
-      <t>Classical Path Maximum Transmission Unit Discovery (PMTUD) can be
-      used with any transport that is able to process ICMP Packet Too Big
-      (PTB) messages (e.g., <xref target="RFC1191"></xref> and <xref
-      target="RFC8201"></xref>). The term PTB message is applied to both IPv4
-      ICMP Unreachable messages (type 3) that carry the error Fragmentation
-      Needed (Type 3, Code 4) and ICMPv6 packet too big messages (Type 2). The
-      sender adjusts the effective Path MTU (PMTU), based on reception of ICMP
-      PTB messages to decrease the PMTU when a packet is sent with a size
-      larger than the value reported as the Link MTU in the PTB message, and a
-      method that from time-to-time increases the packet size in attempt to
-      discover an increase in the supported PMTU. </t>
+      <section title="Classical Path MTU Discovery">
+        <t>Classical Path Maximum Transmission Unit Discovery (PMTUD) can be
+        used with any transport that is able to process ICMP Packet Too Big
+        (PTB) messages (e.g., <xref target="RFC1191"></xref> and <xref
+        target="RFC8201"></xref>). The term PTB message is applied to both
+        IPv4 ICMP Unreachable messages (type 3) that carry the error
+        Fragmentation Needed (Type 3, Code 4) and ICMPv6 packet too big
+        messages (Type 2). When a sender receives a PTB message, it reduces
+        the effective Path MTU (PMTU) to the value reported as the Link MTU in
+        the PTB message, and a method that from time-to-time increases the
+        packet size in attempt to discover an increase in the supported PMTU.
+        The packets sent with a size larger than the current effective PMTU
+        are known as probe packets.</t>
 
-      <t>However, Classical PMTUD is subject to protocol failures. One failure
-      arises when traffic using a packet size larger than the actual supported
-      PMTU is black-holed (all datagrams sent with this size are silently
-      discarded). This could continue to happen when ICMP PTB messages are not
-      delivered back to the sender for some reason <xref
-      target="RFC2923"></xref>). For example, ICMP messages are increasingly
-      filtered by middleboxes (including firewalls) <xref
-      target="RFC4890"></xref>, and in some cases are not correctly processed
-      by tunnel endpoints.</t>
+        <t>Packets not intended as probe packets are either fragmented to the
+        current effective PMTU, or the attempt to send fails with an error
+        code. Applications are sometimes provided with a primitive to let them
+        read the maximum packet size, derived from the current effective
+        PMTU.</t>
 
-      <t>Another failure could result if a system not on the network path
-      sends a PTB that attempts to force the sender to change the effective
-      PMTU <xref target="RFC8201"></xref>. A sender can protect itself from
-      reacting to such messages by utilising the quoted packet within the PTB
-      message payload to verify that the received PTB message was generated in
-      response to a packet that had actually been sent. However, there are
-      situations where a sender is unable to provide this verification (e.g.,
-      when the PTB message does not include sufficient information, often the
-      case for IPv4; or where the information corresponds to an encrypted
-      packet). Most routers implement RFC792 <xref target="RFC0792"></xref>,
-      which requires them to return only the first 64 bits of the IP payload
-      of the packet, whereas RFC1812 <xref target="RFC1812"></xref> requires
-      routers to return the full packet if possible.</t>
+        <t>Classical PMTUD is subject to protocol failures. One failure arises
+        when traffic using a packet size larger than the actual supported PMTU
+        is black-holed (all datagrams sent with this size are silently
+        discarded without the sender receiving ICMP PTB messages. This could
+        arise when the ICMP messages are not delivered back to the sender for
+        some reason <xref target="RFC2923"></xref>). For example, ICMP
+        messages are increasingly filtered by middleboxes (including
+        firewalls) <xref target="RFC4890"></xref>. Also, in some cases are not
+        correctly processed by tunnel endpoints.</t>
 
-      <t>Even when the PTB message includes sufficient bytes of the quoted
-      packet, the network layer could lack sufficient context to perform
-      verification, because this depends on information about the active
-      transport flows at an endpoint node (e.g., the socket/address pairs
-      being used, and other protocol header information).</t>
+        <t>Another failure could result if a node not on the network path
+        sends a PTB that attempts to force the sender to change the effective
+        PMTU <xref target="RFC8201"></xref>. A sender can protect itself from
+        reacting to such messages by utilising the quoted packet within the
+        PTB message payload to verify that the received PTB message was
+        generated in response to a packet that had actually been sent.
+        However, there are situations where a sender would be unable to
+        provide this verification.</t>
 
-      <t>The term Packetization Layer (PL) has been introduced to describe the
-      layer that is responsible for placing data blocks into the payload of
-      packets and selecting an appropriate maximum packet size. This function
-      is often performed by a transport protocol, but can also be performed by
-      other encapsulation methods working above the transport. PTB
-      verification is more straight forward at the PL or at a higher
-      layer.</t>
+        <t>Examples where verification is not possible include:</t>
 
-      <t>In contrast to PMTUD, Packetization Layer Path MTU Discovery
-      (PLPMTUD) <xref target="RFC4821"></xref> does not rely upon reception
-      and verification of PTB messages. It is therefore more robust than
-      Classical PMTUD. This has become the recommended approach for
-      implementing PMTU discovery with TCP. It uses a general strategy where
-      the PL searches for an appropriate PMTU by sending probe packets along
-      the network path with a progressively larger packet size. If a probe
-      packet is successfully delivered (as determined by the PL), then the
-      effective Path MTU is raised to the size of the successful probe.</t>
+        <t><list style="symbols">
+            <t>When the router issuing the ICMP message is acting on a
+            tunneled packet the ICMP message is directed to the tunnel
+            endpoint. This endpoint is responsible for processed in the quoted
+            packet in the payload field to remove the effect of the tunnel,
+            and return the ICMP message to the sender. Failure to do this
+            results in black-holing.</t>
 
-      <t>PLPMTUD introduces flexibility in the implementation of PMTU
-      discovery. At one extreme, it can be configured to only perform PTB
-      black hole detection and recovery to increase the robustness of
-      Classical PMTUD, or at the other extreme, all PTB processing can be
-      disabled and PLPMTUD can completely replace Classical PMTUD. PLPMTUD can
-      also include additional consistency checks without increasing the risk
-      of increased blackholing.</t>
+            <t>When the router issuing the ICMP message implements RFC792
+            <xref target="RFC0792"></xref>, which only requires the quoted
+            payload to include the first 64 bits of the IP payload of the
+            packet, and the ICMP message occurs within a tunnel. Even if the
+            decpasulated message is processed by the tunnel endpoint, there
+            could be insufficient bytes remaining for the sender to read the
+            quoted transport information. RFC1812 <xref
+            target="RFC1812"></xref> requires routers to return the full
+            packet if possible, often the case for IPv4 when used the path
+            includes tunnels; or where the packet has been
+            encapsulated/tunneled over an encrypted transport and it is not
+            possible to determine the original transport header ).</t>
 
-      <t>The UDP-Guidelines <xref target="RFC8085"></xref> state "an
-      application SHOULD either use the path MTU information provided by the
-      IP layer or implement Path MTU Discovery (PMTUD)", but does not provide
-      a mechanism for discovering the largest size of unfragmented datagram
-      than can be used on a path. PLPMTUD has not currently been specified for
-      UDP, while Section 10.2 of <xref target="RFC4821"></xref> recommends a
-      PLPMTUD probing method for SCTP that utilises heartbeat messages as
-      probe packets, but does not provide a complete specification. This
-      document provides the details to complete that specification. Similarly,
-      the method defined in this specification could be used with the Datagram
-      Congestion Control Protocol (DCCP) <xref target="RFC4340"></xref>
-      requires implementations to support Classical PMTUD and states that a
-      DCCP sender "MUST maintain the maximum packet size (MPS) allowed for
-      each active DCCP session". It also defines the current congestion
-      control maximum packet size (CCMPS) supported by a path. This recommends
-      use of PMTUD, and suggests use of control packets (DCCP-Sync) as path
-      probe packets, because they do not risk application data loss.</t>
+            <t>Even when the PTB message includes sufficient bytes of the
+            quoted packet, the network layer could lack sufficient context to
+            perform verification, because this depends on information about
+            the active transport flows at an endpoint node (e.g., the
+            socket/address pairs being used, and other protocol header
+            information).</t>
+          </list></t>
+      </section>
 
-      <t><xref target="Spec"></xref> of this document presents a set of
-      algorithms for datagram protocols to discover a maximum size for the
-      effective PMTU across a path. The methods described rely on features of
-      the PL <xref target="Requirements"></xref> and apply to transport
-      protocols over IPv4 and IPv6. It does not require cooperation from the
-      lower layers (except that they are consistent about which packet sizes
-      are acceptable). A method can utilise ICMP PTB messages when received
-      messages are made available to the PL.</t>
+      <section title="Packetization Layer Path MTU Discovery">
+        <t>The term Packetization Layer (PL) has been introduced to describe
+        the layer that is responsible for placing data blocks into the payload
+        of packets and selecting an appropriate maximum packet size. This
+        function is often performed by a transport protocol, but can also be
+        performed by other encapsulation methods working above the transport.
+        PTB verification is more straight forward at the PL or at a higher
+        layer.</t>
 
-      <t>Finally, <xref target="protocol_specific_methods"></xref> specifies
-      the method for a set of transports, and provides information to enables
-      the implementation of PLPMTUD with other datagram transports and
-      applications that use datagram transports.</t>
+        <t>In contrast to PMTUD, Packetization Layer Path MTU Discovery
+        (PLPMTUD) <xref target="RFC4821"></xref> does not rely upon reception
+        and verification of PTB messages. It is therefore more robust than
+        Classical PMTUD. This has become the recommended approach for
+        implementing PMTU discovery with TCP.</t>
+
+        <t>It uses a general strategy where the PL sends probe packet to
+        search for an appropriate PMTU. The probe packets are sent a
+        progressively larger packet size. If a probe packet is successfully
+        delivered (as determined by the PL), then the effective Path MTU is
+        raised to the size of the successful probe. If no response is received
+        to a probe packet, the method reduces the probe size.</t>
+
+        <t>PLPMTUD introduces flexibility in the implementation of PMTU
+        discovery. At one extreme, it can be configured to only perform PTB
+        black hole detection and recovery to increase the robustness of
+        Classical PMTUD, or at the other extreme, all PTB processing can be
+        disabled and PLPMTUD can completely replace Classical PMTUD. PLPMTUD
+        can also include additional consistency checks without increasing the
+        risk of increased black-holing.</t>
+      </section>
+
+      <section title="Path MTU Discovery for datagram services.">
+        <t><xref target="Spec"></xref> of this document presents a set of
+        algorithms for datagram protocols to discover a maximum size for the
+        effective PMTU across a path. The methods described rely on features
+        of the PL <xref target="Requirements"></xref> and apply to transport
+        protocols over IPv4 and IPv6. It does not require cooperation from the
+        lower layers (except that they are consistent about which packet sizes
+        are acceptable). A method can utilise ICMP PTB messages when these
+        received messages are made available to the PL.</t>
+
+        <t>The UDP-Guidelines <xref target="RFC8085"></xref> state "an
+        application SHOULD either use the Path MTU information provided by the
+        IP layer or implement Path MTU Discovery (PMTUD)", but does not provide
+        a mechanism for discovering the largest size of unfragmented datagram
+        than can be used on a path. Prior to this document, PLPMTUD had not
+        been specified for UDP.</t>
+
+        <t>Section 10.2 of <xref target="RFC4821"></xref> recommends a PLPMTUD
+        probing method for the Stream Control Transport Protocol (SCTP). SCTP
+        utilises heartbeat messages as probe packets, but RFC4821 does not
+        provide a complete specification. This document provides the details
+        to complete that specification.</t>
+
+        <t>The Datagram Congestion Control Protocol (DCCP) <xref
+        target="RFC4340"></xref> requires implementations to support Classical
+        PMTUD and states that a DCCP sender "MUST maintain the maximum packet
+        size (MPS) allowed for each active DCCP session". It also defines the
+        current congestion control maximum packet size (CCMPS) supported by a
+        path. This recommends use of PMTUD, and suggests use of control
+        packets (DCCP-Sync) as path probe packets, because they do not risk
+        application data loss. The method defined in this specification could
+        be used with DCCP.</t>
+
+        <t><xref target="protocol_specific_methods"></xref> specifies the
+        method for a set of transports, and provides information to enables
+        the implementation of PLPMTUD with other datagram transports and
+        applications that use datagram transports.</t>
+      </section>
     </section>
 
     <section title="Terminology">
@@ -365,8 +407,8 @@
           <t hangText="Link MTU:">The Maximum Transmission Unit (MTU) is the
           size in bytes of the largest IP packet, including the IP header and
           payload, that can be transmitted over a link. Note that this could
-          more properly be called the IP MTU, to be consistent with how other
-          standards organizations use the acronym MTU. This includes the IP
+          more properly be called the IP MT, to be consistent with how other
+          standards organizations use the acronym MT. This includes the IP
           header, but excludes link layer headers and other framing that is
           not part of IP or the IP payload. Other standards organizations
           generally define link MTU to include the link layer headers.</t>
@@ -387,8 +429,8 @@
           <t hangText="Path:">The set of link and routers traversed by a
           packet between a source node and a destination node.</t>
 
-          <t hangText="Path MTU (PMTU):">The minimum of the link MTU of all
-          the links forming a path between a source node and a destination
+          <t hangText="Path MTU (PMTU):">The minimum of the link MTU of all the
+          links forming a path between a source node and a destination
           node.</t>
 
           <t hangText="PLPMTUD:">Packetization Layer Path MTU Discovery, the
@@ -413,13 +455,13 @@
       method described in this specification: <list style="numbers">
           <t>PMTU parameters: A PLPMTUD sender is REQUIRED to provide
           information about the maximum size of packet that can be transmitted
-          by the sender on the local link (the Link MTU and MAY utilize
-          similar information about the receiver when this is supplied (note
-          this could be less than EMTU_R). Some applications also have a
-          maximum transport protocol data unit (PDU) size, in which case there
-          is no benefit from probing for a size larger than this (unless a
-          transport allows multiplexing multiple applications PDUs into the
-          same datagram).</t>
+          by the sender on the local link (the link MTU and MAY utilize similar
+          information about the receiver when this is supplied (note this
+          could be less than EMTU_R). Some applications also have a maximum
+          transport protocol data unit (PDU) size, in which case there is no
+          benefit from probing for a size larger than this (unless a transport
+          allows multiplexing multiple applications PDUs into the same
+          datagram).</t>
 
           <t>Effective PMTU: A datagram application MUST be able to choose the
           size of datagrams sent to the network, up to the effective PMTU, or
@@ -430,12 +472,12 @@
 
           <t>Probe packets: On request, a PLPMTUD sender is REQUIRED to be
           able to transmit a packet larger than the current effective PMTU
-          (but always with a total size less than the link MTU). The method
-          can use this as a probe packet. In IPv4, a probe packet is always
-          sent with the Don't Fragment (DF) bit set and without network layer
-          endpoint fragmentation. In IPv6, a probe packet is always sent
-          without source fragmentation (as specified in section 5.4 of <xref
-          target="RFC8201"></xref>).</t>
+          (but always with a total size less than the link MTU). The method can
+          use this as a probe packet. In IPv4, a probe packet is always sent
+          with the Don't Fragment (DF) bit set in the IP header, and without
+          network layer endpoint fragmentation. In IPv6, a probe packet is
+          always sent without source fragmentation (as specified in section
+          5.4 of <xref target="RFC8201"></xref>).</t>
 
           <t>Processing PTB messages: A PLPMTUD sender MAY optionally utilize
           PTB messages received from the network layer to help identify when a
@@ -445,15 +487,15 @@
           verification confirms that the PTB message was sent in response to a
           packet originating by the sender, and needs to be performed before
           the PMTU discovery method reacts to the PTB message. When the router
-          link MTU is indicated in the PTB message this MAY be used by
-          datagram PLPMTUD to reduce the size of a probe, but MUST NOT be used
+          link MTU is indicated in the PTB message this MAY be used by datagram
+          PLPMTUD to reduce the size of a probe, but MUST NOT be used to
           increase the effective PMTU (<xref target="RFC8201"></xref>).</t>
 
           <t>Reception feedback: The destination PL endpoint is REQUIRED to
-          provide a feedback method that indicates when a probe packet has
-          been received by the destination endpoint. The local PL endpoint at
-          the sending node is REQUIRED to pass this feedback to the
-          sender-side PLPMTUD method.</t>
+          provide a feedback method that indicates to the PLPMTUD sender when
+          a probe packet has been received by the destination endpoint. The
+          local PL endpoint at the sending node is REQUIRED to pass this
+          feedback to the sender-side PLPMTUD method.</t>
 
           <t>Probing and congestion control: The isolated loss of a probe
           packet SHOULD NOT be treated as an indication of congestion and its
@@ -649,30 +691,24 @@
         PROBE_TIMER expires), the method re-starts probing for the PMTU.</t>
       </section>
 
-      <section title="Verication and use of PTB messages">
-        <t>XXX A decision on SHOULD/MUST needs to be made on how to verify
-        messages XXX</t>
-
+      <section title="Verification and use of PTB messages">
         <t>This section describes processing for both IPv4 ICMP Unreachable
-        messages (type 3) and ICMPv6 packet too big messages. </t>
+        messages (type 3) and ICMPv6 packet too big messages.</t>
 
-        <t>A node that receives a PTB message from a router or middlebox,
-        SHOULD/MUST verify the PTB message. The node checks the protocol
-        information in the quoted payload to verify that the message
-        originated from the sending node. The node also checks that the
-        reported MTU size is less than the size used by packet probes. PTB
-        messages are discarded if they fail to pass these checks, or where
-        there is insufficient ICMP payload to perform these checks. The checks
-        are intended to provide protection from packets that originate from a
-        node that is not on the network path or a node that attempts to report
-        a larger MTU than the current probe size.</t>
+        <t>A node that receives a PTB message from a router or middlebox, MUST
+        verify the PTB message. The node checks the protocol information in
+        the quoted payload to verify that the message originated from the
+        sending node. The node also checks that the reported MTU size is less
+        than the size used by packet probes. PTB messages are discarded if
+        they fail to pass these checks, or where there is insufficient ICMP
+        payload to perform these checks. The checks are intended to provide
+        protection from packets that originate from a node that is not on the
+        network path or a node that attempts to report a larger MTU than the
+        current probe size.</t>
 
         <t>PTB messages that have been verified can be utilised by the
         DPLPMTUD algorithm. A method that utilises these PTB messages can
         improve performance compared to one that relies solely on probing.</t>
-
-        <t>XXX Specification needed of how to utilise the reported Link MTU
-        size to generate a probe XXX</t>
       </section>
 
       <section title="Timers">
@@ -757,20 +793,31 @@
             verified PTB message indicating the local MTU size of a router
             along the path.</t>
           </list></t>
-
       </section>
 
-      <section title="Selecting Probe Size">
-		  <t>XXX There are serveral things to consider when selecting the size
-		  to probe XXX</t>
-	  	  <t><list>
-		  <t> step granularity </t>
-		  <t> should probe sizes come from a table or via a search algorithm, or
-		  is a hybrid approach at different times perffered. </t>
-		  <t> How many bytes is it worth probing for, it is probably greater
-		  than 4 </t>
-		  <t> How much overhead be chosen </t>
-		  </list></t>
+      <section title="Selecting PROBED_SIZE">
+        <t>Implementations discover the search range by validating the minimum
+        path MTU and then using the probe method to select a PROBED_SIZE less
+        than or equal to the maximum PMTU_MAX. Where PMTU_MAX is the minimum
+        of the the local link MTU and EMTU_R (learned from the remote
+        endpoint). The PMTU_MAX MAY be constrained by an application that has
+        a maximum to the size of datagrams it wishes to send.</t>
+
+        <t>Implementations use a search algorithm to choose probe sizes within
+        the search range. XXX The current method does not specify or recommend
+        a specific methods for selecting a probe size. One simple method is to
+        increase the size of probe in increments until it fails, other methods
+        may use tables to select probe sizes, or search algorithms - this part
+        to be expanded based on experience and consideration of methods
+        XXX</t>
+
+        <t>Implementations MAY optimizse the search procedure by selecting
+        step sizes from a table of common MTU sizes.</t>
+
+        <t>Implementations SHOULD select probe sizes to maximise the gain in
+        PMTU each search step. Implementations ought to take into
+        consideration useful probe size steps and a minimum useful gain in
+        PMTU.</t>
       </section>
 
       <section anchor="States" title="State Machine">
@@ -822,8 +869,11 @@ Reachability probe acked      PROBE_TIMER expiry
 
         <t></t>
 
-        <t>XXX State machine to be updated for PTB messages - to probe for PTB
-        size XXX</t>
+        <t>XXX State machine to be updated to describe handling of validated
+        PTB messages XXX</t>
+
+        <t>XXX Method may be updated to clarify how probe sizes are used
+        during probing XXX</t>
 
         <t>The following states are defined to reflect the probing
         process:</t>
@@ -852,12 +902,14 @@ Reachability probe acked      PROBE_TIMER expiry
             reachability test in the PROBE_ERROR state. On entry, the
             effective PMTU is set to the last acknowledged PROBED_SIZE.</t>
 
-            <t hangText="">On the first probe packet for each probed size, the
-            PROBE_COUNT is set to zero. Each time a probe packet is
+            <t hangText="">The PROBE_COUNT is set to zero when the first probe
+            packet is sent for each probed size. Each time a probe packet is
             acknowledged, the effective PMTU is set to the PROBED_SIZE, and
-            then the PROBED_SIZE is increased. When a probe packet is not
-            acknowledged within the period of the PROBE_TIMER, the PROBE_COUNT
-            is incremented and the probe packet is retransmitted. The state is
+            then the PROBED_SIZE is increased.</t>
+
+            <t hangText="">When a probe packet is sent and not acknowledged
+            within the period of the PROBE_TIMER, the PROBE_COUNT is
+            incremented and the probe packet is retransmitted. The state is
             exited when the PROBE_COUNT reaches MAX_PROBES; a PTB message is
             verified; or a probe of size PMTU_MAX is acknowledged.</t>
 
@@ -874,8 +926,8 @@ Reachability probe acked      PROBE_TIMER expiry
 
             <t hangText="PROBE_DONE:">The PROBE_DONE state indicates a
             successful end to a probing phase. Datagram PLPMTUD remains in
-            this state until either the PMTU_RAISE_TIMER expires or a PTB
-            message is verified.</t>
+            this state until either the PMTU_RAISE_TIMER expires or a received
+            PTB message is verified.</t>
 
             <t hangText="">When PLPMTUD uses an unacknowledged PL and is in
             the PROBE_DONE state, a REACHABILITY_TIMER periodically resets the
@@ -921,8 +973,9 @@ Reachability probe acked      PROBE_TIMER expiry
           requesting a datagram response be sent and to mark this datagram as
           a response to a request.</t>
 
-          <t>XXX &lt;&lt; Future versions of the spec may define a parameter
-          in an Option to indicate the EMTU_R to the peer.&gt;&gt;</t>
+          <t>XXX Future versions of the spec may define a parameter in an
+          Option to indicate the EMTU_R to the peer that can be used to
+          initialise PMTU_MAX. XXX</t>
 
           <section anchor="UDPOPT-ECHOREQ" title="Echo Request Option">
             <t>The Echo Request Option allows a sending endpoint to solicit a
@@ -1004,10 +1057,10 @@ Reachability probe acked      PROBE_TIMER expiry
         and without interfering with congestion control. This is preferred to
         using DATA chunks (with padding as required) as path probes.</t>
 
-        <t>XXX &lt;&lt; Future versions of this specification might define a
-        parameter contained in the INIT and INIT ACK chunk to indicate the MTU
-        to the peer. However, multihoming makes this a bit complex, so it
-        might not be worth doing.&gt;&gt;</t>
+        <t>XXX Future versions of this specification might define a parameter
+        contained in the INIT and INIT ACK chunk to indicate the MTU to the
+        peer. However, multihoming makes this a bit complex, so it might not
+        be worth doing. XXX</t>
 
         <section anchor="sctp_over_ip" title="SCTP/IP4 and SCTP/IPv6">
           <t>The base protocol is specified in <xref
@@ -1121,13 +1174,65 @@ Reachability probe acked      PROBE_TIMER expiry
         </section>
       </section>
 
-      <section title="Other IETF Transports">
+      <section title="PMTUD for QUIC">
+        <t>XXX New section XXX</t>
+
         <t>Quick UDP Internet Connection (QUIC) is a UDP-based transport that
         provides reception feedback <xref
         target="I-D.ietf-quic-transport"></xref>.</t>
 
-        <t>XXX &lt;&lt; This section will be completed in a future revision of
-        this ID &gt;&gt;</t>
+        <section title="QUIC">
+          <t>Section 9.2 of <xref target="I-D.ietf-quic-transport"></xref>
+          details the path considerations when sending QUIC packets. It
+          reccomends the use of PADDING frames to buld the probe packet. This
+          enables probing the without affecting the transfer of other
+          frames.</t>
+
+          <section title="Sending QUIC Probe Packets">
+            <t>Probe packets consist of a QUIC Header and a payload containing
+            only PADDING Frames. PADDING Frames are a single octet (0x00) and
+            serveral of these can be used to create a probe packet of size
+            PROBED_SIZE.</t>
+
+            <t>A QUIC sender needs to pad initial packets to 1200 bytes to
+            validate the path can support packets of a useful size. If a QUIC
+            sender determines the PMTU on a path has fallen below 1280 octets
+            it MUST immediately stop sending on the affected path.</t>
+          </section>
+
+          <section title="Validating the Path with QUIC">
+            <t>Since QUIC provides an acknowledged PL, a sender does MUST NOT
+            implement the REACHABILITY_TIMER while in the PROBE_DONE
+            state.</t>
+          </section>
+
+          <section title="PTB Handling by QUIC">
+            <t>QUIC does not specify any methods for validating ICMP
+            responses, but does provide some guidlines to make it harder for
+            an off path attacker to inject ICMP messages.</t>
+
+            <t><list style="symbols">
+                <t>Set the IPv4 Don't Fragment (DF) bit on a small proportion
+                of packets, so that most invalid ICMP messages arrive when
+                there are no DF packets outstanding, and can therefore be
+                identified as spurious.</t>
+
+                <t>Store additional information from the IP or UDP headers
+                from DF packets (for example, the IP ID or UDP checksum) to
+                further authenticate incoming Datagram Too Big messages.</t>
+
+                <t>Any reduction in PMTU due to a report contained in an ICMP
+                packet is provisional until QUIC's loss detection algorithm
+                determines that the packet is actually lost.</t>
+              </list></t>
+
+            <t>XXX The above list was pulled whole from quic-transport XXX</t>
+          </section>
+        </section>
+      </section>
+
+      <section title="Other IETF Transports">
+        <t>XXX This section to be updated in a later revision. XXX</t>
       </section>
 
       <section title="DPLPMTUD by Applications">
@@ -1140,8 +1245,8 @@ Reachability probe acked      PROBE_TIMER expiry
         <t>In addition, it is important that PMTUD is not performed by
         multiple protocol layers.</t>
 
-        <t>XXX &lt;&lt; This section will be completed in a future revision of
-        this ID &gt;&gt;</t>
+        <t>XXX This section will be completed in a future revision of this ID
+        XXX</t>
       </section>
     </section>
 
@@ -1154,8 +1259,8 @@ Reachability probe acked      PROBE_TIMER expiry
     <section anchor="IANA" title="IANA Considerations">
       <t>This memo includes no request to IANA.</t>
 
-      <t>XXX &lt;&lt; If new UDP Options are specified in this document, a
-      request to IANA will be included here.&gt;&gt;</t>
+      <t>XXX If new UDP Options are specified in this document, a request to
+      IANA will be included here. XXX</t>
 
       <t>If there are no requirements for IANA, the section will be removed
       during conversion into an RFC by the RFC Editor.</t>
@@ -1168,12 +1273,12 @@ Reachability probe acked      PROBE_TIMER expiry
 
       <t>PTB messages could potentially be used to cause a node to
       inappropriately reduce the effective PMTU. A node supporting PLPMTUD
-      SHOULD/MUST appropriately verify the payload of PTB messages to ensure
-      these are received in response to transmitted traffic (i.e., a reported
-      error condition that corresponds to a datagram actually sent by the path
+      MUST appropriately verify the payload of PTB messages to ensure these
+      are received in response to transmitted traffic (i.e., a reported error
+      condition that corresponds to a datagram actually sent by the path
       layer.</t>
 
-      <t>XXX Determine if parallel forwarding paths needs to be considered
+      <t>XXX Determine if parallel forwarding paths needs to be considered.
       XXX</t>
 
       <t>A node performing PLPMTUD could experience conflicting information
@@ -1243,7 +1348,8 @@ Reachability probe acked      PROBE_TIMER expiry
           <t hangText="Path Setup:">When a new path is initiated, the state is
           set to PROBE_START. As soon as the path is confirmed, the state
           changes to PROBE_BASE and the probing mechanism for this path is
-          started. A probe packet with the size of the BASE_PMTU is sent.</t>
+          started. the first probe packet is sent with the size of the
+          BASE_PMTU.</t>
 
           <t hangText="Arrival of an Acknowledgment:">Depending on the probing
           state, the reaction differs according to <xref
@@ -1284,7 +1390,7 @@ Reachability probe acked      PROBE_TIMER expiry
           zero each time the value of PROBED_SIZE is changed. The PROBE_TIMER
           is started each time a probe packet is sent. It is stopped when an
           acknowledgment arrives that confirms delivery of a probe packet. If
-          the probe packet is not acknowledged before,the PROBE_TIMER expires,
+          the probe packet is not acknowledged before the PROBE_TIMER expires,
           the PROBE_ERROR_COUNTER is incremented. When the PROBE_COUNT equals
           the value MAX_PROBES, the state is changed, otherwise a new probe
           packet of the same size (PROBED_SIZE) is resent. The state
@@ -1323,8 +1429,8 @@ Reachability probe acked      PROBE_TIMER expiry
 
           <t hangText="PMTU raise timer timeout:">The path through the network
           can change over time. It impossible to discover whether a path
-          change has increased in the actual PMTU by exchanging packets less
-          than or equal to the effective PMTU. This requires PLPMTUD to
+          change has increased the actual PMTU by exchanging packets less than
+          or equal to the effective PMTU. This requires PLPMTUD to
           periodically send a probe packet to detect whether a larger PMTU is
           possible. This probe packet is generated by the PMTU_RAISE_TIMER.
           When the timer expires, probing is restarted with the BASE_PMTU and
@@ -1359,8 +1465,8 @@ Reachability probe acked      PROBE_TIMER expiry
           Otherwise, the method enters the state PROBE_ERROR.</t>
 
           <t>In the third case, the maximum possible PMTU has been reached.
-          This is probed again, because there could be a link further along
-          the path with a still smaller MTU.</t>
+          This ought to be probed again, because there could be a link further
+          along the path with a still smaller MTU.</t>
 
           <t>Note: Not all routers include the link MTU size when they send a
           PTB message. If the PTB message does not indicate the link MTU, the
@@ -1417,6 +1523,22 @@ Reachability probe acked      PROBE_TIMER expiry
 
           <t hangText="Individual draft -00">There is still work to complete,
           please comment on this draft.</t>
+        </list>Working Group draft -01:</t>
+
+      <t><list style="symbols">
+          <t hangText="Individual draft -00">This draft includes improved
+          introduction.</t>
+
+          <t hangText="Individual draft -00">The draft is updated to require
+          ICMP validation prior to accepting PTB messages - this to be
+          confirmed by WG</t>
+
+          <t hangText="Individual draft -00">Section added to discuss
+          Selection of Probe Size - methods to be evlauated and
+          recommendations to be considered</t>
+
+          <t hangText="Individual draft -00">Section added to align with work
+          proposed in the QUIC WG.</t>
         </list></t>
     </section>
   </back>
