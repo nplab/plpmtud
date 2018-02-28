@@ -200,7 +200,7 @@
     <abstract>
       <t>This document describes a robust method for Path MTU Discovery
       (PMTUD) for datagram Packetization layers. The method allows a
-      Packetization Layer (PL), or a datagram application that uses a PL) ,to
+      Packetization Layer (PL), or a datagram application that uses a PL, to
       probe an network path with progressively larger packets to determine a
       maximum packet size. The document describes as an extension to RFC 1191
       and RFC 8201, which specify ICMP-based Path MTU Discovery for IPv4 and
