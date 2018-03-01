@@ -202,7 +202,7 @@
       (PMTUD) for datagram Packetization layers. The method allows a
       Packetization Layer (PL), or a datagram application that uses a PL, to
       probe an network path with progressively larger packets to determine a
-      maximum packet size. The document describes as an extension to RFC 1191
+      maximum packet size. The document describes an extension to RFC 1191
       and RFC 8201, which specify ICMP-based Path MTU Discovery for IPv4 and
       IPv6. This provides functionally for datagram transports that is
       equivalent to the Packetization layer PMTUD specification for TCP,
@@ -320,7 +320,7 @@
         risk of increased black-holing.</t>
       </section>
 
-      <section title="Path MTU Discovery for datagram services.">
+      <section title="Path MTU Discovery for Datagram Services">
         <t><xref target="Spec"></xref> of this document presents a set of
         algorithms for datagram protocols to discover a maximum size for the
         effective PMTU across a path. The methods described rely on features
@@ -445,7 +445,7 @@
     </section>
 
     <section anchor="Requirements"
-             title="Features required to provide Datagram PLPMTUD">
+             title="Features Required to Provide Datagram PLPMTUD">
       <t>TCP PLPMTUD has been defined using standard TCP protocol mechanisms.
       All of the requirements in <xref target="RFC4821"></xref> also apply to
       use of the technique with a datagram PL. Unlike TCP, some datagram PLs
@@ -610,7 +610,7 @@
         methods to simplify the implementation.</t>
       </section>
 
-      <section title="Validation of the current effective PMTU">
+      <section title="Validation of the Current Effective PMTU">
         <t>The PL needs a method to determine when probe packets have been
         successfully received end-to-end across a network path.</t>
 
@@ -634,7 +634,7 @@
         set of IETF-specified protocols.</t>
       </section>
 
-      <section title="Reduction of the effective PMTU">
+      <section title="Reduction of the Effective PMTU">
         <t>When the current effective PMTU is no longer supported by the
         network path, the transport needs to detect this and reduce the
         effective PMTU.</t>
@@ -691,7 +691,7 @@
         PROBE_TIMER expires), the method re-starts probing for the PMTU.</t>
       </section>
 
-      <section title="Verification and use of PTB messages">
+      <section title="Verification and Use of PTB Messages">
         <t>This section describes processing for both IPv4 ICMP Unreachable
         messages (type 3) and ICMPv6 packet too big messages.</t>
 
@@ -826,7 +826,8 @@
         machine is needed for each active path.</t>
 
         <figure anchor="fig-states" title="State machine for Datagram PLPMTUD">
-          <artwork align="center"><![CDATA[
+          <artwork align="center">
+<![CDATA[
                                       PROBE_TIMER expiry
                                    (PROBE_COUNT = MAX_PROBES)
                         +-------------+                +--------------+
@@ -864,7 +865,8 @@ Reachability probe acked      PROBE_TIMER expiry
  or PROBE_TIMER expiry      (PROBE_COUNT < MAX_PROBES)
 (PROBE_COUNT < MAX_PROBES)            or
                                 Probe acked
-]]></artwork>
+]]>
+</artwork>
         </figure>
 
         <t></t>
@@ -968,7 +970,7 @@ Reachability probe acked      PROBE_TIMER expiry
         </section>
 
         <section anchor="UDPOPT-PLPMTUD"
-                 title="UDP Options required for PLPMTUD">
+                 title="UDP Options Required for PLPMTUD">
           <t>This subsection proposes two new UDP-Options that add support for
           requesting a datagram response be sent and to mark this datagram as
           a response to a request.</t>
@@ -1174,62 +1176,58 @@ Reachability probe acked      PROBE_TIMER expiry
         </section>
       </section>
 
-      <section title="PMTUD for QUIC">
-        <t>XXX New section XXX</t>
+<section title="PMTUD for QUIC">
+<t>XXX New section XXX</t>
 
-        <t>Quick UDP Internet Connection (QUIC) is a UDP-based transport that
-        provides reception feedback <xref
-        target="I-D.ietf-quic-transport"></xref>.</t>
+<t>Quick UDP Internet Connection (QUIC) is a UDP-based transport that
+provides reception feedback <xref target="I-D.ietf-quic-transport"></xref>.</t>
 
-        <section title="QUIC">
-          <t>Section 9.2 of <xref target="I-D.ietf-quic-transport"></xref>
-          details the path considerations when sending QUIC packets. It
-          reccomends the use of PADDING frames to buld the probe packet. This
-          enables probing the without affecting the transfer of other
-          frames.</t>
+<t>Section 9.2 of <xref target="I-D.ietf-quic-transport"></xref>
+details the path considerations when sending QUIC packets. It
+reccomends the use of PADDING frames to buld the probe packet. This
+enables probing the without affecting the transfer of other
+frames.</t>
 
-          <section title="Sending QUIC Probe Packets">
-            <t>Probe packets consist of a QUIC Header and a payload containing
-            only PADDING Frames. PADDING Frames are a single octet (0x00) and
-            serveral of these can be used to create a probe packet of size
-            PROBED_SIZE.</t>
+<section title="Sending QUIC Probe Packets">
+<t>Probe packets consist of a QUIC Header and a payload containing
+only PADDING Frames. PADDING Frames are a single octet (0x00) and
+serveral of these can be used to create a probe packet of size
+PROBED_SIZE.</t>
 
-            <t>A QUIC sender needs to pad initial packets to 1200 bytes to
-            validate the path can support packets of a useful size. If a QUIC
-            sender determines the PMTU on a path has fallen below 1280 octets
-            it MUST immediately stop sending on the affected path.</t>
-          </section>
+<t>A QUIC sender needs to pad initial packets to 1200 bytes to
+validate the path can support packets of a useful size. If a QUIC
+sender determines the PMTU on a path has fallen below 1280 octets
+it MUST immediately stop sending on the affected path.</t>
+</section>
 
-          <section title="Validating the Path with QUIC">
-            <t>Since QUIC provides an acknowledged PL, a sender does MUST NOT
-            implement the REACHABILITY_TIMER while in the PROBE_DONE
-            state.</t>
-          </section>
+<section title="Validating the Path with QUIC">
+<t>Since QUIC provides an acknowledged PL, a sender does MUST NOT
+implement the REACHABILITY_TIMER while in the PROBE_DONE state.</t>
+</section>
 
-          <section title="PTB Handling by QUIC">
-            <t>QUIC does not specify any methods for validating ICMP
-            responses, but does provide some guidlines to make it harder for
-            an off path attacker to inject ICMP messages.</t>
+<section title="Handling of PTB Messages by QUIC">
+<t>QUIC does not specify any methods for validating ICMP
+responses, but does provide some guidlines to make it harder for
+an off path attacker to inject ICMP messages.</t>
 
-            <t><list style="symbols">
-                <t>Set the IPv4 Don't Fragment (DF) bit on a small proportion
-                of packets, so that most invalid ICMP messages arrive when
-                there are no DF packets outstanding, and can therefore be
-                identified as spurious.</t>
+<t><list style="symbols">
+<t>Set the IPv4 Don't Fragment (DF) bit on a small proportion
+of packets, so that most invalid ICMP messages arrive when
+there are no DF packets outstanding, and can therefore be
+identified as spurious.</t>
 
-                <t>Store additional information from the IP or UDP headers
-                from DF packets (for example, the IP ID or UDP checksum) to
-                further authenticate incoming Datagram Too Big messages.</t>
+<t>Store additional information from the IP or UDP headers
+from DF packets (for example, the IP ID or UDP checksum) to
+further authenticate incoming Datagram Too Big messages.</t>
 
-                <t>Any reduction in PMTU due to a report contained in an ICMP
-                packet is provisional until QUIC's loss detection algorithm
-                determines that the packet is actually lost.</t>
-              </list></t>
+<t>Any reduction in PMTU due to a report contained in an ICMP
+packet is provisional until QUIC's loss detection algorithm
+determines that the packet is actually lost.</t>
+</list></t>
 
-            <t>XXX The above list was pulled whole from quic-transport XXX</t>
-          </section>
-        </section>
-      </section>
+<t>XXX The above list was pulled whole from quic-transport XXX</t>
+</section>
+</section>
 
       <section title="Other IETF Transports">
         <t>XXX This section to be updated in a later revision. XXX</t>
