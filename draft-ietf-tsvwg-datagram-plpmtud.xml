@@ -72,8 +72,8 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-01-tobe"
-     ipr="trust200902">
+<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-01"
+     ipr="trust200902" updates="4821">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
                  or pre5378Trust200902
@@ -177,7 +177,7 @@
       </address>
     </author>
 
-    <date day="09" month="February" year="2018" />
+    <date day="32" month="June" year="2018" />
 
     <!-- Meta-data Declarations -->
 
@@ -326,8 +326,7 @@
         effective PMTU across a path. The methods described rely on features
         of the PL <xref target="Requirements"></xref> and apply to transport
         protocols over IPv4 and IPv6. It does not require cooperation from the
-        lower layers (except that they are consistent about which packet sizes
-        are acceptable). A method can utilise ICMP PTB messages when these
+        lower layers. A method can utilise ICMP PTB messages when these
         received messages are made available to the PL.</t>
 
         <t>The UDP-Guidelines <xref target="RFC8085"></xref> state "an
@@ -482,7 +481,7 @@
           <t>Processing PTB messages: A PLPMTUD sender MAY optionally utilize
           PTB messages received from the network layer to help identify when a
           path does not support the current size of packet probe. Any received
-          PTB message SHOULD/MUST be verified before it is used to update the
+          PTB message MUST be verified before it is used to update the
           PMTU discovery information <xref target="RFC8201"></xref>. This
           verification confirms that the PTB message was sent in response to a
           packet originating by the sender, and needs to be performed before
@@ -578,16 +577,15 @@
         padding is not passed on to an application at the receiver.</t>
 
         <t>This results in three possible ways that a sender can create a
-        probe packet:<list style="hanging">
-            <t hangText="Probing using appication data:">A probe packet that
-            contains a data block supplied by an application that matches the
-            size required for the probe. This method requests the application
-            to issue a data block of the desired probe size. If the
-            application/transport needs protection from the loss of an
-            unsuccessful probe packet, the application/transport needs then to
-            perform transport-layer retransmission/repair of the data block
-            (e.g., by retransmission after loss is detected or by duplicating
-            the data block in a datagram without the padding).</t>
+        probe packet listed in order of preference:<list style="hanging">
+
+            <t hangText="Probing using padding data:">A probe packet that
+            contains only control information together with any padding needed
+            to inflate the packet to the size required for the probe. Since
+            these probe packets do not carry an application-supplied data
+            block,they do not typically require retransmission, although they
+            do still consume network capacity and incur endpoint
+            processing.</t>
 
             <t hangText="Probing using appication data and padding data:">A
             probe packet that contains a data block supplied by an application
@@ -599,13 +597,16 @@
             after loss is detected or by duplicating the data block in a
             datagram without the padding data).</t>
 
-            <t hangText="Probing using padding data:">A probe packet that
-            contains only control information together with any padding needed
-            to inflate the packet to the size required for the probe. Since
-            these probe packets do not carry an application-supplied data
-            block,they do not typically require retransmission, although they
-            do still consume network capacity and incur endpoint
-            processing.</t>
+            <t hangText="Probing using appication data:">A probe packet that
+            contains a data block supplied by an application that matches the
+            size required for the probe. This method requests the application
+            to issue a data block of the desired probe size. If the
+            application/transport needs protection from the loss of an
+            unsuccessful probe packet, the application/transport needs then to
+            perform transport-layer retransmission/repair of the data block
+            (e.g., by retransmission after loss is detected or by duplicating
+            the data block in a datagram without the padding).</t>
+
           </list>A datagram PLPMTUD MAY choose to use only one of these
         methods to simplify the implementation.</t>
       </section>
@@ -673,6 +674,10 @@
         sent to the destination and is cancelled when receipt of the probe
         packet is acknowledged.</t>
 
+	<t> On receipt of a probe packet acknowledgment the PLPMTUD method may
+	send subsequent probes of an increasing size. Increasing probes should
+	follow a search strategy as discussed in XXX </t>
+
         <t>The PROBE_COUNT is initialised to zero when a probe packet is first
         sent with a particular size. Each time the probe_timer expires, the
         PROBE_COUNT is incremented, and a probe packet of the same size is
@@ -681,7 +686,7 @@
         MAX_PROBES, probing will be stopped and the last successfully probed
         PMTU is set as the effective PMTU.</t>
 
-        <t>Once probing is completed, the sender continues to use the
+        <t>Once probing is completed, the sender uses the discovered
         effective PMTU until either a PTB message is received or the
         PMTU_RAISE_TIMER expires. If the PL is unable to verify reachability
         to the destination endpoint after probing has completed, the method
@@ -730,14 +735,11 @@
             sender ought to wait before confirming the current effective PMTU
             is still supported. This is less than the PMTU_RAISE_TIMER.</t>
 
-            <t hangText="">An application that needs to employ keep-alive
-            messages to deliver useful service over UDP SHOULD NOT transmit
-            them more frequently than once every 15 seconds and SHOULD use
-            longer intervals when possible. DPLPMTUD ought to suspend
-            reachability probes when no application data has been sent since
-            the previous probe packet. Guidance on selection of the timer
-            value are provide in section 3.1.1 of the UDP Usage
-            Guidelines<xref target="RFC8085"></xref>.</t>
+	    <t hangText="">DPLPMTUD ought to suspend reachability probes when
+	    no application data has been sent since the previous probe packet.
+	    Guidance on selection of the timer value are provide in section
+	    3.1.1 of the UDP Usage Guidelines<xref
+	    target="RFC8085"></xref>.</t>
           </list></t>
 
         <t>An implementation could implement the various timers using a single
@@ -954,7 +956,7 @@ Reachability probe acked      PROBE_TIMER expiry
 
       <section title="DPLPMTUD for UDP and UDP-Lite">
         <t>The current specifications of UDP <xref target="RFC0768"></xref>
-        and UDP-LIte <xref target="RFC3828"></xref> do not define a method in
+        and UDP-Lite <xref target="RFC3828"></xref> do not define a method in
         the RFC-series that supports PLPMTUD. In particular, these transports
         do not provide the transport layer features needed to implement
         datagram PLPMTUD, and any support for Datagram PLPMTUD would therefore
@@ -1198,6 +1200,11 @@ PROBED_SIZE.</t>
 validate the path can support packets of a useful size. If a QUIC
 sender determines the PMTU on a path has fallen below 1280 octets
 it MUST immediately stop sending on the affected path.</t>
+</section>
+
+<section title="Starting Probing">
+<t>Since QUIC provides an acknowledged PL, a sender can enter the PROBE_BASE as
+soon as connectivity is confirmed.  </t>
 </section>
 
 <section title="Validating the Path with QUIC">
