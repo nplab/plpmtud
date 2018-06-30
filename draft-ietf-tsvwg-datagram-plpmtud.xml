@@ -72,7 +72,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-02"
+<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-03"
      ipr="trust200902" updates="4821">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
@@ -717,12 +717,8 @@
       the PLPMTU so that the application can use an MPS appropriate to the
       current network path.</t>
 
-      <t><figure>
-          <preamble>(preamble)</preamble>
-
+<t><figure anchor="fig-plpmtudimplement" title="Places where DPLPMTUD can be implemented">
           <artwork><![CDATA[
-
-
             +-----------+
             |   APP*    |
             +-----------+
@@ -740,8 +736,6 @@
           |  Network Interface   |
           +----------------------+
 ]]></artwork>
-
-          <postamble>(postamble)</postamble>
         </figure></t>
 
       <t>The central idea of DPLPMTUD is probing by a sender. Probe packets of
@@ -749,9 +743,27 @@
       that is completely transferred across the network path from the sender
       to the destination.</t>
 
+     <t><xref target="fig-mps"></xref> describes the relationship
+     between the different packet sizes used by the DPLPMTUD algorithm.</t>
+
+<t><figure anchor="fig-mps" title="Relationships between packet sizes">
+          <artwork><![CDATA[
+
+     BASE_MTU                                               MAX_MTU
+       <------------------------------------------------------>
+                         |    |        |
+                         V    |        |
+                         MPS  V        |
+                           PROBED_SIZE V
+                                    PLPMTU
+]]></artwork>
+        </figure></t>
+        <t> XXX I have a note to create this diagram, but I am not sure if
+        these relationships are correct at all XXX </t>
+
       <section title="PROBE_SEARCH: Probing for a larger PLPMTU">
         <t>The DPLPMTUD method utilises probe packets to confirm that a packet
-        of size PROBE_SIZE can travere the network path. The PROBE_COUNT is
+        of size PROBE_SIZE can traverse the network path. The PROBE_COUNT is
         initialised to zero when a probe packet is first sent with a
         particular size.</t>
 
@@ -932,12 +944,50 @@
       </section>
 
       <section title="Black Hole Detection">
-        <t>The DPLPMTUD method can be used to detect paths that fail to
-        support a packet size, but return no PTB message. The black hole
-        detection function detects such cases and responds by reducing the
-        PLPMTU, allowing the endpoint to inform the application of the reduced
-        MPS and accordingly send smaller packets. Black Hole detection is
-        triggered by the reachability function.</t>
+        <t>The DPLPMTUD method can be used to detect paths that fail to support
+        a packet size, but return no PTB message. Black Hole detection
+        functions detect such cases and responds by reducing the PLPMTU,
+        allowing the endpoint to inform the application of the reduced MPS and
+        accordingly send smaller packets. Black Hole detection is triggered by
+        the reachability function using the absence of positive
+        acknowledgements to PROBE packets to indicate that the current PLPMU is
+        no longer valid.</t>
+
+        <t>
+        Once a PL has a PLPMTU greater than the BASE_MTU the reachability
+        mechanism sends periodic PROBE messages at the PROBED_SIZE to
+        revalidate the PLPMTU. If the number of PROBE messages send without
+        receiving an acknowledgement (PROBE_COUNT) is greater than the
+        MAX_PROBES then the PLPMTU detects this as a black hole and reverts to
+        using the BASE_MTU.
+        </t>
+
+        <t>
+        A stand alone black hole detection mechanism is depicted in
+        <xref target="fig-blackhole"></xref>.
+        </t>
+
+        <t>
+<figure anchor="fig-blackhole" title="State machine for detecting black holes">
+<artwork align="center"><![CDATA[
+                        +------------+
+PROBE_COUNT >=       ---| PROBE_BASE |____
+  MAX_PROBES   -----/   +------------+   |
+           V--/               ^    ^     | PROBE_COUNT < MAX_PROBES
+    +------------+            |    |_____|
+    | PROBE_ERROR|            |
+    +------------+            | PROBE_COUNT >= MAX_PROBES
+                              |
+                        +------------+
+                        | PROBE_DONE |____
+                        +------------+   |
+                                   ^     | PROBE_COUNT < MAX_PROBES
+                                   |_____|
+]]></artwork>
+        </figure>
+        </t>
+        <t> XXX gorry please check. I have tried to model both hitting a black
+        hole when above BASE and hitting a black hole at BASE. XXX </t>
       </section>
 
       <section anchor="States" title="State Machine">
@@ -1063,6 +1113,35 @@ Reachability probe acked      PROBE_TIMER expiry
             probe in this state.</t>
           </list><xref target="StateChanges"></xref> contains an informative
         description of key events.</t>
+      </section>
+
+      <section anchor="SimpleStates" title="Simplified State Machine">
+        <t>A simplified state machine for DPLPMTUD is depicted in <xref
+        target="fig-simplestates"></xref>. If multihoming is supported, a state
+        machine is needed for each active path.</t>
+        <t>
+<figure anchor="fig-simplestates" title="Simplified State machine for Datagram PLPMTUD">
+<artwork align="center"><![CDATA[
+                                PROBE_COUNT >= MAX_PROBES
+
+                         +------------+           +------------+
+   PROBE_ACK         ----| PROBE_BASE |---------->| PROBE_ERROR|
+   (MIN_MTU)  ------/    +------------+           +------------+
+          V--/                 ^
+    +------------+             |
+    |PROBE_SEARCH|             |
+    +------------+             | PROBE_COUNT >= MAX_PROBES
+          |---                 |
+              \------    +------------+
+     PROBED_SIZE ==  \-->| PROBE_DONE |____
+        MAX_MTU          +------------+   |
+   OR black hole                    ^     | PROBE_COUNT < MAX_PROBES
+                                    |_____|
+]]></artwork>
+        </figure>
+        </t>
+        <t> XXX gorry please check. I have tried to model a simple search using
+        only the reachability timer XXX </t>
       </section>
     </section>
 
