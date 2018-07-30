@@ -43,9 +43,9 @@
 <!ENTITY RFC6633 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6633.xml">
 <!ENTITY RFC8085 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8085.xml">
 <!ENTITY RFC8201 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8201.xml">
-<!ENTITY I-D.ietf-tsvwg-udp-options SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-tsvwg-udp-options-01.xml">
-<!ENTITY I-D.ietf-tsvwg-sctp-dtls-encaps SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-tsvwg-sctp-dtls-encaps-09.xml">
-<!ENTITY I-D.ietf-quic-transport SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-quic-transport-04.xml">
+<!ENTITY RFC8261 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8261.xml">
+<!ENTITY I-D.ietf-tsvwg-udp-options SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-tsvwg-udp-options-04.xml">
+<!ENTITY I-D.ietf-quic-transport SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-quic-transport-13.xml">
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <!-- used by XSLT processors -->
@@ -72,7 +72,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-03"
+<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-04tobe"
      ipr="trust200902" updates="4821">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
@@ -177,7 +177,7 @@
       </address>
     </author>
 
-    <date day="08" month="June" year="2018" />
+    <date day="02" month="July" year="2018" />
 
     <!-- Meta-data Declarations -->
 
@@ -390,7 +390,6 @@
       <t>Other terminology is directly copied from <xref
       target="RFC4821"></xref>, and the definitions in <xref
       target="RFC1122"></xref>.</t>
-
       <t><list style="hanging">
           <t hangText="Black-Holed:">When the sender is unaware that packets
           are not delivered to the destination endpoint (e.g., when the sender
@@ -750,33 +749,337 @@
       are sent to find out the maximum size of user message that is completely
       transferred across the network path from the sender to the
       destination.</t>
+      
+      <section anchor="mechanisms" title="DPLPMTUD Mechanisms">
+      <t> There are three core mechanisms to the plpmtu discovery machine, they
+      provide discovery of the supported PLPMTU on the path and detection of
+      error conditions.</t>
 
-      <t>The are various functions performed by the algorithm:</t>
+      <t><list style="symbols">
+            <t>Probing</t>
+            <t>Black hole detection</t>
+            <t>PTB Response</t>
+      </list></t>
 
-      <section title="PROBE_SEARCH: Probing for a larger PLPMTU">
-        <t>The DPLPMTUD method utilises probe packets to confirm that a packet
-        of size PROBED_SIZE can traverse the network path. The PROBE_COUNT is
-        initialised to zero when a probe packet is first sent with a
-        particular size.</t>
+      <section anchor="mechanism-probing" title="Probing">
+            <t>
+            Requirements for probing are described in Section <xref target="Probe"></xref>
+            </t>
+            <t>Implementations discover the search range by validating the
+            minimum path MTU and then using the probe method to select a
+            PROBED_SIZE less than or equal to the maximum PMTU_MAX. Where
+            PMTU_MAX is the minimum of the local link MTU and EMTU_R (learned
+            from the remote endpoint).  The PMTU_MAX MAY be constrained by an
+            application that has a maximum to the size of datagrams it wishes
+            to send.</t>
 
-        <t>A timer is used to trigger the generation of probe packets. The
-        probe_timer is started each time a probe packet is sent to the
-        destination and is cancelled when receipt of the probe packet is
-        acknowledged. The PROBED_SIZE is confirmed, and this value is then
-        assignmed to PLPMTU. The DPLPMTUD method may send subsequent probes of
-        an increasing size. Increasing probes follow a search strategy as
-        discussed in <xref target="probe-algorithm"></xref>.</t>
+            <t>Implementations use a search algorithm to choose probe sizes
+            within the search range.</t>
 
-        <t>Each time the probe_timer expires, the PROBE_COUNT is incremented,
-        the probe_timer is reinitialised, and a probe packet of the same size
-        is retransmitted.</t>
+            <t>xxx A future version of this section will detail example methods
+            for selecting probe size values, but does not plan to mandate a
+            single method. xxx</t>
 
-        <t>The maximum number of retransmissions for a PROBED_SIZE is
-        configured (MAX_PROBES). If the value of the PROBE_COUNT reaches
-        MAX_PROBES, probing will stop and enters the PROBE_DONE state.</t>
+            <t>Implementations MAY optimizse the search procedure by selecting
+            step sizes from a table of common PMTU sizes.</t>
+
+            <t>Implementations SHOULD select probe sizes to maximise the gain
+            in PLPMTU each search step. Implementations ought to take into
+            consideration useful probe size steps and a minimum useful gain in
+            PLPMTU.</t>
+
+            <t> XXX tj - I think resilience is a component of probing XXX </t>
+            <t> Resilience is used to reinforce the PLPMTU esitimate before
+            passing it to the upper layer xxx cycles of the detection machine
+            should succeed when operating in this mode.</t>
       </section>
 
-      <section title="The PROBE_DONE state">
+      <section anchor="mechanism-blackhole" title="Black Hole Detection">
+            <t>XXX tj - this text now needs to be rewritten XXX</t>
+
+        <t>The DPLPMTUD method can be used to provide black hole detection.
+        This enables a reduction of the PLPMTU when a PL sender encounters a
+        path that fails to support the current MPS and also fails to return a
+        PTB message to the sender. </t>
+
+        <t>The simple method starts by setting the PLPMTU to the BASE_PMTU.
+        When the method detects that communication is not possible with this
+        size of packet, the PLPMTU is reduced, until an operable message size
+        is reached or the PLPMTU reaches the BASE_MTU size. The method enables
+        a sending PL to inform an application of the reduced MPS and
+        accordingly send smaller packets. </t>
+
+        <t>The simple black hole detetction method does not seek to increase
+        the PLPMTU. This makes it vulneable to transient reductions in the
+        actual PLPMTU, which could result in a PLPMTU lower than the actual
+        PMTU.</t>
+
+        <t>The full methiod is specified in <xref target="States"></xref>.
+        </t>
+
+        <section title="Simple Black Hole Detection State Machine">
+          <t>The PL sender starts with the PLPMTU and PROBED_SIZE set to the
+          BASE_PMTU. </t>
+
+          <t>While a PL has a PLPMTU greater than the BASE_MTU, the PL needs
+          to send probe packets at the PROBED_SIZE to revalidate the PLPMTU.
+          Black hole detection is also triggered by lack of reachability at
+          the PL. When the PL sender detects that multiple transmissions of
+          packets of PROBED_SIZE are no longer being acknowledged (e.g., When
+          the number of probe packets sent without receiving an
+          acknowledgement (PROBE_COUNT) becomes greater than the MAX_PROBES),
+          the PL concludes that it has detected a black hole and reduces
+          PLPMTU. </t>
+
+          <t>The connectivity check may be performened by the protocol
+          implementing the PL (as in PLPMTUD for TCP <xref
+          target="RFC4821"></xref>). When the application using the PL does
+          not regularly send packets of size PROBED_SIZE, additional probe
+          packets need to be sent by PL using the reachability timer <xref
+          target="Timers"></xref>. </t>
+
+          <t>If method does reduces the PLPMTU to the MIN_PMTU, the method
+          concludes the path does not support the MIN_PMTU.</t>
+
+          <t> If multihoming is supported, a state machine is needed for each
+          active path.</t>
+
+          <t>The state machine for a simple black hole detection mechanism is
+          depicted in <xref target="fig-blackhole"></xref>.</t>
+
+	  <t> XXX a future version of the simple black hole detection state
+	  machine  might consider icmp PTB messages XXX </t>
+
+          <t><figure anchor="fig-blackhole"
+              title="State machine for detecting black holes">
+              <artwork align="center"><![CDATA[
+                        +------------+
+                        | PROBE_START|
+                        +-----+------+
+                              | Connectivity confirmed
+                              | (reachability tests start)
+  PROBE_COUNT >=              V
+  MAX_PROBES            +------------+
+        +---------------| PROBE_BASE +->-+
+        |               +-----+------+   |
+        |                     |    ^     | PROBE_COUNT < MAX_PROBES
+        |                     |    +-----+
+        |                     V
+        |                     | PROBE_ACK
+        |   PROBE_COUNT       |
+        |  = MAX_PROBES +------------+
+        |  (reduce  +-<-+ PROBE_DONE +->-+
+        |   PLPMTU) |   +------+-----+   |
+        |           |     ^    |   ^     | PROBE_COUNT < MAX_PROBES
+        |           |     |    |   |     |  (Contine probing)
+        |           +-----+    |   +-----+
+        V                      V
+    +------------+             |
+    | PROBE_ERROR|<------------+
+    +------------+
+]]></artwork>
+            </figure></t>
+        </section>
+
+        <!--This simple method currently never increases the PLPMTU, this has
+             the side effect that it needs to probe after a PTB message to
+             confirm the PMLPMTU.-->
+
+      </section>
+
+      <section anchor="mechanism-ptb" title="PTB Reponse">
+            <t>
+            PTB Response When a PTB messagge is received from the network the
+            PLPMTUD may use the information in the PTB message once it has been
+            verified. Different PL's have different methods and requirements
+            for verifiy the PTB message.
+
+            PTB response depends on the the MTU carried in the PTB message, the
+            state of the PLPMTUD state machine and the IP protocol being used. 
+            </t>
+
+            <t><list style="hanging">
+                  <t hangText="PTB MTU &lt; BASE_MTU">
+                  <list style="symbols">
+                        <t>PL SHOULD ignore for IPv6 paths</t>
+                        <t>PL MAY choose to move to PROBE_ERROR for IPv4
+                        paths</t>
+                  </list>
+                  </t>
+
+                  <t hangText="PTB MTU &lt; PLPMTU">
+                  <list style="symbols">
+                        <t>PLPMTU should be set to BASE_MTU.</t>
+                        <t>The PLPMTU MAY use the PTB MTU to start a search
+                        algorithm.</t>
+                  </list>
+                  </t>
+          
+                  <t hangText="PTB MTU &lt; PROBED_SIZE">
+                  <list style="symbols">
+                        <t>This indicates that the PLPMTU is still valid, but
+                        the last search PROBED_SIZE was not.</t>
+                        <t>The PTB MTU should be used as the next search point
+                        for the search algorithm.</t>
+                  </list>
+                  </t>
+
+                  <t hangText="Dealing with invalid PTB MTU sizes">
+                  <list style="symbols">
+                        <t>PTB messages must be validated before their MTU is
+                        tested. </t>
+                        <t>MTU values may however still invalid in validated
+                        messages.  examples &gt; PROBED_SIZE....</t>
+                  </list>
+                  </t>
+            </list></t>
+
+              <section anchor="PTB" title="Validation and Use of PTB Messages">
+                <t>This section describes processing for both IPv4 ICMP
+                Unreachable messages (type 3) and ICMPv6 packet too big
+                messages.</t>
+
+                <t>A PL that receives a PTB message from a router or middlebox,
+                MUST validate the PTB message. The PL checks the protocol
+                information in the quoted payload to validate the message
+                originated from the sending node. The node also checks that the
+                reported link MTU size is less than the size used by packet
+                probes. PTB messages are discarded if they fail to pass these
+                checks, or where there is insufficient ICMP payload to perform
+                these checks. The checks are intended to provide protection
+                from packets that originate from a node that is not on the
+                network path or a node that attempts to report a larger link
+                MTU than the current probe size.</t>
+
+                <t>PTB messages that have been validated can be utilised by the
+                DPLPMTUD algorithm. A method that utilises these PTB messages
+                can improve the speed at the which the algorithm detects an
+                appropriate PLPMTU compared to one that relies solely on
+                probing.</t>
+              </section>
+
+              <section anchor="pl-signals" title="Use of PL Loss Signals">
+                  <t> XXX tj - we can also get too big signals from other
+                  layers, such as PL loss detection. I think this should be
+                  considered here XXX</t>
+              </section>
+      </section>
+
+      </section>
+
+      <section anchor="phases" title="DPLPMTUD Phases">
+            <t>
+            The Datagram PLPMTUD algorithm moves through several phases of
+            operation
+            </t>
+            <t><list style="hanging">
+                    <t hangText="Path Validation"><list style="symbols">
+                          <t>Connectivity is confirmed</t>
+                          <t>BASE_MTU is confirmed</t>
+                    </list></t>
+
+                    <t hangText="Search"><list style="symbols">
+                          <t>Probing is done to attmpt to increase the size of
+                          the plpmtu estimate.</t>
+                    </list></t>
+
+                    <t hangText="Search Complete"><list style="symbols">
+                          <t>DPLPMTUD has found an maximal PLPMTU that works on
+                          the path.</t>
+                          <t>DPLPMTUD will probe occasionally to confirm the
+                          PLPMTU</t>
+                    </list></t>
+
+                    <t hangText="Error"><list style="symbols">
+                          <t>Due to unconsistent or invalid network signals the
+                          algorithm is unable to progress.</t>
+                    </list></t>
+            </list></t>
+
+      <section anchor="phases-validation" title="Path Validation">
+      <t>
+      Path validation happens in two stages, first connectivity to the remtoe
+      peer must be confirmed. In a connected PL this stage is implicit and is
+      performed as part of the normal hand shake. In unconnected PL's probing
+      must be done to confirm that hte remote peer is reachable. 
+
+      The second stage of path validation is to confirm that the path supports
+      the BASE_MTU. Probing is performed to confirm that BASE_MTU PROBED_SIZE
+      packets can reach the remote peer using the path. PL may decide to
+      perform connectivity checks with BASE_MTU sized probes if they do not
+      wish to support paths with MTU less than BASE_MTU.
+
+      While validating the path the DPLPMTUD MUST perform black hole detection
+      to evaluate if the path is functioning with connectivity and BASE_MTU
+      probes. PL may also perform PTB Response while performing Path
+      Validation.
+
+      Once path validation has completed the PLPMTUD can advertise an MPS to an
+      upper layer. The MPS must be occasionally reverified by sending probes at
+      PROBED_SIZE to check the PLPMTU estime is still current.
+      </t>
+      </section>
+
+      <section anchor="phases-search" title="Search">
+            <t> In the search phase the PLPMTUD sends probes to test if the
+            path supports a larger MTU. Probes are larger than the current
+            PLPMTUD estime. Search may be performed with one of the search
+            algorithms in this section or with some other search algorithm.
+
+            Probes sent in the search phase are confirmed by positive
+            acknowledge ment in the PL. Black hole detection must be performed
+            for search probes.  If a black hole is detected for a PROBED_SIZE
+            the probe is said to have failed. The search algorithm should use
+            probe failure to advance or terminate the search.
+
+            The PLPMTUD may perform PTB Response while in the search phase. The
+            search algorihm may use PTB signals once verified to advance or
+            terminate the search.  </t>
+
+            <t>The DPLPMTUD method utilises probe packets to confirm that a
+            packet of size PROBED_SIZE can traverse the network path. The
+            PROBE_COUNT is initialised to zero when a probe packet is first
+            sent with a particular size.</t>
+
+            <t>A timer is used to trigger the generation of probe packets. The
+            probe_timer is started each time a probe packet is sent to the
+            destination and is cancelled when receipt of the probe packet is
+            acknowledged. The PROBED_SIZE is confirmed, and this value is then
+            assignmed to PLPMTU. The DPLPMTUD method may send subsequent probes
+            of an increasing size. Increasing probes follow a search strategy
+            as discussed in <xref target="mechanism-probing"></xref>.</t>
+
+            <t>Each time the probe_timer expires, the PROBE_COUNT is
+            incremented, the probe_timer is reinitialised, and a probe packet
+            of the same size is retransmitted.</t>
+
+            <t>The maximum number of retransmissions for a PROBED_SIZE is
+            configured (MAX_PROBES). If the value of the PROBE_COUNT reaches
+            MAX_PROBES, probing will stop and enters the PROBE_DONE state.</t>
+
+            <section anchor="phases-search-algorithms" title="Search Algorithms">
+                    <t>XXX here or elsewhere XXX </t>
+            </section>
+      </section>
+
+      <section anchor="phases-complete" title="Search Complete">
+      <t>
+      In the search complete phase the PLPTMUD must occasionally revalidate the
+      PLPMTU estimate for the path. The PLPMTU is validated by sending probes
+      of PROBED_SIZE on the path and using black hole detection to discover if
+      the path still supports the PLPMTU. If a black hole is detected the
+      PLPMTU should be set to the BASE_MTU and path validation must be
+      performed. If the path cannot be validated the machine moves into an
+      error state.
+
+      After nnnn successful cycles of the blackhole detector the PLPMTU may
+      attempt to grow the PLPMTU by reentering the Search phase.
+
+      The error state is entered when there is conflicting or invalid
+      information coming from the path. The PLPMTUD should remain in the error
+      state until a consistent view of the path can be discovered. The minimum
+      level for this is that the path supports BASE_MTU.
+      </t>
         <t>When the PL sender completes probing for a larger PLPMTU, it enters
         the PROBE_DONE state. This starts the PMTU_RAISE_TIMER. While this
         running, the PLPMTU remains at the value set in the last succesful
@@ -794,26 +1097,6 @@
         PROBE_DONE state, but in this case resumes probing from the size of
         the PLPMTU.</t>
       </section>
-
-      <section anchor="PTB" title="Validation and Use of PTB Messages">
-        <t>This section describes processing for both IPv4 ICMP Unreachable
-        messages (type 3) and ICMPv6 packet too big messages.</t>
-
-        <t>A PL that receives a PTB message from a router or middlebox, MUST
-        validate the PTB message. The PL checks the protocol information in
-        the quoted payload to validate the message originated from the sending
-        node. The node also checks that the reported link MTU size is less
-        than the size used by packet probes. PTB messages are discarded if
-        they fail to pass these checks, or where there is insufficient ICMP
-        payload to perform these checks. The checks are intended to provide
-        protection from packets that originate from a node that is not on the
-        network path or a node that attempts to report a larger link MTU than
-        the current probe size.</t>
-
-        <t>PTB messages that have been validated can be utilised by the
-        DPLPMTUD algorithm. A method that utilises these PTB messages can
-        improve the speed at the which the algorithm detects an appropriate
-        PLPMTU compared to one that relies solely on probing.</t>
       </section>
 
       <section anchor="Timers" title="Timers">
@@ -932,120 +1215,6 @@
             validated PTB message indicating the local MTU size of a router
             along the path.</t>
           </list></t>
-      </section>
-
-      <section anchor="probe-algorithm" title="Selecting PROBED_SIZE">
-        <t>Implementations discover the search range by validating the minimum
-        path MTU and then using the probe method to select a PROBED_SIZE less
-        than or equal to the maximum PMTU_MAX. Where PMTU_MAX is the minimum
-        of the local link MTU and EMTU_R (learned from the remote endpoint).
-        The PMTU_MAX MAY be constrained by an application that has a maximum
-        to the size of datagrams it wishes to send.</t>
-
-        <t>Implementations use a search algorithm to choose probe sizes within
-        the search range.</t>
-
-        <t>xxx A future version of this section will detail example methods
-        for selecting probe size values, but does not plan to mandate a single
-        method. xxx</t>
-
-        <t>Implementations MAY optimizse the search procedure by selecting
-        step sizes from a table of common PMTU sizes.</t>
-
-        <t>Implementations SHOULD select probe sizes to maximise the gain in
-        PLPMTU each search step. Implementations ought to take into
-        consideration useful probe size steps and a minimum useful gain in
-        PLPMTU.</t>
-      </section>
-
-      <section title="Simple Black Hole Detection ">
-        <t>The DPLPMTUD method can be used to provide black hole detection.
-        This enables a reduction of the PLPMTU when a PL sender encounters a
-        path that fails to support the current MPS and also fails to return a
-        PTB message to the sender. </t>
-
-        <t>The simple method starts by setting the PLPMTU to the BASE_PMTU.
-        When the method detects that communication is not possible with this
-        size of packet, the PLPMTU is reduced, until an operable message size
-        is reached or the PLPMTU reaches the BASE_MTU size. The method enables
-        a sending PL to inform an application of the reduced MPS and
-        accordingly send smaller packets. </t>
-
-        <t>The simple black hole detetction method does not seek to increase
-        the PLPMTU. This makes it vulneable to transient reductions in the
-        actual PLPMTU, which could result in a PLPMTU lower than the actual
-        PMTU. </t>
-
-        <t>The full methiod is specified in <xref target="States"></xref>.
-        </t>
-
-        <section title="Simple Black Hole Detection State Machine">
-          <t>The PL sender starts with the PLPMTU and PROBED_SIZE set to the
-          BASE_PMTU. </t>
-
-          <t>While a PL has a PLPMTU greater than the BASE_MTU, the PL needs
-          to send probe packets at the PROBED_SIZE to revalidate the PLPMTU.
-          Black hole detection is also triggered by lack of reachability at
-          the PL. When the PL sender detects that multiple transmissions of
-          packets of PROBED_SIZE are no longer being acknowledged (e.g., When
-          the number of probe packets sent without receiving an
-          acknowledgement (PROBE_COUNT) becomes greater than the MAX_PROBES),
-          the PL concludes that it has detected a black hole and reduces
-          PLPMTU. </t>
-
-          <t>The connectivity check may be performened by the protocol
-          implementing the PL (as in PLPMTUD for TCP <xref
-          target="RFC4821"></xref>). When the application using the PL does
-          not regularly send packets of size PROBED_SIZE, additional probe
-          packets need to be sent by PL using the reachability timer <xref
-          target="Timers"></xref>. </t>
-
-          <t>If method does reduces the PLPMTU to the MIN_PMTU, the method
-          concludes the path does not support the MIN_PMTU.</t>
-
-          <t> If multihoming is supported, a state machine is needed for each
-          active path.</t>
-
-          <t>The state machine for a simple black hole detection mechanism is
-          depicted in <xref target="fig-blackhole"></xref>.</t>
-
-	  <t> XXX a future version of the simple black hole detection state
-	  machine  might consider icmp PTB messages XXX </t>
-
-          <t><figure anchor="fig-blackhole"
-              title="State machine for detecting black holes">
-              <artwork align="center"><![CDATA[
-                        +------------+
-                        | PROBE_START|
-                        +-----+------+
-                              | Connectivity confirmed
-                              | (reachability tests start)
-  PROBE_COUNT >=              V
-  MAX_PROBES            +------------+
-        +---------------| PROBE_BASE +->-+
-        |               +-----+------+   |
-        |                     |    ^     | PROBE_COUNT < MAX_PROBES
-        |                     |    +-----+
-        |                     V
-        |                     | PROBE_ACK
-        |   PROBE_COUNT       |
-        |  = MAX_PROBES +------------+
-        |  (reduce  +-<-+ PROBE_DONE +->-+
-        |   PLPMTU) |   +------+-----+   |
-        |           |     ^    |   ^     | PROBE_COUNT < MAX_PROBES
-        |           |     |    |   |     |  (Contine probing)
-        |           +-----+    |   +-----+
-        V                      V
-    +------------+             |
-    | PROBE_ERROR|<------------+
-    +------------+
-]]></artwork>
-            </figure></t>
-        </section>
-
-        <!--This simple method currently never increases the PLPMTU, this has the side effect that it needs to probe after a PTB message to confirm the PMLPMTU.
-
--->
       </section>
 
       <section anchor="States" title="Full State Machine">
@@ -1416,7 +1585,7 @@ Reachability probe acked      PROBE_TIMER expiry
         <section title="DPLPMTUD for SCTP/DTLS">
           <t>The Datagram Transport Layer Security (DTLS) encapsulation of
           SCTP is specified in <xref
-          target="I-D.ietf-tsvwg-sctp-dtls-encaps"></xref>. It is used for
+          target="RFC8261"></xref>. It is used for
           data channels in WebRTC implementations.</t>
 
           <section anchor="sctp_over_dtls_probing"
@@ -1588,9 +1757,9 @@ Reachability probe acked      PROBE_TIMER expiry
 
       &RFC8201;
 
-      &I-D.ietf-tsvwg-udp-options;
+      &RFC8261;
 
-      &I-D.ietf-tsvwg-sctp-dtls-encaps;
+      &I-D.ietf-tsvwg-udp-options;
 
       &I-D.ietf-quic-transport;
     </references>
