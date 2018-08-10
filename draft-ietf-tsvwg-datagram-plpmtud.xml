@@ -336,8 +336,8 @@
         <t><xref target="Spec"></xref> of this document presents a set of
         algorithms for datagram protocols to discover the largest size of
         unfragmented datagram that can be sent over a path. The method
-        described relies on features of the PL <xref
-        target="Requirements"></xref> and apply to transport protocols
+        described relies on features of the PL described in <xref
+        target="Requirements"></xref> and applies to transport protocols
         operating over IPv4 and IPv6. It does not require cooperation from the
         lower layers, although it can utilise ICMP PTB messages when these
         received messages are made available to the PL.</t>
@@ -810,7 +810,7 @@
 
             <t hangText="Error"><list style="symbols">
                 <t>Due to unconsistent or invalid network signals the
-                algorithm is unable to progress.</t>
+                DPLPMTUD algorithm is unable to progress.</t>
               </list></t>
           </list></t>
 
@@ -824,13 +824,14 @@
 	  PL's probing must be done to confirm that the remote peer is
 	  reachable.</t>
 	  
-	  <t>The second stage of path validation is to confirm that the path
-	  supports the BASE_MTU. Probing is performed to confirm that BASE_MTU
-	  PROBED_SIZE packets can reach the remote peer using the path. PL may
-	  decide to perform connectivity checks with BASE_MTU sized probes if
-	  they do not wish to support paths with MTU less than BASE_MTU.</t>
+	  <t>The second stage of path validation is performed to confirm that
+	  the path supports the BASE_MTU. Probing is performed to confirm that
+	  BASE_MTU PROBED_SIZE packets can reach the remote peer using the
+	  path. The PL may decide to perform connectivity checks with BASE_MTU
+	  sized probes if they do not wish to support paths with MTU less than
+	  BASE_MTU simplifying this phase into a single step.</t>
 	  
-	  <t>PL MAY perform PTB Response while performing Path Validation.
+	  <t>A PL MAY perform PTB Response while performing Path Validation.
 	  Once path validation has completed the DPLPMTUD can advertise an MPS
 	  to an upper layer. The MPS must be occasionally reverified by sending
 	  probes at PROBED_SIZE to check the PLPMTU estimate is still
@@ -839,8 +840,8 @@
 
         <section anchor="phases-search" title="Search">
 	  <t>In the search phase the DPLPMTUD sends probes to test if the path
-	  supports a larger MTU. Probes are larger than the current PLPMTU
-	  estimate. Search may be performed with one of the search algorithms
+	  supports a larger MTU. Probes larger than the current PLPMTU
+	  are sent. Search may be performed with one of the search algorithms
 	  described in <xref target="phases-search-algorithms"></xref> or with
 	  some other search algorithm. Probes sent in the search phase are
 	  confirmed by positive acknowledgement in the PL. Black hole
@@ -878,13 +879,14 @@
         </section>
 
         <section anchor="phases-complete" title="Search Complete">
-          <t>In the search complete phase the PLPTMUD must occasionally
-          revalidate the PLPMTU estimate for the path. The PLPMTU is validated
-          by sending probes of PROBED_SIZE on the path and using black hole
-          detection to discover if the path still supports the PLPMTU. If a
-          black hole is detected the PLPMTU should be set to the BASE_MTU and
-          path validation must be performed. If the path cannot be validated
-          the machine moves into an error state. </t>
+	  <t>In the search complete phase the PLPTMUD must occasionally
+	  revalidate the PLPMTU estimate for the path. The PLPMTU is validated
+	  by sending probes of PROBED_SIZE on the path and using black hole
+	  detection to discover if the path still supports the PLPMTU. If a
+	  black hole is detected the PLPMTU should be set to the BASE_MTU, an
+	  appropriate MPS advertised and path validation must be performed. If
+	  the path cannot be validated the DPLPMTUD moves into an error state.
+	  </t>
 
 	  <t>The error state is entered when there is conflicting or invalid
 	  information coming from the path. The DPLPMTUD should remain in the
@@ -893,7 +895,7 @@
 
           <t>When the PL sender completes probing for a larger PLPMTU, it
           enters the PROBE_DONE state. This starts the PMTU_RAISE_TIMER. While
-          this running, the PLPMTU remains at the value set in the last
+          running, the PLPMTU remains at the value set in the last
           succesful probe packet.</t>
 
           <t>If the PL is designed in a way that is unable to validate
@@ -910,6 +912,7 @@
         </section>
       </section>
 
+      <section anchor="dplpmtud-components" title="DPLPMTUD Components">
       <section anchor="Timers" title="Timers">
         <t>The method in the previous subsections utilises three timers:<list
             style="hanging">
@@ -976,28 +979,6 @@
             PLMTU for receiving. An application or PL may reduce this when it
             knows there is no need to send packets above a specific size.</t>
           </list></t>
-
-        <t>The figure below illustrates the relationship between some of these
-        variables, in this case when the DPLPMTUD algorithm performs path
-        probing to increase the size of the PLPMTU. The MPS is less than the
-        PLPMTU. A probe packet has been sent of size PROBED_SIZE. When this is
-        acknowledged, the PLPMTU will be raised to PROBED_SIZE allowing the
-        PROBED_SIZE to be increased towards the actual PMTU.</t>
-
-        <t><figure anchor="fig-mps"
-            title="Relationships between probe and packet sizes">
-            <artwork><![CDATA[
-
-     MIN_PMTU                                             PMTU_MAX
-       <------------------------------------------------------>
-                      |       |    |     |           |   
-                      V       |    |     |           V
-                  BASE_PMTU   V    |     V     Actual PMTU
-                             MPS   |  PROBED_SIZE  
-                                   V  
-                                 PLPMTU
-]]></artwork>
-          </figure></t>
       </section>
 
       <section title="Variables">
@@ -1026,136 +1007,33 @@
             validated PTB message indicating the local MTU size of a router
             along the path.</t>
           </list></t>
-      </section>
 
-      <section anchor="States" title="Full State Machine">
-        <t>A full state machine for DPLPMTUD is depicted in <xref
-        target="fig-states"></xref>. If multihoming is supported, a state
-        machine is needed for each active path.</t>
+	<t>The figure below illustrates the relationship between the packet
+	size constants and variables, in this case when the DPLPMTUD algorithm
+	performs path probing to increase the size of the PLPMTU. The MPS is
+	less than the PLPMTU. A probe packet has been sent of size PROBED_SIZE.
+	When this is acknowledged, the PLPMTU will be raised to PROBED_SIZE
+	allowing the PROBED_SIZE to be increased towards the actual PMTU.</t>
 
-        <figure anchor="fig-states" title="State machine for Datagram PLPMTUD">
-          <artwork align="center"><![CDATA[
+        <t><figure anchor="fig-mps"
+            title="Relationships between probe and packet sizes">
+            <artwork><![CDATA[
 
-                                      PROBE_TIMER expiry
-                                   (PROBE_COUNT = MAX_PROBES)
-                        +-------------+                +--------------+
-                     +->| PROBE_START +--------------->|PROBE_DISABLED|
-  PROBE_TIMER expiry |  +--+-------+--+                +--------------+
- (PROBE_COUNT =      |     |       |  
-         MAX_PROBES) +-----+       |  Connectivity confirmed
-                                   v
-                  +---------- +------------+ -+ PROBE_TIMER expiry
-MAX_PMTU acked or |           | PROBE_BASE |  | (PROBE_COUNT < 
-PTB (>= BASE_PMTU)|    +----> +--------+---+ <+             MAX_PROBES)
-  +---------------+    |          /\   |  |
-  |                    |           |   |  | PTB
-  |    PMTU_RAISE_TIMER|           |   |  | (PTB_SIZE < BASE_PMTU)
-  |    or reachability |           |   |  |        or
-  |     (PROBE_COUNT   |           |   |  |    PROBE_TIMER expiry
-  |      = MAX_PROBES) |           |   |  | (PROBE_COUNT = MAX_PROBES)
-  |        +-----------+           |   |   \      
-  |        |                   PTB |   |    \  
-  |        |        (< PROBED_SIZE)|   |     \ 
-  |        |                       |   |      ---------------+
-  |        |                       |   |                     |
-  |        |                       |   | Probe               |
-  |        |                       |   | acked               |
-  v        |                       |   v                     v
-+----------+-+                +----+---------+  Probe +-------------+
-| PROBE_DONE |<-------------- | PROBE_SEARCH |<-------| PROBE_ERROR |
-+------+-----+ MAX_PMTU acked +------------+-+  acked +-------------+
- /\    |             or            /\      |
-  |    |      PROBE_TIMER expiry    |      |
-  |    |(PROBE_COUNT = MAX_PROBES)  |      | 
-  |    |                            |      |                 
-  +----+                            +------+
-Reachability probe acked      PROBE_TIMER expiry                     
- or PROBE_TIMER expiry      (PROBE_COUNT < MAX_PROBES)
-(PROBE_COUNT < MAX_PROBES)            or
-                                Probe acked
-
+     MIN_PMTU                                             PMTU_MAX
+       <------------------------------------------------------>
+                      |       |    |     |           |   
+                      V       |    |     |           V
+                  BASE_PMTU   V    |     V     Actual PMTU
+                             MPS   |  PROBED_SIZE  
+                                   V  
+                                 PLPMTU
 ]]></artwork>
-        </figure>
-
-        <t></t>
-
-        <t>XXX A future version of this document will update the state machine
-        to describe handling of validated PTB messages. XXX</t>
-
-        <t>The following states are defined to reflect the probing
-        process:</t>
-
-        <t><list style="hanging">
-            <t hangText="PROBE_START:">The PROBE_START state is the initial
-            state before probing has started. PLPMTUD is not performed in this
-            state. The state transitions to PROBE_BASE, when a path has been
-            confirmed, i.e. when a sent packet has been acknowledged on this
-            path. Any transport method may be used to exit PROBE_BASE as long
-            as the send packet is acknowledge by the other side. The PLPMTU is
-            set to the BASE_PMTU size. Probing ought to start immediately
-            after connection setup to prevent the prevent the loss of user
-            data.</t>
-
-            <t hangText="PROBE_BASE:">The PROBE_BASE state is the starting
-            point for probing with datagram PLPMTUD. It is used to confirm
-            whether the BASE_PMTU size is supported by the network path. On
-            entry, the PROBED_SIZE is set to the BASE_PMTU size and the
-            PROBE_COUNT is set to zero. A probe packet is sent, and the
-            PROBE_TIMER is started. The state is left when the PROBE_COUNT
-            reaches MAX_PROBES; a PTB message is validated, or a probe packet
-            is acknowledged.</t>
-
-            <t hangText="PROBE_SEARCH:">The PROBE_SEARCH state is the main
-            probing state. This state is entered either when probing for the
-            BASE_PMTU was successful or when there is a successful
-            reachability test in the PROBE_ERROR state. On entry, the PLPMTU
-            is set to the last acknowledged PROBED_SIZE.</t>
-
-            <t hangText="">The PROBE_COUNT is set to zero when the first probe
-            packet is sent for each probe size. Each time a probe packet is
-            acknowledged, the PLPMTU is set to the PROBED_SIZE, and then the
-            PROBED_SIZE is increased.</t>
-
-            <t hangText="">When a probe packet is sent and not acknowledged
-            within the period of the PROBE_TIMER, the PROBE_COUNT is
-            incremented and the probe packet is retransmitted. The state is
-            exited when the PROBE_COUNT reaches MAX_PROBES; a PTB message is
-            validated; or a probe of size PMTU_MAX is acknowledged.</t>
-
-            <t hangText="PROBE_ERROR:">The PROBE_ERROR state represents the
-            case where the network path is not known to support an PLPMTU of
-            at least the BASE_PMTU size. It is entered when either a probe of
-            size BASE_PMTU has not been acknowledged or a validated PTB
-            message indicates a smaller link MTU than the BASE_PMTU. On entry,
-            the PROBE_COUNT is set to zero and the PROBED_SIZE is set to the
-            MIN_PMTU size, and the PLPMTU is reset to MIN_PMTU size. In this
-            state, a probe packet is sent, and the PROBE_TIMER is started. The
-            state transitions to the PROBE_SEARCH state when a probe packet is
-            acknowledged.</t>
-
-            <t hangText="PROBE_DONE:">The PROBE_DONE state indicates a
-            successful end to a probing phase. DPLPMTUD remains in this state
-            until either the PMTU_RAISE_TIMER expires or a received PTB
-            message is validated.</t>
-
-            <t hangText="">When PLPMTUD uses an unacknowledged PL and is in
-            the PROBE_DONE state, a REACHABILITY_TIMER periodically resets the
-            PROBE_COUNT and schedules a probe packet with the size of the
-            PLPMTU. If the probe packet fails to be acknowledged after
-            MAX_PROBES attempts, the method enters the PROBE_BASE state. When
-            used with an acknowledged PL (e.g., SCTP), DPLPMTUD SHOULD NOT
-            continue to probe in this state.</t>
-
-            <t hangText="PROBE_DISABLED:">The PROBE_DISABLED state indicates
-            that connectivity could not be established. DPLPMTUD MUST NOT
-            probe in this state.</t>
-          </list><xref target="StateChanges"></xref> contains an informative
-        description of key events.</t>
+          </figure></t>
       </section>
-    </section>
+      </section>
 
     <section title="DPLPMTUD Algorithms">
-      <t>There are three core mechanisms to the PLPMTU discovery machine, they
+      <t>There are two core mechanisms to the PLPMTU discovery machine, they
       provide discovery of the supported PLPMTU on the path and detection of
       error conditions.</t>
 
@@ -1311,7 +1189,7 @@ Reachability probe acked      PROBE_TIMER expiry
         |  (reduce  +-<-+ PROBE_DONE +->-+
         |   PLPMTU) |   +------+-----+   |
         |           |     ^    |   ^     | PROBE_COUNT < MAX_PROBES
-        |           |     |    |   |     |  (Contine probing)
+        |           |     |    |   |     |  (Continue probing)
         |           +-----+    |   +-----+
         V                      V
     +------------+             |
@@ -1323,7 +1201,11 @@ Reachability probe acked      PROBE_TIMER expiry
       </section>
 
       <section anchor="robustness"
-               title="Robustness to inconsistent Path information"></section>
+               title="Robustness to inconsistent Path information">
+
+	<t>XXX A future version of this document will include algorithms for
+	dealing with robustness to inconsistent path information XXX</t>
+	</section>
 
       <section title="Resilience to Inconsistent Path Information">
         <t>The decision to increase the PLPMTU needs to be resillient to the
@@ -1338,6 +1220,132 @@ Reachability probe acked      PROBE_TIMER expiry
         made resillient to these anomalies by introducing hysteresis into the
         decision to increase the Maximum Packet Size.</t>
       </section>
+
+      <section anchor="States" title="Full State Machine">
+        <t>A full state machine for DPLPMTUD is depicted in <xref
+        target="fig-states"></xref>. If multihoming is supported, a state
+        machine is needed for each active path.</t>
+
+        <figure anchor="fig-states" title="State machine for Datagram PLPMTUD">
+          <artwork align="center"><![CDATA[
+
+                                      PROBE_TIMER expiry
+                                   (PROBE_COUNT = MAX_PROBES)
+                        +-------------+                +--------------+
+                     +->| PROBE_START +--------------->|PROBE_DISABLED|
+  PROBE_TIMER expiry |  +--+-------+--+                +--------------+
+ (PROBE_COUNT =      |     |       |  
+         MAX_PROBES) +-----+       |  Connectivity confirmed
+                                   v
+                  +---------- +------------+ -+ PROBE_TIMER expiry
+MAX_PMTU acked or |           | PROBE_BASE |  | (PROBE_COUNT < 
+PTB (>= BASE_PMTU)|    +----> +--------+---+ <+             MAX_PROBES)
+  +---------------+    |          /\   |  |
+  |                    |           |   |  | PTB
+  |    PMTU_RAISE_TIMER|           |   |  | (PTB_SIZE < BASE_PMTU)
+  |    or reachability |           |   |  |        or
+  |     (PROBE_COUNT   |           |   |  |    PROBE_TIMER expiry
+  |      = MAX_PROBES) |           |   |  | (PROBE_COUNT = MAX_PROBES)
+  |        +-----------+           |   |   \      
+  |        |                   PTB |   |    \  
+  |        |        (< PROBED_SIZE)|   |     \ 
+  |        |                       |   |      ---------------+
+  |        |                       |   |                     |
+  |        |                       |   | Probe               |
+  |        |                       |   | acked               |
+  v        |                       |   v                     v
++----------+-+                +----+---------+  Probe +-------------+
+| PROBE_DONE |<-------------- | PROBE_SEARCH |<-------| PROBE_ERROR |
++------+-----+ MAX_PMTU acked +------------+-+  acked +-------------+
+ /\    |             or            /\      |
+  |    |      PROBE_TIMER expiry    |      |
+  |    |(PROBE_COUNT = MAX_PROBES)  |      | 
+  |    |                            |      |                 
+  +----+                            +------+
+Reachability probe acked      PROBE_TIMER expiry                     
+ or PROBE_TIMER expiry      (PROBE_COUNT < MAX_PROBES)
+(PROBE_COUNT < MAX_PROBES)            or
+                                Probe acked
+
+]]></artwork>
+        </figure>
+
+        <t></t>
+
+        <t>XXX A future version of this document will update the state machine
+        to describe handling of validated PTB messages. XXX</t>
+
+        <t>The following states are defined to reflect the probing
+        process:</t>
+
+        <t><list style="hanging">
+            <t hangText="PROBE_START:">The PROBE_START state is the initial
+            state before probing has started. PLPMTUD is not performed in this
+            state. The state transitions to PROBE_BASE, when a path has been
+            confirmed, i.e. when a sent packet has been acknowledged on this
+            path. Any transport method may be used to exit PROBE_BASE as long
+            as the send packet is acknowledge by the other side. The PLPMTU is
+            set to the BASE_PMTU size. Probing ought to start immediately
+            after connection setup to prevent the prevent the loss of user
+            data.</t>
+
+            <t hangText="PROBE_BASE:">The PROBE_BASE state is the starting
+            point for probing with datagram PLPMTUD. It is used to confirm
+            whether the BASE_PMTU size is supported by the network path. On
+            entry, the PROBED_SIZE is set to the BASE_PMTU size and the
+            PROBE_COUNT is set to zero. A probe packet is sent, and the
+            PROBE_TIMER is started. The state is left when the PROBE_COUNT
+            reaches MAX_PROBES; a PTB message is validated, or a probe packet
+            is acknowledged.</t>
+
+            <t hangText="PROBE_SEARCH:">The PROBE_SEARCH state is the main
+            probing state. This state is entered either when probing for the
+            BASE_PMTU was successful or when there is a successful
+            reachability test in the PROBE_ERROR state. On entry, the PLPMTU
+            is set to the last acknowledged PROBED_SIZE.</t>
+
+            <t hangText="">The PROBE_COUNT is set to zero when the first probe
+            packet is sent for each probe size. Each time a probe packet is
+            acknowledged, the PLPMTU is set to the PROBED_SIZE, and then the
+            PROBED_SIZE is increased.</t>
+
+            <t hangText="">When a probe packet is sent and not acknowledged
+            within the period of the PROBE_TIMER, the PROBE_COUNT is
+            incremented and the probe packet is retransmitted. The state is
+            exited when the PROBE_COUNT reaches MAX_PROBES; a PTB message is
+            validated; or a probe of size PMTU_MAX is acknowledged.</t>
+
+            <t hangText="PROBE_ERROR:">The PROBE_ERROR state represents the
+            case where the network path is not known to support an PLPMTU of
+            at least the BASE_PMTU size. It is entered when either a probe of
+            size BASE_PMTU has not been acknowledged or a validated PTB
+            message indicates a smaller link MTU than the BASE_PMTU. On entry,
+            the PROBE_COUNT is set to zero and the PROBED_SIZE is set to the
+            MIN_PMTU size, and the PLPMTU is reset to MIN_PMTU size. In this
+            state, a probe packet is sent, and the PROBE_TIMER is started. The
+            state transitions to the PROBE_SEARCH state when a probe packet is
+            acknowledged.</t>
+
+            <t hangText="PROBE_DONE:">The PROBE_DONE state indicates a
+            successful end to a probing phase. DPLPMTUD remains in this state
+            until either the PMTU_RAISE_TIMER expires or a received PTB
+            message is validated.</t>
+
+            <t hangText="">When DPLPMTUD uses an unacknowledged PL and is in
+            the PROBE_DONE state, a REACHABILITY_TIMER periodically resets the
+            PROBE_COUNT and schedules a probe packet with the size of the
+            PLPMTU. If the probe packet fails to be acknowledged after
+            MAX_PROBES attempts, the method enters the PROBE_BASE state. When
+            used with an acknowledged PL (e.g., SCTP), DPLPMTUD SHOULD NOT
+            continue to probe in this state.</t>
+
+            <t hangText="PROBE_DISABLED:">The PROBE_DISABLED state indicates
+            that connectivity could not be established. DPLPMTUD MUST NOT
+            probe in this state.</t>
+          </list><xref target="StateChanges"></xref> contains an informative
+        description of key events.</t>
+      </section>
+    </section>
     </section>
 
     <section anchor="protocol_specific_methods"
@@ -1863,7 +1871,7 @@ Reachability probe acked      PROBE_TIMER expiry
           <t hangText="PMTU raise timer timeout:">The path through the network
           can change over time. It impossible to discover whether a path
           change has increased the actual PMTU by exchanging packets less than
-          or equal to the PLPMTU. This requires PLPMTUD to periodically send a
+          or equal to the PLPMTU. This requires DPLPMTUD to periodically send a
           probe packet to detect whether a larger PMTU is possible. This probe
           packet is generated by the PMTU_RAISE_TIMER. When the timer expires,
           probing is restarted with the BASE_PMTU and the state is changed to
