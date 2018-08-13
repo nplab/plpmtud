@@ -436,7 +436,8 @@
           into consideration the size of the application and lower protocol
           layer headers.</t>
 
-	  <t hangText="MIN_PMTU:">Smallest size DPLPTMUD will attempt to use</t>
+	  <t hangText="MIN_PMTU:">Smallest size DPLPTMUD will attempt to
+	  use.</t>
 
           <t hangText="Packet:">An IP header plus the IP payload.</t>
 
@@ -780,12 +781,12 @@
                 </list></t>
 
               <t hangText="PTB_SIZE &gt; PROBED_SIZE"><list style="symbols">
-                  <t>The PTB_SIZE &gt; PROBED_SIZE, which is an inconsistent
-                  message.</t>
+                  <t>The PTB_SIZE &gt; PROBED_SIZE, inconsistent
+                  network signal.</t>
 
                   <t>These PTB messages ought to be discarded without further
                   processing (the PLPMTU not updated). They could be utilised
-                  as an input to trigger enbaling a resilliance mode.</t>
+                  as an input to trigger enabling a resilliance mode.</t>
                 </list></t>
 
               <t hangText="BASE_MTU &lt;= PTB_SIZE &lt; PLPMTU"><list
@@ -964,16 +965,16 @@
           increase the PLPMTU (see <xref target="Increase"></xref>). The
           algorithm concludes by entering the SEARCH_COMPLETE phase </t>
 
-          <t>A PL MAY respond to PTB messages while in this phase, using them
-          to advance or terminate the search <xref
-          target="mechanism-ptb"></xref>. Similarly black hole detection can
-          terminate the search.</t>
+	  <t>A PL MAY respond to PTB messages while in this phase, using the
+	  PTB to advance or terminate the search <xref
+	  target="mechanism-ptb"></xref>. Similarly black hole detection can
+	  terminate the search.</t>
         </section>
 
         <section anchor="phases-complete" title="Search Complete Phase">
-          <t>On entry to the search complete phase, the DPLPMTUD sender starts
-          the PMTU_RAISE_TIMER. In this phase, the PLPMTU remains at the value
-          set in the last successful probe packet.</t>
+	  <t>On entry to the search complete phase, the DPLPMTUD sender starts
+	  the PMTU_RAISE_TIMER. In this phase, the PLPMTU remains at the value
+	  set in the last successful probe packet.</t>
 
           <t>In this phase, the PL MUST periodically confirm the PLPMTU is
           supported by the path. If the PL is designed in a way that is unable
@@ -1200,7 +1201,7 @@
           sent to the remote peer is confirmed by acknowledgement at the PL
           <xref target="Probe"></xref>.</t>
 
-          <t>A probe_timer is started each time a probe packet is sent to the
+          <t>A PROBE_TIMER is started each time a probe packet is sent to the
           destination. If a timer expires before a probe packet is
           acknowledged, the search has failed and the PL senders enters the
           SEARCH_COMPLETE state.</t>
@@ -1240,7 +1241,7 @@
 
           <t>If the DPLPMTUD sender detects that a packet of the PLPMTU size
           is no supported by the network path, then the DLPMTUD method enters
-          the PROBE_BASE stat <xref target="Probe-base"></xref>.</t>
+          the PROBE_BASE state <xref target="Probe-base"></xref>.</t>
 
           <t>This method is designed to allow an application to continue
           working when there are transient reductions in the actual PMTU. It
