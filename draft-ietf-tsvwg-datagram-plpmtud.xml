@@ -436,6 +436,8 @@
           into consideration the size of the application and lower protocol
           layer headers.</t>
 
+	  <t hangText="MIN_PMTU:">Smallest size DPLPTMUD will attempt to use</t>
+
           <t hangText="Packet:">An IP header plus the IP payload.</t>
 
           <t hangText="Packetization Layer (PL):">The layer of the network
@@ -687,12 +689,12 @@
             result of an invalid PMTU (as in PLPMTUD for TCP <xref
             target="RFC4821"></xref>).</t>
 
-            <t>A PL can use the probing mechanism to send reachability probe
+            <t>A PL can use the probing mechanism to send confirmation probe
             packets of the size of the current PLPMTU and a timer track
             whether acknowledgments are received (e.g., When the number of
             probe packets sent without receiving an acknowledgement,
             PROBE_COUNT, becomes greater than the MAX_PROBES). These messages
-            need to be generated periodically (e.g., using the reachability
+            need to be generated periodically (e.g., using the confirmation 
             timer <xref target="Timers"></xref>), and should be suppressed
             when the PL is not actively sending data.</t>
           </list></t>
@@ -731,6 +733,11 @@
           PTB messages are discarded if they fail to pass these checks, or
           where there is insufficient ICMP payload to perform the checks</t>
 
+	  <t>Probe messages sent by a PL MUST contain enough information to
+	  uniquely identify the probe within Maximum Segment Lifetime, while
+	  being robust to reordering and replay of probe response and ICMP PTB
+	  messages.</t>
+
           <t>PTB messages that have been validated can be utilised by the
           DPLPMTUD algorithm. A method that utilises these PTB messages can
           improve the speed at the which the algorithm detects an appropriate
@@ -738,9 +745,6 @@
         </section>
 
         <section title="Use of PTB Messages">
-          <t>XXX GF: Tom please carefully check the following is correct in
-          each case? XXX</t>
-
           <t>The PL MUST check that the indicated PTB_SIZE is less than the
           size used by probe packets and larger than minimum size accepted.
           These checks are intended to provide protection from a router that
@@ -748,8 +752,6 @@
 
           <t>This section provides an informative summary of how PTB messages
           can be utilised.</t>
-
-          <t>XXX GF: Let's discuss the case for message &lt;= 576B XXX</t>
 
           <t><list style="hanging">
               <t hangText="Validating PTB Messages:"><list style="symbols">
@@ -761,7 +763,7 @@
                   validate messages before they are processed.</t>
                 </list></t>
 
-              <t hangText="MIN_MTU &lt; PTB_SIZE &lt; BASE_MTU"><list
+              <t hangText="MIN_PMTU &lt; PTB_SIZE &lt; BASE_MTU"><list
                   style="symbols">
                   <t>A robust PL MAY enter the PROBE_ERROR state for an IPv4
                   path when the PTB_SIZE reported in the PTB message &gt;=
@@ -772,7 +774,12 @@
                   &gt;= 1280B and when less than the BASE_MTU.</t>
                 </list></t>
 
-              <t hangText="PTB_SIZE &gt; Probed Size"><list style="symbols">
+              <t hangText="PTB_SIZE = PLPMTU"><list
+                  style="symbols">
+		  <t> Transition to SEARCH_COMPLETE </t>
+                </list></t>
+
+              <t hangText="PTB_SIZE &gt; PROBED_SIZE"><list style="symbols">
                   <t>The PTB_SIZE &gt; PROBED_SIZE, which is an inconsistent
                   message.</t>
 
@@ -791,16 +798,16 @@
                 </list></t>
 
               <t
-              hangText="BASE_MTU &lt;=PLPMTU &lt; PTB MTU &lt; PROBED_SIZE"><list
+              hangText="PLPMTU &lt; PTB_SIZE &lt; PROBED_SIZE"><list
                   style="symbols">
-                  <t>The PLPMTU could continue to be valid, but the last
+                  <t>The PLPMTU continues to be valid, but the last
                   PROBED_SIZE searched was larger than the actual PMTU.</t>
 
                   <t>The PLPMTU is not updated.</t>
 
-                  <t>The PL can use the reported PTB_SIZE in the PTB message
-                  as the next search point when it resumes the search
-                  algorithm.</t>
+		  <t>The PL can use the reported PTB_SIZE from the PTB message
+		  as the next search point when it resumes the search
+		  algorithm.</t>
                 </list></t>
             </list></t>
         </section>
@@ -846,16 +853,29 @@
         operation. Black hole detection and PTB processing proceed in parallel
         with these phases of operation.</t>
 
-        <t>XXX Gorry: I am unsure how the terms phases and states relate.
-        Since I now have a better understanding I think we can use just one
-        set of terms XXX</t>
-
-        <t>XXX GF: DSICUSS with Tom: How do resilient/robustness figure? - and
-        should we mention both? I see these as variants of the search
-        algorithm XXX</t>
+        <t><figure anchor="fig-phases"
+            title="DPLPMTUD Phases">
+            <artwork align="center"><![CDATA[
+                        +-------------------+
+                        | Path Confirmation +--       Connectivity 
+                        +--------+----------+  \-----   or BASE_MTU  
+                                 |     /\          \/ Confirmation Fails   
+            Connectivity and     |     |         +-------+
+             BASE_MTU confirmed  |      ---------+ Error |
+                                 |               +-------+
+                                 |   CONFIRMATION_TIMER 
+                                 |        Fires
+                                 \/   
++----------------+          +--------------+
+| Search Complete|<---------+   Search     |
++----------------+          +--------------+
+                Search Algorithm
+                   Completes
+]]></artwork>
+          </figure></t>
 
         <t><list style="hanging">
-            <t hangText="Path Confrimation"><list style="symbols">
+            <t hangText="Path Confirmation"><list style="symbols">
                 <t>Connectivity is confirmed.</t>
 
                 <t>DPLPMTUD confirms the BASE_MTU is supported across the
@@ -892,11 +912,6 @@
           </list></t>
 
         <section anchor="phases-validation" title="Path Confirmation Phase">
-          <t>XXX GF: I have rewritten this - please check. XXX</t>
-
-          <t>XXX GF: The terms used for Phases differs from state - do we need
-          both? XXX</t>
-
           <t>Path confirmation is performed in two stages:</t>
 
           <t><list style="numbers">
@@ -915,7 +930,7 @@
           <t>A PL MAY respond to PTB messages while in this phase <xref
           target="mechanism-ptb"></xref>.</t>
 
-          <t>Once path validation has completed, the DPLPMTUD can advertise an
+          <t>Once path confirmation has completed, the DPLPMTUD can advertise an
           MPS to an upper layer. The MPS MUST be later verified again by
           sending probes of the PROBED_SIZE to check that the PLPMTU is still
           supported.</t>
@@ -925,6 +940,9 @@
         </section>
 
         <section anchor="Probe-base" title="PROBE_BASE Phase">
+	  <t> XXX tj - I cannot remeber if this was to be folded into Path
+	  Confirmation or not XXX </t>
+
           <t>This state is entered when path has been confirmed and also when
           a black hole is detected.</t>
 
@@ -944,11 +962,7 @@
         <section anchor="phases-search" title="Search Phase">
           <t>The search phase utilises a search algorithm in attempt to
           increase the PLPMTU (see <xref target="Increase"></xref>). The
-          algorithm concludes by entering the PROBE_DONE phase when the search
-          is complete.</t>
-
-          <t>XXX GF: Is the above transition called PROBE_DONE or SEARCH
-          COMPLETE ??? XXX</t>
+          algorithm concludes by entering the SEARCH_COMPLETE phase </t>
 
           <t>A PL MAY respond to PTB messages while in this phase, using them
           to advance or terminate the search <xref
@@ -957,9 +971,6 @@
         </section>
 
         <section anchor="phases-complete" title="Search Complete Phase">
-          <t>XXX GF:different term to probe done? (This seems a better term to
-          me). XXX</t>
-
           <t>On entry to the search complete phase, the DPLPMTUD sender starts
           the PMTU_RAISE_TIMER. In this phase, the PLPMTU remains at the value
           set in the last successful probe packet.</t>
@@ -967,18 +978,13 @@
           <t>In this phase, the PL MUST periodically confirm the PLPMTU is
           supported by the path. If the PL is designed in a way that is unable
           to confirm reachability to the destination endpoint after probing
-          has completed, the method uses a REACHABILITY_TIMER to periodically
+          has completed, the method uses a CONFIRMATION_TIMER to periodically
           repeat a probe packet for the current PLPMTU size.</t>
 
-          <t>If the DPLPMTUD sender is unable to confirm reachability for
-          packets with a size of the current PLPMTU (e.g., if the
-          REACHABILITY_TIMER expires) or the PL signals a lack of
-          reachability, the method exits the phase and enters XXX.</t>
-
-          <t>XXX GF: Which state is entered ?? PROBE_DONE? XXX</t>
-
-          <t>XXX GF: The name REACHABILITY is probably wrong as noted by MT -
-          is a better term the PLPMTU_CONFIRMATION_TIMER ??? XXX</t>
+	  <t>If the DPLPMTUD sender is unable to confirm reachability for
+	  packets with a size of the current PLPMTU (e.g., if the
+	  CONFIRMATION_TIMER expires) or the PL signals a lack of reachability,
+	  the method exits the phase and enters SEARCH_COMPLETE.</t>
 
           <t>If the PMTU_RAISE_TIMER expires, the DPLPMTUD sender enters the
           Search Phase, and resumes probing for a larger PLPMTU.</t>
@@ -988,7 +994,7 @@
 
           <t>Back hole detection can be used in parallel to check that a path
           continues to support a previously confirmed PLPMTU. If a black hole
-          is detected the algorithm moves to the PROBE_DONE state.</t>
+          is detected the algorithm moves to the SEARCH_COMPLETE state.</t>
         </section>
 
         <section anchor="Error" title="Error Phase">
@@ -1032,13 +1038,13 @@
               application data has been sent since the previous probe
               packet.</t>
 
-              <t hangText="REACHABILITY_TIMER:">The REACHABILITY_TIMER is
+              <t hangText="CONFIRMATION_TIMER:">The CONFIRMATION_TIMER is
               configured to the period a sender waits before confirming the
               current PLPMTU is still supported. This is less than the
               PMTU_RAISE_TIMER and used to decrease the PLPMTU (e.g. when a
               black hole is encountered).</t>
 
-              <t hangText="">DPLPMTUD SHOULD suspend reachability probes when
+              <t hangText="">DPLPMTUD SHOULD suspend confirmation probes when
               no application data has been sent since the previous probe
               packet. Guidance on selection of the timer value are provide in
               section 3.1.1 of the UDP Usage Guidelines<xref
@@ -1197,7 +1203,7 @@
           <t>A probe_timer is started each time a probe packet is sent to the
           destination. If a timer expires before a probe packet is
           acknowledged, the search has failed and the PL senders enters the
-          PROBE_DONE state.</t>
+          SEARCH_COMPLETE state.</t>
 
           <t>The timer is cancelled when the PL receives acknowledgment that
           the probe packet has been successfully sent across the path <xref
@@ -1230,7 +1236,7 @@
           This can be triggered when a validated PTB message is received, or
           another event that indicates the network path no longer sustains the
           current packet size, such as a loss report from the PL, or repeated
-          lack of response to the reachability timer.</t>
+          lack of response to the confirmation timer.</t>
 
           <t>If the DPLPMTUD sender detects that a packet of the PLPMTU size
           is no supported by the network path, then the DLPMTUD method enters
@@ -1249,7 +1255,7 @@
           information and unexpected PTB messages. XXX</t>
         </section>
 
-        <section title="Resilience to Inconsistent Path Information">
+        <section title="Resilience to inconsistent Path information">
           <t>A decision to increase the PLPMTU needs to be resilient to the
           possibility that information learned about the path is inconsistent
           (this could happen when probe packets are lost due to other reasons,
@@ -1264,44 +1270,6 @@
         </section>
       </section>
 
-      <section title="XXX Simple State Machine">
-        <t>XXX GF: After this edit, I now don't understand the state machine
-        here - I think PROBE_SEARCH is missing, and I have other queries
-        relating to the draft. XXX</t>
-
-        <t><figure anchor="fig-blackhole"
-            title="State machine for detecting black holes">
-            <artwork align="center"><![CDATA[
-                        +------------+
-                        | PROBE_START|
-                        +-----+------+
-                              | Connectivity confirmed
-                              | (reachability tests start)
-  PROBE_COUNT >=              V
-  MAX_PROBES            +------------+
-        +---------------| PROBE_BASE +->-+
-        |               +-----+------+   |
-        |                     |    ^     | PROBE_COUNT < MAX_PROBES
-        |                     |    +-----+
-        |                     V
-        |                     | PROBE_ACK
-        |   PROBE_COUNT       |
-        |  = MAX_PROBES +------------+
-        |  (reduce  +-<-+ PROBE_DONE +->-+
-        |   PLPMTU) |   +------+-----+   |
-        |           |     ^    |   ^     | PROBE_COUNT < MAX_PROBES
-        |           |     |    |   |     |  (Continue probing)
-        |           +-----+    |   +-----+
-        V                      V
-    +------------+             |
-    | PROBE_ERROR|<------------+
-    +------------+
-
-
-]]></artwork>
-          </figure></t>
-      </section>
-
       <section anchor="States" title="State Machine">
         <t>A state machine for DPLPMTUD is depicted in <xref
         target="fig-states"></xref>. If multihoming is supported, a state
@@ -1314,8 +1282,8 @@
                                    (PROBE_COUNT = MAX_PROBES)
                         +-------------+                +--------------+
                      +->| PROBE_START +--------------->|PROBE_DISABLED|
-                     |  +--+-------+--+                +--------------+
- (PROBE_COUNT =      |     |       |  
+PROBE_TIMER expiry   |  +--+-------+--+                +--------------+
+ (PROBE_COUNT <      |     |       |  
          MAX_PROBES) +-----+       |  Path confirmed
                                    v
                   +---------- +------------+ -+ PROBE_TIMER expiry
@@ -1324,7 +1292,7 @@ PTB (>= BASE_PMTU)|    +----> +--------+---+ <+             MAX_PROBES)
   +---------------+    |          /\   |  |
   |                    |           |   |  | 
   |    PMTU_RAISE_TIMER|           |   |  |(PTB_SIZE < BASE_PMTU)
-  |    or reachability |           |   |  |        or
+  |    or CONFIRMATION |           |   |  |        or
   |     (PROBE_COUNT   |           |   |  |(PROBE_COUNT = MAX_PROBES)
   |      = MAX_PROBES) |           |   |  | 
   |         or         |           |   |  |
@@ -1336,16 +1304,16 @@ PTB (>= BASE_PMTU)|    +----> +--------+---+ <+             MAX_PROBES)
   |        |                       |   | Probe               |
   |        |                       |   | acked               |
   v        |                       |   v                     v
-+----------+-+                +----+---------+  Probe +-------------+
-| PROBE_DONE |<-------------- | PROBE_SEARCH |<-------| PROBE_ERROR |
-+------+-----+ MAX_PMTU acked +------------+-+  acked +-------------+
- /\    |             or            /\      |   >PMTU_BASE
++----------+----+                +----+---------+  Probe +-------------+
+|SEARCH_COMPLETE|<-------------- | PROBE_SEARCH |<-------| PROBE_ERROR |
++------+--------+                +------------+-+  acked +-------------+
+ /\    |     MAX_PMTU acked or     /\      |   >= PMTU_BASE
   |    | (PROBE_COUNT = MAX_PROBES) |      |
   |    |             or             |      | 
   |    |    (PTB_SIZE >= PLPMTU)    |      |         
   |    |                            |      |                 
   +----+                            +------+
-Reachability probe acked      (PROBE_COUNT < MAX_PROBES)                    
+Confirmation probe acked      (PROBE_COUNT < MAX_PROBES)                    
        or                               or
 (PROBE_COUNT < MAX_PROBES) Probe acked(increase PLPMTU to PROBED_SIZE)       
                            
@@ -1358,9 +1326,6 @@ show to simplify the diagram.
         </figure>
 
         <t></t>
-
-        <t>XXX GF: Added PTB messages in Probe search returning to probe_done
-        - check if this is OK and then remove this comment XXX</t>
 
         <t>The following states are defined:</t>
 
@@ -1386,7 +1351,7 @@ show to simplify the diagram.
             <t hangText="PROBE_SEARCH:">The PROBE_SEARCH state is the main
             probing state. This state is entered either when probing for the
             BASE_PMTU was successful or when there is a successful
-            reachability test in the PROBE_ERROR state. On entry, the PLPMTU
+            confirmation test in the PROBE_ERROR state. On entry, the PLPMTU
             is set to the last acknowledged PROBED_SIZE.</t>
 
             <t hangText="">The PROBE_COUNT is set to zero when the first probe
@@ -1403,21 +1368,30 @@ show to simplify the diagram.
             <t hangText="PROBE_ERROR:">The PROBE_ERROR state represents the
             case where the network path is not known to support an PLPMTU of
             at least the BASE_PMTU size. It is entered when either a probe of
-            size BASE_PMTU has not been acknowledged or a validated PTB
-            message indicates a smaller PTB_SIZE smaller than the BASE_PMTU.
-            On entry, the PROBE_COUNT is set to zero and the PROBED_SIZE is
-            set to the MIN_PMTU size, and the PLPMTU is reset to MIN_PMTU
-            size. In this state, a probe packet is sent, and the PROBE_TIMER
-            is started. The state transitions to the PROBE_SEARCH state when a
-            probe packet is acknowledged of at least size PMTU_BASE.</t>
+	    size BASE_PMTU has not been acknowledged or a validated PTB message
+	    indicates a smaller PTB_SIZE smaller than the BASE_PMTU.  On entry,
+	    the PROBE_COUNT is set to zero and the PROBED_SIZE is set to the
+	    MIN_PMTU size, and the PLPMTU is reset to MIN_PMTU size. In this
+	    state, a probe packet is sent, and the PROBE_TIMER is started. The
+	    state transitions to the PROBE_SEARCH state when a probe packet is
+	    acknowledged of at least size PMTU_BASE. Robust implementations may
+	    validate the BASE_MTU several times before transitioning to
+	    PROBE_SEARCH.
+	    </t>
+	    <t hangText="">
+	    Implementations may enable fragmentation with IPv4 if the DPLPMTUD
+	    is unable to validate MIN_PMTU within PROBE_COUNT probes.  If
+	    DPLPMTUD is unable to validate MIN_PMTU the implementation should
+	    transition to PROBE_DISABLED.
+	    </t>
 
-            <t hangText="PROBE_DONE:">The PROBE_DONE state indicates a
+            <t hangText="SEARCH_COMPLETE:">The SEARCH_COMPLETE state indicates a
             successful end to a probing phase. DPLPMTUD remains in this state
             until either the PMTU_RAISE_TIMER expires or a received PTB
             message is validated.</t>
 
             <t hangText="">When DPLPMTUD uses an unacknowledged PL and is in
-            the PROBE_DONE state, a REACHABILITY_TIMER periodically resets the
+            the SEARCH_COMPLETE state, a CONFIRMATION_TIMER periodically resets the
             PROBE_COUNT and schedules a probe packet with the size of the
             PLPMTU. If the probe packet fails to be acknowledged after
             MAX_PROBES attempts, the method enters the PROBE_BASE state. When
@@ -1500,8 +1474,8 @@ show to simplify the diagram.
         <section title="Validating the Path ">
           <t>An application that does not have other higher-layer information
           confirming correct delivery of datagrams SHOULD implement the
-          REACHABILITY_TIMER to periodically send probe packets while in the
-          PROBE_DONE state.</t>
+          CONFIRMATION_TIMER to periodically send probe packets while in the
+          SEARCH_COMPLETE state.</t>
         </section>
 
         <section anchor="udpopt_ptb_handling" title="Handling of PTB Messages">
@@ -1583,7 +1557,7 @@ show to simplify the diagram.
         and without interfering with congestion control. This is preferred to
         using DATA chunks (with padding as required) as path probes.</t>
 
-        <t>XXX Future versions of this document might define a parameter
+        <t>XXX Author Note: Future versions of this document might define a parameter
         contained in the INIT and INIT ACK chunk to indicate the remote peer
         MTU to the local peer. However, multihoming makes this a bit complex,
         so it might not be worth doing. XXX</t>
@@ -1620,7 +1594,7 @@ show to simplify the diagram.
 
           <section title="Validating the Path with SCTP">
             <t>Since SCTP provides an acknowledged PL, a sender does MUST NOT
-            implement the REACHABILITY_TIMER while in the PROBE_DONE
+            implement the CONFIRMATION_TIMER while in the SEARCH_COMPLETE
             state.</t>
           </section>
 
@@ -1653,7 +1627,7 @@ show to simplify the diagram.
 
           <section title="Validating the Path with SCTP/UDP ">
             <t>Since SCTP provides an acknowledged PL, a sender does MUST NOT
-            implement the REACHABILITY_TIMER while in the PROBE_DONE
+            implement the CONFIRMATION_TIMER while in the SEARCH_COMPLETE
             state.</t>
           </section>
 
@@ -1684,7 +1658,7 @@ show to simplify the diagram.
 
           <section title="Validating the Path with SCTP/DTLS">
             <t>Since SCTP provides an acknowledged PL, a sender does MUST NOT
-            implement the REACHABILITY_TIMER while in the PROBE_DONE
+            implement the CONFIRMATION_TIMER while in the SEARCH_COMPLETE
             state.</t>
           </section>
 
@@ -1735,7 +1709,7 @@ show to simplify the diagram.
 
         <section title="Validating the Path with QUIC">
           <t>QUIC provides an acknowledged PL. A sender therefore MUST NOT
-          implement the REACHABILITY_TIMER while in the PROBE_DONE state.</t>
+          implement the CONFIRMATION_TIMER while in the SEARCH_COMPLETE state.</t>
         </section>
 
         <section title="Handling of PTB Messages by QUIC">
@@ -1898,9 +1872,9 @@ show to simplify the diagram.
 | PROBE_SEARCH | --2---    \     -----------------> | PROBE_SEARCH |
 +--------------+ --1---\----\---------------------> +--------------+
                         \    \
-+--------------+         \    \                     +--------------+
-|  PROBE_DONE  |          \    -------------------> |  PROBE_DONE  |
-+--------------+           -----------------------> +--------------+
++---------------+         \    \                     +---------------+
+|SEARCH_COMPLETE|          \    -------------------> |SEARCH_COMPLETE|
++---------------+           -----------------------> +---------------+
 
 ]]></artwork>
 
@@ -1941,9 +1915,9 @@ show to simplify the diagram.
 | PROBE_SEARCH | --1------------------------------> | PROBE_SEARCH |
 +--------------+ --2---------                       +--------------+
                              \
-+--------------+              \                     +--------------+
-|  PROBE_DONE  |               -------------------> |  PROBE_DONE  |
-+--------------+                                    +--------------+
++---------------+             \                     +---------------+
+|SEARCH_COMPLETE|              -------------------> |SEARCH_COMPLETE|
++---------------+                                   +---------------+
 
 ]]></artwork>
 
