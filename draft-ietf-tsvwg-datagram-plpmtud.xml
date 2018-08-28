@@ -44,8 +44,8 @@
 <!ENTITY RFC8085 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8085.xml">
 <!ENTITY RFC8201 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8201.xml">
 <!ENTITY RFC8261 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8261.xml">
-<!ENTITY I-D.ietf-tsvwg-udp-options SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-tsvwg-udp-options-04.xml">
-<!ENTITY I-D.ietf-quic-transport SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-quic-transport-13.xml">
+<!ENTITY I-D.ietf-tsvwg-udp-options SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-tsvwg-udp-options-05.xml">
+<!ENTITY I-D.ietf-quic-transport SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-quic-transport-14.xml">
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <!-- used by XSLT processors -->
@@ -72,7 +72,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-04tobe"
+<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-04"
      ipr="trust200902" updates="4821">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
@@ -177,7 +177,7 @@
       </address>
     </author>
 
-    <date day="02" month="August" year="2018" />
+    <date day="27" month="August" year="2018" />
 
     <!-- Meta-data Declarations -->
 
@@ -275,7 +275,7 @@
             results in black-holing.</t>
 
             <t>When a router issuing the ICMP message implements RFC792 <xref
-            target="RFC0792"></xref>, it is only required the to include the
+            target="RFC0792"></xref>, it is only required to include the
             first 64 bits of the IP payload of the packet within the quoted
             payload. This could be insufficient to perform the tunnel
             processing described in the previous bullet. Even if the
@@ -283,7 +283,7 @@
             could be insufficient bytes remaining for the sender to interpret
             the quoted transport information. RFC1812 <xref
             target="RFC1812"></xref> requires routers to return the full
-            packet if possible, often the case for IPv4 when used the path
+            packet if possible (It is often the case for IPv4 when used the path
             includes tunnels; or where the packet has been
             encapsulated/tunneled over an encrypted transport and it is not
             possible to determine the original transport header).</t>
@@ -303,7 +303,7 @@
         of IP packets and selecting an appropriate Maximum Packet Size (MPS).
         This function is often performed by a transport protocol, but can also
         be performed by other encapsulation methods working above the
-        transport.</t>
+        transport layer.</t>
 
         <t>In contrast to PMTUD, Packetization Layer Path MTU Discovery
         (PLPMTUD) <xref target="RFC4821"></xref> does not rely upon reception
@@ -311,7 +311,7 @@
         Classical PMTUD. This has become the recommended approach for
         implementing PMTU discovery with TCP.</t>
 
-        <t>It uses a general strategy where the PL sends probe packet to
+        <t>It uses a general strategy where the PL sends probe packets to
         search for the largest size of unfragmented datagram that can be sent
         over a network path. The probe packets are sent with a progressively
         larger packet size. If a probe packet is successfully delivered (as
@@ -346,7 +346,7 @@
         application SHOULD either use the Path MTU information provided by the
         IP layer or implement Path MTU Discovery (PMTUD)", but does not
         provide a mechanism for discovering the largest size of unfragmented
-        datagram than can be used on a network path. Prior to this document,
+        datagram that can be used on a network path. Prior to this document,
         PLPMTUD had not been specified for UDP.</t>
 
         <t>Section 10.2 of <xref target="RFC4821"></xref> recommends a PLPMTUD
@@ -365,7 +365,7 @@
         method defined in this specification could be used with DCCP.</t>
 
         <t><xref target="protocol_specific_methods"></xref> specifies the
-        method for a set of transports, and provides information to enables
+        method for a set of transports, and provides information to enable
         the implementation of PLPMTUD with other datagram transports and
         applications that use datagram transports.</t>
       </section>
@@ -386,17 +386,17 @@
           sender PL and a destination PL, which the DPLPMTUD algorithm seeks
           to determine.</t>
 
-          <t hangText="Black Holed:">When the sender is unaware that packets
-          are not delivered to the destination endpoint (e.g., when the sender
-          transmits packets of a particular size with a previously known
-          effective PMTU (also referred to as the PLPMTU), but is not made
-          aware of a change to the path that resulted in a smaller PLPMTU by
-          ICMP messages).</t>
+	  <t hangText="Black Holed:">When the sender is unaware that packets
+	  are not delivered to the destination endpoint (e.g., when the sender
+	  transmits packets of a particular size with a previously known
+	  effective PMTU and they are silently discarded by the network, but is
+	  not made aware of a change to the path that resulted in a smaller
+	  PLPMTU by ICMP messages).</t>
 
           <t hangText="Classical Path MTU Discovery:">Classical PMTUD is a
           process described in <xref target="RFC1191"></xref> and <xref
           target="RFC8201"></xref>, in which nodes rely on PTB messages to
-          learn the largest size of unfragmented datagram than can be used
+          learn the largest size of unfragmented datagram that can be used
           across a network path.</t>
 
           <t hangText="Datagram:">A datagram is a transport-layer protocol
@@ -430,11 +430,10 @@
           not part of IP or the IP payload. Other standards organizations
           generally define the link MTU to include the link layer headers.</t>
 
-          <t hangText="MPS:">The Maximum Packet Size (MPS) is the largest size
-          of application data block that can be sent across a network path. In
-          DPLPMTUD this quantity is derived from the PLPMTU by taking into
-          consideration the size of the application and lower protocol layer
-          headers.</t>
+	  <t hangText="MPS:">The Maximum Packet Size (MPS) is the largest size
+	  of application data block that can be sent across a network path. In
+	  DPLPMTUD this quantity is derived from the PLPMTU by taking into
+	  consideration the size of the lower protocol layer headers.</t>
 
           <t hangText="MIN_PMTU:">Smallest size of PLPMTU that DPLPTMUD will
           attempt to use.</t>
@@ -453,7 +452,7 @@
           the links forming a network path between a source node and a
           destination node.</t>
 
-          <t hangText="PTB_SIZE:">The PTB_Size is a value reported in a
+          <t hangText="PTB_SIZE:">The PTB_SIZE is a value reported in a
           validated PTB message that indicates next hop link MTU of a router
           along the path.</t>
 
@@ -475,8 +474,8 @@
              title="Features Required to Provide Datagram PLPMTUD">
       <t>TCP PLPMTUD has been defined using standard TCP protocol mechanisms.
       All of the requirements in <xref target="RFC4821"></xref> also apply to
-      use of the technique with a datagram PL. Unlike TCP, some datagram PLs
-      require additional mechanisms to implement PLPMTUD.</t>
+      the use of the technique with a datagram PL. Unlike TCP, some datagram
+      PLs require additional mechanisms to implement PLPMTUD.</t>
 
       <t>There are eight requirements for performing the datagram PLPMTUD
       method described in this specification: <list style="numbers">
@@ -486,7 +485,7 @@
           similar information about the receiver when this is supplied (note
           this could be less than EMTU_R). This avoids implementations trying
           to send probe packets that can not be transmitted by the local link.
-          Too high a value could reduce the efficiency of the search
+          Too high of a value could reduce the efficiency of the search
           algorithm. Some applications also have a maximum transport protocol
           data unit (PDU) size, in which case there is no benefit from probing
           for a size larger than this (unless a transport allows multiplexing
@@ -545,7 +544,7 @@
           reasons (including link transmission error, congestion). The
           DPLPMTUD sender treats isolated loss of a probe packet (with or
           without an PTB message) as a potential indication of a PMTU limit
-          for the path, but not as an indication of congestion <xref
+          for the path, but not as an indication of congestion, see <xref
           target="CC"></xref>.</t>
 
           <t>Shared PLPMTU state: The PLPMTU value could also be stored with
@@ -574,15 +573,15 @@
           reduced MPS can adversely impact the performance of a datagram
           application.</t>
 
-          <t>Path validation: A method is RECOMMENDED be robust to path
+          <t>Path validation: A method is RECOMMENDED to be robust to path
           changes that could have occurred since the path characteristics were
           last confirmed, and to the possibility of inconsistent path
           information being received.</t>
 
-          <t>Datagram reordering: A method is REQUIRED to be robust to the
-          possibility that a flow encounters reordering, or has the traffic
-          (including probe packets) is divided over more than one network
-          path.</t>
+	  <t>Datagram reordering: A method is REQUIRED to be robust to the
+	  possibility that a flow encounters reordering, or the traffic
+	  (including probe packets) is divided over more than one network
+	  path.</t>
 
           <t>When to probe: It is RECOMMENDED that methods determine whether
           the path capacity has increased since it last measured the path.
@@ -701,7 +700,7 @@
 
             <t>A PL can use the probing mechanism to send confirmation probe
             packets of the size of the current PLPMTU and a timer track
-            whether acknowledgments are received (e.g., When the number of
+            whether acknowledgments are received (e.g., The number of
             probe packets sent without receiving an acknowledgement,
             PROBE_COUNT, becomes greater than the MAX_PROBES). These messages
             need to be generated periodically (e.g., using the confirmation
@@ -866,7 +865,7 @@
               expire after a period longer than the maximum time to receive an
               acknowledgment to a probe packet. This value MUST be larger than
               1 second, and SHOULD be larger than 15 seconds. Guidance on
-              selection of the timer value are provide in section 3.1.1 of the
+              selection of the timer value are provided in section 3.1.1 of the
               UDP Usage Guidelines <xref target="RFC8085"></xref>.</t>
 
               <t hangText="">If the PL has a path Round Trip Time (RTT)
@@ -890,7 +889,7 @@
               black hole is encountered). Confirmation needs to be frequent
               enough when data is flowing that the sending PL does not black
               hole extensive amounts of traffic. Guidance on selection of the
-              timer value are provide in section 3.1.1 of the UDP Usage
+              timer value are provided in section 3.1.1 of the UDP Usage
               Guidelines<xref target="RFC8085"></xref>.</t>
 
               <t hangText="">DPLPMTUD SHOULD inhibit sending probe packets
@@ -936,18 +935,6 @@
 
         <section title="Variables">
           <t>This method utilises a set of variables: <list style="hanging">
-              <t hangText="PROBE_TIMER:">The PROBE_TIMER is configured to
-              expire after a period longer than the maximum time to receive an
-              acknowledgment to a probe packet. This value MUST be larger than
-              1 second, and SHOULD be larger than 15 seconds. Guidance on
-              selection of the timer value are provide in section 3.1.1 of the
-              UDP Usage Guidelines <xref target="RFC8085"></xref>.</t>
-
-              <t hangText="">A PL that is able to estimate the RTT MAY use
-              values smaller than 1 seconded, derived from the RTT estimate.
-              This can speed up detection of connectivity issues for the
-              path.</t>
-
               <t hangText="PROBED_SIZE:">The PROBED_SIZE is the size of the
               current probe packet. This is a tentative value for the PLPMTU,
               which is awaiting confirmation by an acknowledgment.</t>
@@ -999,7 +986,7 @@
         by an end-to-end flow (e.g., after a routing or path fail-over
         decision).</t>
 
-        <t>Black hole detection <xref target="mechanism-bhd"></xref> and PTB
+        <t>Black hole detection, see <xref target="mechanism-bhd"></xref> and PTB
         processing <xref target="mechanism-ptb"></xref> proceed in parallel
         with these phases of operation.</t>
 
@@ -1034,7 +1021,7 @@
               </list></t>
 
             <t hangText="Search"><list style="symbols">
-                <t>DLPMTUD performs probing to increase the PLPMTU.</t>
+                <t>DPLPMTUD performs probing to increase the PLPMTU.</t>
 
                 <t>DPLPMTUD then enters the search complete or an error
                 phase.</t>
@@ -1065,11 +1052,11 @@
           is performed in two stages:</t>
 
           <t><list style="numbers">
-              <t>Connectivity to the remote peer is first confirmed. When a
-              connected PL is used, this stage is implicit. It is performed as
-              part of the normal PL connection handshake. In contrast, an
-              unconnected PL MUST send an acknowledged probe packet to confirm
-              that the remote peer is reachable.</t>
+	      <t>Connectivity to the remote peer is first confirmed. When a
+	      connection-oriented PL is used, this stage is implicit. It is
+	      performed as part of the normal PL connection handshake. In
+	      contrast, an connectionless PL MUST send an acknowledged probe
+	      packet to confirm that the remote peer is reachable.</t>
 
               <t>In the second stage, the PL confirms it can successfully send
               a datagram of the BASE_PMTU size across the current path.</t>
@@ -1078,14 +1065,14 @@
           by performing connectivity checks with probes of the BASE_PMTU
           size.</t>
 
-          <t>A PL MAY respond to PTB messages while in this phase <xref
+          <t>A PL MAY respond to PTB messages while in this phase, see <xref
           target="mechanism-ptb"></xref>.</t>
 
           <t>Once path confirmation has completed, DPLPMTUD can advertise an
           MPS to an upper layer. </t>
 
           <t>If DPLPMTUD fails to complete these tests it enters the
-          PROBE_DISABLED phase <xref target="phases-disabled"></xref>, and
+          PROBE_DISABLED phase, see <xref target="phases-disabled"></xref>, and
           ceases using DPLPTMUD.</t>
         </section>
 
@@ -1094,13 +1081,13 @@
           increase the PLPMTU (see <xref target="Increase"></xref>). The PL
           sender increases the MPS each time a packet probe confirms a larger
           PLPMTU is supported by the path. The algorithm concludes by entering
-          the SEARCH_COMPLETE phase <xref
+          the SEARCH_COMPLETE phase, see <xref
           target="phases-complete"></xref>.</t>
 
           <t>A PL MAY respond to PTB messages while in this phase, using the
-          PTB to advance or terminate the search <xref
+          PTB to advance or terminate the search, see <xref
           target="mechanism-ptb"></xref>. Similarly black hole detection can
-          terminate the search by entering the PROBE_BASE Phase <xref
+          terminate the search by entering the PROBE_BASE phase, see <xref
           target="phases-base"></xref>.</t>
 
           <section title="Resilience to inconsistent path information">
@@ -1121,7 +1108,7 @@
           the PMTU_RAISE_TIMER. In this phase, the PLPMTU remains at the value
           confirmed by the last successful probe packet.</t>
 
-          <t>In this phase, the PL MUST periodically confirm the PLPMTU is
+          <t>In this phase, the PL MUST periodically confirm that the PLPMTU is
           still supported by the path. If the PL is designed in a way that is
           unable to confirm reachability to the destination endpoint after
           probing has completed, the method uses a CONFIRMATION_TIMER to
@@ -1131,16 +1118,16 @@
           packets with a size of the current PLPMTU (e.g., if the
           CONFIRMATION_TIMER expires) or the PL signals a lack of
           reachability, the method exits the phase and enters the PROBE_BASE
-          Phase <xref target="phases-base"></xref>.</t>
+          phase, see <xref target="phases-base"></xref>.</t>
 
-          <t>If the PMTU_RAISE_TIMER expires, the DPLPMTUD sender re-enters
-          the Search Phase <xref target="phases-search"></xref>, and resumes
-          probing for a larger PLPMTU.</t>
+	  <t>If the PMTU_RAISE_TIMER expires, the DPLPMTUD sender re-enters the
+	  Search phase, see <xref target="phases-search"></xref>, and resumes
+	  probing for a larger PLPMTU.</t>
 
-          <t>Back hole detection can be used in parallel to check that a
-          network path continues to support a previously confirmed PLPMTU. If
-          a black hole is detected the algorithm moves to the PROBE_BASE Phase
-          <xref target="phases-base"></xref>.</t>
+	  <t>Back hole detection can be used in parallel to check that a
+	  network path continues to support a previously confirmed PLPMTU. If a
+	  black hole is detected the algorithm moves to the PROBE_BASE phase,
+	  see <xref target="phases-base"></xref>.</t>
 
           <t>The phase can also exited when a validated PTB message is
           received (see <xref target="PTB"></xref>).</t>
@@ -1159,7 +1146,7 @@
           can use a larger PLPMTU.</t>
 
           <t>If the path cannot be confirmed to support the BASE_PMTU after
-          sending MAX_PROBES, DPLPMTUD moves to the Error phase <xref
+          sending MAX_PROBES, DPLPMTUD moves to the Error phase, see <xref
           target="phases-error"></xref>.</t>
         </section>
 
@@ -1177,7 +1164,7 @@
           actions in this phase.</t>
 
           <t>If no acknowledgement is received for PROBE_COUNT probes of size
-          MIN_PMTU, the method suspends DPLPMTUD <xref
+          MIN_PMTU, the method suspends DPLPMTUD, see <xref
           target="phases-error"></xref>.</t>
 
           <section anchor="robustness" title="Robustness to inconsistent path">
@@ -1205,7 +1192,9 @@
         target="fig-states"></xref>. If multihoming is supported, a state
         machine is needed for each active path.</t>
 
-        <figure anchor="fig-states" title="State machine for Datagram PLPMTUD">
+	<figure anchor="fig-states" title="State machine for Datagram PLPMTUD.
+	Note: Some state changes are not
+show to simplify the diagram.">
           <artwork align="center"><![CDATA[
 
                                           PROBE_TIMER expiry
@@ -1216,17 +1205,17 @@
                                    |                              ^
                                    | Path confirmed               |
                                    v                              |
-                            +--------------+-+ (PROBE_COUNT       |
-MAX_PMTU acked or +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
-PTB (>=BASE_PMTU) |    +--> +--------------+<+  or Probe acked    |
-&& (=<PROBED_SIZE)|    |           |   ^  |                       |
+MAX_PMTU acked or           +--------------+-+ (PROBE_COUNT       |
+PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
+  PTB_SIZE        |    +--> +--------------+<+  or Probe acked    |
+<PROBED_SIZE)     |    |           |   ^  |                       |
     or            |    |           |   |  |                       |
 (PROBE_COUNT      |    |           |   |  |(PTB_SIZE <            |     
   =MAX_PROBES)    |    |           |   |  |  BASE_PMTU)           |
   +---------------+    |           |   |  | or                    |
-  |                    |           |   |  |(PROBE_COUNT =         |    
-  |                    |           |   |  |  MAX_PROBES)          |
-  |   PMTU_RAISE_TIMER |           |   |  |                       |
+  |                    |           |   |  |PLPMTU < BASE_MTU      |    
+  |                    |           |   |  | (PROBE_COUNT =        |
+  |   PMTU_RAISE_TIMER |           |   |  |   MAX_PROBES)         |
   |                    |           |   |  |                       |
   |                    |           |   |   \                      |  
   |                    |           |   |    \   Suspend DPLPDMTUD |
@@ -1245,13 +1234,10 @@ PTB (>=BASE_PMTU) |    +--> +--------------+<+  or Probe acked    |
   |    |                         |  | | (PROBE_COUNT = MAX_PROBES)|
   |    |                         |  | +---------------------------+            
   +----+                         +--+   
-(PROBE_COUNT < MAX_PROBES)    PROBE_TIMER expiry
-        or                    (PROBE_COUNT < MAX_PROBES) 
-PLPMTU Probe acked                       
-  
-
-FIGURE: DPLPMTUD State Diagram. Note: Some state changes are not
-show to simplify the diagram.
+ Confirmation:                 PROBE_TIMER expiry
+(PROBE_COUNT < MAX_PROBES)    (PROBE_COUNT < MAX_PROBES) 
+         or                              
+ PLPMTU Probe acked        
 
 ]]></artwork>
         </figure>
@@ -1265,13 +1251,14 @@ show to simplify the diagram.
             state before probing has started. The state confirms connectivity
             to the remote PL. </t>
 
-            <t hangText="">The PLPMTU is set to the BASE_PMTU size. Probing
-            ought to start immediately after connection setup to prevent the
-            prevent the loss of user data. PLPMTUD is not performed in this
-            state. The state transitions to PROBE_SEARCH, when a network path
-            has been confirmed, i.e., when a sent packet has been acknowledged
-            on this network path and the BASE_PMTU is confirmed to be
-            supported.</t>
+	    <t hangText="">The PLPMTU is set to the BASE_PMTU size. Probing
+	    ought to start immediately after connection setup to prevent the
+	    prevent the loss of user data. PLPMTUD is not performed in this
+	    state. The state transitions to PROBE_SEARCH, when a network path
+	    has been confirmed, i.e., when a sent packet has been acknowledged
+	    on this network path and the BASE_PMTU is confirmed to be
+	    supported. If the network path cannot be confirmed this state
+	    transitions to PROBE_DISABLED.</t>
 
             <t hangText="PROBE_SEARCH:">The PROBE_SEARCH state is the main
             probing state. This state is entered when probing for the
@@ -1370,7 +1357,7 @@ show to simplify the diagram.
           first sent with a particular size. A timer is used by the search
           algorithm to trigger the sending of probe packets of size
           PROBED_SIZE, larger than the PLPMTU. Each probe packet successfully
-          sent to the remote peer is confirmed by acknowledgement at the PL
+          sent to the remote peer is confirmed by acknowledgement at the PL, see
           <xref target="Probe"></xref>.</t>
 
           <t>Each time a probe packet is sent to the destination, the
@@ -1506,68 +1493,117 @@ show to simplify the diagram.
           check each received PTB messages to validate it is received in
           response to transmitted traffic and that the reported PTB_SIZE is
           less than the current probed size. A validated PTB message MAY be
-          used as input to the DPLPMTUD algorithm, but MUST NOT be used
+	  used as input to the DPLPMTUD algorithm, but MUST NOT be used
           directly to set the PLPMTU.</t>
         </section>
       </section>
 
-      <section anchor="UDPOPT-PLPMTUD" title="DPLPMTUD with UDP Options">
-        <t>UDP-Options <xref target="I-D.ietf-tsvwg-udp-options"></xref> can
-        supply the additional functionality required to implement DPLPMTUD
-        within the UDP transport service. This avoids the need for
-        applications to implement the DPLPMTUD method.</t>
+        <section anchor="UDPOPT-PLPMTUD" title="DPLPMTUD with UDP Options">
+          <t>UDP-Options<xref target="I-D.ietf-tsvwg-udp-options"></xref>  can
+          supply the additional functionality required to implement DPLPMTUD
+          within the UDP transport service. This avoids the need for
+          applications to implement the DPLPMTUD method.</t>
 
-        <t>This enables padding to be added to UDP datagrams and can be used
-        to provide feedback acknowledgement of received probe packets.</t>
+          <t>This enables padding to be added to UDP datagrams and can be used
+          to provide feedback acknowledgement of received probe packets.</t>
 
-        <t>The specification also defines two UDP Options to support
-        DPLPMTUD.</t>
+          <t>The specification also defines two UDP Options to support
+          DPLPMTUD.</t>
 
-        <t>Section 5.6 of <xref target="I-D.ietf-tsvwg-udp-options"></xref>
-        defines the MSS option which allows the local sender to indicate the
-        EMTU_R to the peer. This option can be used to initialise PMTU_MAX. An
-        application wishing to avoid the effects of MSS-Clamping (where a
-        middlebox changes the advertised TCP maximum sending size) ought to
-        use a cryptographic method to encrypt this parameter.</t>
+	  <t>Section 5.6 of<xref target="I-D.ietf-tsvwg-udp-options"></xref>
+	  defines the MSS option, which allows the local sender to indicate the
+	  EMTU_R to the peer. This option can be used to initialise
+	  PMTU_MAX.</t>
 
-        <section anchor="UDPOPT-ECHOREQ" title="UDP Request Option">
+          <t>
+	  Implementations must be able to distinguish between acknowledgements
+	  for initial probes and acknowledgements for subsequent probes.  Probe
+	  packets need to be uniquely identifiable by the UDP Options sender
+	  within the Maximum Segment Lifetime (MSL), token values must not be
+	  recycled by the UDP Options sender until they have expired or have
+	  been acknowledged. A 4 byte value for the token field provides enough
+	  space for multiple unique probes to be made within MSL.
+          </t>
+
+          <t>
+	  Request Probes are used to measure the PMTU and to verify
+	  connectivity.  Implementations should only send Request Probes when
+	  required by their local state machine, i.e. when probing to grow the
+	  PLPMTU, and could also be used to confirm the current PLPMTU. Dealing
+	  with loss of Response packets is the responsibility of the sender of
+	  the Request. Implementations may track multiple requests and respond
+	  to them with a single packet.
+          </t>
+
+	  <t>
+	  The presence of a recent Timestamp value can be used to infer
+	  connectivity. Timestamp mechanisms cannot be used to confirm the
+	  reception of individual probe messages and cannot be used to
+	  stimulate a response from the remote peer.
+	  </t>
+
+          <t>
+	  An application needs to determine that the path can still support the
+	  size of datagram that the application is currently sending in the
+	  search_done state.
+          </t>
+
+          <t>
+	  One way to do this could be to utilise explicit feedback to detect
+	  loss, hwoever it is also possible to use the timestamp UDP-option to
+	  detect black-holing of data. This can provide useful feedback even
+	  over paths with asymmetric capacity and/or that carry UDP-O flows
+	  that have very assymetric datagram rates. This is because an echo of
+	  the most recent timestamp still indicates reception of at least one
+	  packet of the transmitted size - sufficient to confirm there is no
+	  blackhole.
+          </t>
+
+          <t>
+	  In contrast, when sending a probe to increase the PLPMTU, a timestamp
+	  may be unable to unabiguously identify that a specific probe packet
+	  has been received, and more than a timestamp is required to associate
+	  a confirmation with a specific probe packet.
+          </t>
+
+          <section anchor="UDPOPT-ECHOREQ" title="UDP Request Option">
           <t>The Request Option allows a sending endpoint to solicit a
           response from a destination endpoint.</t>
 
           <t>The Request Option carries a four byte token set by the sender.
           This token can be set to a value that is likely to be known only to
-          the sender (and becomes known to nodes along the end-to-end path).
+          the sender (and is sent along the end-to-end path).
           The sender can then check the value returned in the response to
-          provide additional protection from off-path insertion of data <xref
+          provide additional protection from off-path insertion of data<xref
           target="RFC8085"></xref>.</t>
 
-          <figure anchor="fig-echoreq" title="UDP REQ Option Format">
-            <artwork align="center"><![CDATA[
-        +---------+--------+-----------------+
-        | Kind=9  | Len=6  |     Token       |
-        +---------+--------+-----------------+
-          1 byte    1 byte       4 bytes       
-]]></artwork>
-          </figure>
-        </section>
+        <figure anchor="fig-echoreq" title="UDP REQ Option Format">
+              <artwork align="center"><![CDATA[
+          +---------+--------+-----------------+
+          | Kind=9  | Len=6  |     Token       |
+          +---------+--------+-----------------+
+            1 byte    1 byte       4 bytes
+  ]]></artwork>
+            </figure>
+          </section>
 
-        <section anchor="UDPOPT-ECHORES" title="UDP Response Option">
-          <t>The Response Option is generated by the PL in response to
-          reception of a previously received Echo Request. The Token field
-          associates the response with the Token value carried in the most
-          recently-received Echo Request. The rate of generation of UDP
-          packets carrying a Response Option MAY be rate-limited.</t>
+          <section anchor="UDPOPT-ECHORES" title="UDP Response Option">
+            <t>The Response Option is generated by the PL in response to
+            reception of a previously received Echo Request. The Token field
+            associates the response with the Token value carried in the most
+            recently-received Echo Request. The rate of generation of UDP
+            packets carrying a Response Option MAY be rate-limited.</t>
 
-          <figure anchor="fig-echores" title="UDP RES Option Format">
-            <artwork align="center"><![CDATA[
-        +---------+--------+-----------------+
-        | Kind=10 | Len=6  |     Token       |
-        +---------+--------+-----------------+
-          1 byte    1 byte       4 bytes       
-]]></artwork>
-          </figure>
+            <figure anchor="fig-echores" title="UDP RES Option Format">
+              <artwork align="center"><![CDATA[
+          +---------+--------+-----------------+
+          | Kind=10 | Len=6  |     Token       |
+          +---------+--------+-----------------+
+            1 byte    1 byte       4 bytes
+  ]]></artwork>
+            </figure>
+          </section>
         </section>
-      </section>
 
       <section title="DPLPMTUD for SCTP">
         <t>Section 10.2 of <xref target="RFC4821"></xref> specifies a
@@ -1583,7 +1619,7 @@ show to simplify the diagram.
         remote peer MTU to the local peer. However, multihoming makes this a
         bit complex, so it might not be worth doing. XXX</t>
 
-        <section anchor="sctp_over_ip" title="SCTP/IP4 and SCTP/IPv6">
+        <section anchor="sctp_over_ip" title="SCTP/IPv4 and SCTP/IPv6">
           <t>The base protocol is specified in <xref target="RFC4960"></xref>.
           This provides an acknowledged PL. A sender can therefore enter the
           PROBE_BASE state as soon as connectivity has been confirmed.</t>
@@ -1614,7 +1650,7 @@ show to simplify the diagram.
           </section>
 
           <section title="Validating the Path with SCTP">
-            <t>Since SCTP provides an acknowledged PL, a sender does MUST NOT
+            <t>Since SCTP provides an acknowledged PL, a sender MUST NOT
             implement the CONFIRMATION_TIMER while in the SEARCH_COMPLETE
             state.</t>
           </section>
@@ -1647,22 +1683,22 @@ show to simplify the diagram.
           </section>
 
           <section title="Validating the Path with SCTP/UDP ">
-            <t>Since SCTP provides an acknowledged PL, a sender does MUST NOT
+            <t>Since SCTP provides an acknowledged PL, a sender MUST NOT
             implement the CONFIRMATION_TIMER while in the SEARCH_COMPLETE
             state.</t>
           </section>
 
           <section anchor="sctp_over_udp_ptb_handling"
                    title="Handling of PTB Messages by SCTP/UDP">
-            <t>Normal ICMP validation MUST be performed for PTB messages as
-            specified in Appendix C of <xref target="RFC4960"></xref>. This
-            requires that the first 8 bytes of the SCTP common header are
-            contained in the PTB message, which can be the case for ICMPv4
-            (but note the UDP header also consumes a part of the quoted packet
-            header) and is normally the case for ICMPv6. When the validation
-            is completed, the PTB_SIZE indicated in the PTB message SHOULD be
-            used with the DPLPMTUD providing that the reported PTB_SIZE is
-            less than the current probe size.</t>
+	    <t>Normal ICMP validation MUST be performed for PTB messages as
+	    specified in Appendix C of <xref target="RFC4960"></xref>. This
+	    requires that the first 8 bytes of the SCTP common header are
+	    contained in the PTB message, which can be the case for ICMPv4 (but
+	    note the UDP header also consumes a part of the quoted packet
+	    header) and is normally the case for ICMPv6. When the validation is
+	    completed, the PTB_SIZE indicated in the PTB message SHOULD be used
+	    with the DPLPMTUD providing that the reported PTB_SIZE is less than
+	    the current probe size.</t>
           </section>
         </section>
 
@@ -1678,7 +1714,7 @@ show to simplify the diagram.
           </section>
 
           <section title="Validating the Path with SCTP/DTLS">
-            <t>Since SCTP provides an acknowledged PL, a sender does MUST NOT
+            <t>Since SCTP provides an acknowledged PL, a sender MUST NOT
             implement the CONFIRMATION_TIMER while in the SEARCH_COMPLETE
             state.</t>
           </section>
@@ -1702,7 +1738,7 @@ show to simplify the diagram.
         <t>Section 9.2 of <xref target="I-D.ietf-quic-transport"></xref>
         describes the path considerations when sending QUIC packets. It
         recommends the use of PADDING frames to build the probe packet. This
-        enables probing the without affecting the transfer of other QUIC
+        enables probing without affecting the transfer of other QUIC
         frames.</t>
 
         <t>This provides an acknowledged PL. A sender can therefore enter the
@@ -1793,7 +1829,7 @@ show to simplify the diagram.
       DPLPMTUD MUST therefore appropriately validate the payload of PTB
       messages to ensure these are received in response to transmitted traffic
       (i.e., a reported error condition that corresponds to a datagram
-      actually sent by the path layer.</t>
+      actually sent by the path layer).</t>
 
       <t>Parallel forwarding paths may need to be considered. <xref
       target="robustness"></xref> identifies the need for robustness in the
@@ -1867,7 +1903,7 @@ show to simplify the diagram.
 
       <t><list style="hanging">
           <t hangText="Path Setup:">When a new path is initiated, the state is
-          set to Path_Confirmation. This sends a probe packet with the size of
+          set to PROBE_START. This sends a probe packet with the size of
           the BASE_PMTU. As soon as the path is confirmed, the state changes
           to PROBE_SEARCH. </t>
 
@@ -1878,24 +1914,24 @@ show to simplify the diagram.
               anchor="fig-acks"
               title="State changes at the arrival of an acknowledgment">
               <artwork align="center"><![CDATA[
-+------------------+                                +----------------+
-|PATH_CONFIRMATION | --3--------------------------> | PROBE_DISABLED |
-+------------------+ --4------------  ------------> +----------------+
++--------------+                                    +----------------+
+| PROBE_START  | --3------------------------------> | PROBE_DISABLED |
++--------------+ --4----------------  ------------> +----------------+
                                     \/
 +--------------+                    /\              +--------------+         
 | PROBE_ERROR  | -------------------- \ ----------> |  PROBE_BASE  |    
 +--------------+ --4--------------/    \            +--------------+
                                         \          
 +--------------+ --1 --------            \          +--------------+
-|  PROBE_BASE  | --2----     \        --- \ ------> | PROBE_ERROR  | 
-+--------------+ --3--- \ --- \ -----/     \       +--------------+   
-                         \     \            \
-+--------------+          \     \            -----> +--------------+
-| PROBE_SEARCH | --2---    \     -----------------> | PROBE_SEARCH |
-+--------------+       \    \   ------------------> +--------------+
-                        \ -- \ /
-+---------------+      / \    \                     +---------------+
-|SEARCH_COMPLETE| -1---   \    -------------------> |SEARCH_COMPLETE|
+|  PROBE_BASE  |             \        --- \ ------> | PROBE_ERROR  | 
++--------------+ --3--------- \ -----/     \       +--------------+   
+                               \            \
++--------------+                \            -----> +--------------+
+| PROBE_SEARCH | --2---          -----------------> | PROBE_SEARCH |
++--------------+       \        ------------------> +--------------+
+                        \ ---- /
++---------------+      / \                          +---------------+
+|SEARCH_COMPLETE| -1---   \                         |SEARCH_COMPLETE|
 +---------------+ -5--     -----------------------> +---------------+
                       \
                        \                            +--------------+
@@ -1926,9 +1962,9 @@ show to simplify the diagram.
           <figure anchor="fig-probeTimer"
               title="State changes at the expiration of the probe timer">
               <artwork align="center"><![CDATA[
-+-----------------+                                 +----------------+
-|PATH_CONFIRMATION| ------------------------------->| PROBE_DISABLED |
-+-----------------+                                 +----------------+
++--------------+                                    +----------------+
+|  PROBE_START | --2------------------------------->| PROBE_DISABLED |
++--------------+                                    +----------------+
 
 +--------------+                                    +--------------+
 | PROBE_ERROR  |                 -----------------> | PROBE_ERROR  |
@@ -1956,9 +1992,7 @@ show to simplify the diagram.
 
           <t hangText="PMTU raise timer timeout:">DPLPMTUD periodically sends
           a probe packet to detect whether a larger PMTU is possible. This
-          probe packet is generated by the PMTU_RAISE_TIMER. When the timer
-          expires, probing is restarted with the BASE_PMTU and the state is
-          changed to PROBE_BASE.</t>
+          probe packet is generated by the PMTU_RAISE_TIMER. </t>
 
           <t hangText="Arrival of a PTB message:">The active probing of the
           path can be supported by the arrival of a PTB message indicating the
