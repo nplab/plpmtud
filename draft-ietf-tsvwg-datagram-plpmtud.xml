@@ -177,7 +177,7 @@
       </address>
     </author>
 
-    <date day="29" month="August" year="2018" />
+    <date day="5" month="September" year="2018" />
 
     <!-- Meta-data Declarations -->
 
@@ -206,7 +206,7 @@
       Datagram PMTUD into IETF datagram transports or applications that use
       datagram transports.</t>
 
-      <t>When published, this specification updates RFC 4821.</t>
+      <t>When published, this specification updates RFC 4821 when used with datagram transports.</t>
     </abstract>
   </front>
 
@@ -219,6 +219,9 @@
       (PMTUD) that may be used with these transport protocols (or the
       applications that use their transport service) to discover an
       appropriate size of packet to use across an Internet path.</t>
+
+      <t>This specification clarifies the PLPMTUD method for SCTP described in section 10.2 of <xref target="RFC4821"></xref> 
+      by specifying the procedure in <xref target="dplpmtudsctp"></xref> of this document.</t>
 
       <section anchor="Classic-PMTUD" title="Classical Path MTU Discovery">
         <t>Classical Path Maximum Transmission Unit Discovery (PMTUD) can be
@@ -1210,23 +1213,23 @@
 MAX_PMTU acked or           +--------------+-+ (PROBE_COUNT       |
 PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
   PTB_SIZE        |    +--> +--------------+<+  or Probe acked    |
-<PROBED_SIZE)     |    |           |   ^  |                       |
-    or            |    |           |   |  |                       |
-(PROBE_COUNT      |    |           |   |  |((PTB_SIZE <           |     
-  =MAX_PROBES)    |    |           |   |  |  BASE_PMTU)           |
-  +---------------+    |           |   |  | or                    |
-  |                    |           |   |  |(PLPMTU < BASE_MTU))   |    
-  |                    |           |   |  |and (PROBE_COUNT =     |
-  |   PMTU_RAISE_TIMER |           |   |  |   MAX_PROBES)         |
-  |                    |           |   |  |                       |
-  |                    |           |   |   \                      |  
-  |        +-----------+           |   |    \   Suspend DPLPDMTUD:|
-  |        |                       |   |     \                    |
-  |        |                       |   |      \---------+         |
-  |        |    (PTB_SIZE < PLPMTU)|   |                |         |
-  |        |           or          |   | BASE_PMTU      |         |
-  |        |   Black hole detected |   | Probe acked    |         |
-  v        |                       v   |                v         |
+<PROBED_SIZE)     |    |           |   ^                          |
+    or            |    |           |   |                          |
+(PROBE_COUNT      |    |           |   |                          |     
+  =MAX_PROBES)    |    |           |   |                          |
+  +---------------+    |           |   |                          |
+  |                    |           |   |                          |    
+  |                    |           |   |                          |
+  |   PMTU_RAISE_TIMER |           |   |                          |
+  |                    |           |   |                          |
+  |                    |           |   |                          |  
+  |        +-----------+           |   |                          |
+  |        |                       |   |                          |
+  |        |                       |   |                          |
+  |        |    (PTB_SIZE < PLPMTU)|   |                          |
+  |        |           or          |   | BASE_PMTU                |
+  |        |   Black hole detected |   | Probe acked              |
+  v        |                       v   |                          |
 +----------+----+            +--------------+        +-------------+
 |SEARCH_COMPLETE|----------->|  PROBE_BASE  |<-------| PROBE_ERROR |
 +------+--------+            +--------------+        +-------------+
@@ -1537,13 +1540,11 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
         acknowledged. A 4 byte value for the token field provides sufficient
         space for multiple unique probes to be made within the MSL.</t>
 
-        <t>Implementations ought to only send a probe packet with a Request
-        Probe Option when required by their local state machine, i.e., when
+        <t>Implementations ought to only send a probe packet with a 
+        Probe Request Option when required by their local state machine, i.e., when
         probing to grow the PLPMTU or to confirm the current PLPMTU. The
         procedure to handle the loss of a response packet is the
-        responsibility of the sender of the request. Implementations are
-        allowed to track multiple requests and respond to them with a single
-        packet.</t>
+        responsibility of the sender of the request.</t>
 
         <t>A PL needs to determine that the path can still support the size of
         datagram that the application is currently sending in the DPLPMTUD
@@ -1609,7 +1610,7 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
         </section>
       </section>
 
-      <section title="DPLPMTUD for SCTP">
+      <section anchor="dplpmtudsctp" title="DPLPMTUD for SCTP">
         <t>Section 10.2 of <xref target="RFC4821"></xref> specifies a
         recommended PLPMTUD probing method for SCTP. It recommends the use of
         the PAD chunk, defined in <xref target="RFC4820"></xref> to be
