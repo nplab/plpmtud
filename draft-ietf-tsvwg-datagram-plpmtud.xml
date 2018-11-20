@@ -47,7 +47,7 @@
 <!ENTITY RFC8261 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8261.xml">
 <!ENTITY RFC8174 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml">
 <!ENTITY I-D.ietf-tsvwg-udp-options SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-tsvwg-udp-options-05.xml">
-<!ENTITY I-D.ietf-quic-transport SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-quic-transport-14.xml">
+<!ENTITY I-D.ietf-quic-transport SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-quic-transport-16.xml">
 <!ENTITY I-D.ietf-intarea-tunnels SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-intarea-tunnels-09.xml">
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
@@ -254,7 +254,9 @@
         <t>Examples where PTB messages are not delivered include:</t>
 
         <t><list style="symbols">
-            <t>The generation of ICMP messages is usually rate limited.</t>
+	    <t>The generation of ICMP messages is usually rate limited. This
+	    may result in no PTB messages being sent to the sender (see section
+	    2.4 of <xref target="RFC4443"></xref></t>
 
             <t>ICMP messages are increasingly filtered by middleboxes
             (including firewalls) <xref target="RFC4890"></xref>. A stateful
@@ -1792,7 +1794,7 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
 	<t>Section 9.2 of <xref target="I-D.ietf-quic-transport"></xref>
 	describes the path considerations when sending QUIC packets. It
 	recommends the use of PADDING frames to build the probe packet. Pure
-	probe only packets are constructed with PADDING frames and PING frames
+	probe-only packets are constructed with PADDING frames and PING frames
 	to create a padding only packet that will illict an acknowledgement.
 	Padding only frames enable probing the without affecting the transfer
 	of other QUIC frames.</t>
