@@ -75,7 +75,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-06"
+<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-07"
      ipr="trust200902" updates="4821">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
@@ -1795,9 +1795,10 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
 	describes the path considerations when sending QUIC packets. It
 	recommends the use of PADDING frames to build the probe packet. Pure
 	probe-only packets are constructed with PADDING frames and PING frames
-	to create a padding only packet that will illict an acknowledgement.
+	to create a padding only packet that will elict an acknowledgement.
 	Padding only frames enable probing the without affecting the transfer
-	of other QUIC frames.</t>
+	of other QUIC frames, but these frames do consume congestion window,
+	which could delay the transmission of subsequent application data.</t>
 
         <t>The recommendation for QUIC endpoints implementing DPLPMTUD is
         therefore that a MPS is maintained for each combination of local and
@@ -1822,8 +1823,8 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
               to 1200 bytes to confirm the path can support packets of a
               useful size.</t>
 
-              <t>MIN_PMTU: 1200 bytes. A QUIC sender that determines the PMTU
-              has fallen below 1200 bytes MUST immediately stop sending on the
+              <t>MIN_PMTU: 1280 bytes. A QUIC sender that determines the PMTU
+              has fallen below 1280 bytes MUST immediately stop sending on the
               affected path.</t>
             </list></t>
         </section>
@@ -1846,8 +1847,12 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
 
     <section anchor="Acknowledgements" title="Acknowledgements">
       <t>This work was partially funded by the European Union's Horizon 2020
-      research and innovation programme under grant agreement No. 644334
-      (NEAT). The views expressed are solely those of the author(s).</t>
+      research and innovation programme under grant agreements No. 644334
+      (NEAT) and No. 688421 (MAMI).</t>
+
+      <t>This work benefited from feedback from Magnus Westerlund, Christian
+      Huitema, Erik Nygren, Timo Völker, Martin Duke, Igor Lubashev, Matthew
+      Calder and the IETF TSVWG and QUIC Working Groups</t>
     </section>
 
     <section anchor="IANA" title="IANA Considerations">
@@ -2228,6 +2233,12 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
       <t><list style="symbols">
           <t>Updated description of ICMP issues in section 1.1</t>
 
+          <t>Update to description of QUIC.</t>
+        </list></t>
+
+      <t>Working Group draft -07:</t>
+
+      <t><list style="symbols">
           <t>Update to description of QUIC.</t>
         </list></t>
     </section>
