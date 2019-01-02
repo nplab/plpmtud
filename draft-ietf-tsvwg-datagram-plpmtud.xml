@@ -2249,7 +2249,7 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
         </list>Working group draft -07:</t>
 
       <t><list style="symbols">
-          <t>Moved description of the PB procesing method from the PTB
+          <t>Moved description of the PTB processing method from the PTB
           requirements seection.</t>
 
           <t>Clarified what is performed in the PTB validation check.</t>
