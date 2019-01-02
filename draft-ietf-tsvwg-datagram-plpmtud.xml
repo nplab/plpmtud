@@ -538,7 +538,8 @@
           for a size larger than this (unless a transport allows multiplexing
           multiple applications PDUs into the same datagram).</t>
 
-          <t>PLPMTU: A datagram application is REQUIRED to be able to choose
+          <t>PLPMTU: A datagram application using a transport layer not
+          supporting fragmentation is REQUIRED to be able to choose
           the size of datagrams sent to the network, up to the PLPMTU, or a
           smaller value (such as the MPS) derived from this. This value is
           managed by the DPLPMTUD method. The PLPMTU (specified as the
@@ -739,7 +740,7 @@
 
             <t>A PL can use the probing mechanism to send confirmation probe
             packets of the size of the current PLPMTU and a timer track
-            whether acknowledgments are received (e.g., The number of probe
+            whether acknowledgments are received (e.g., the number of probe
             packets sent without receiving an acknowledgement, PROBE_COUNT,
             becomes greater than the MAX_PROBES). These messages need to be
             generated periodically (e.g., using the confirmation timer <xref
@@ -779,12 +780,13 @@
 
               <t>An implementation that supports PTB messages MUST validate
               messages before they are further processed.</t>
-            </list>A PL that receives a PTB message from a router or
+            </list></t>
+          <t>A PL that receives a PTB message from a router or
           middlebox, performs ICMP validation as specified in Section 5.2 of
           <xref target="RFC8085"></xref>. Because DPLPMTUD operates at the PL,
           the PL needs to check that each received PTB message is received in
           response to a packet transmitted by the endpoint PL performing
-          DPLPMTUD. </t>
+          DPLPMTUD.</t>
 
           <t>The PL MUST check the protocol information in the quoted packet
           carried in the ICMP PTB message payload to validate the message
@@ -826,15 +828,15 @@
           value of a set of variables:</t>
 
           <t><list style="hanging">
-              <t hangText="MIN_PMTU &lt; PTB_SIZE &lt; BASE_MTU"><list
+              <t hangText="MIN_PMTU &lt; PTB_SIZE &lt; BASE_PMTU"><list
                   style="symbols">
                   <t>A robust PL MAY enter the PROBE_ERROR state for an IPv4
                   path when the PTB_SIZE reported in the PTB message &gt;=
-                  576B and when this is less than the BASE_MTU.</t>
+                  576 bytes and when this is less than the BASE_PMTU.</t>
 
                   <t>A robust PL MAY enter the PROBE_ERROR state for an IPv6
                   path when the PTB_SIZE reported in the PTB message &gt;=
-                  1280B and when this is less than the BASE_MTU.</t>
+                  1280 bytes and when this is less than the BASE_PMTU.</t>
                 </list></t>
 
               <t hangText="PTB_SIZE = PLPMTU"><list style="symbols">
@@ -1265,14 +1267,14 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
   PTB_SIZE        |    +--> +--------------+<+  or Probe acked    |
 <PROBED_SIZE)     |    |           |   ^  |                       |
     or            |    |           |   |  |                       |
-(PROBE_COUNT      |    |           |   |  |((PTB_SIZE <           |     
+(PROBE_COUNT      |    |           |   |  |((PTB_SIZE <           |
   =MAX_PROBES)    |    |           |   |  |  BASE_PMTU)           |
   +---------------+    |           |   |  | or                    |
-  |                    |           |   |  |(PLPMTU < BASE_MTU))   |    
+  |                    |           |   |  |(PLPMTU < BASE_PMTU))  |
   |                    |           |   |  |and (PROBE_COUNT =     |
   |   PMTU_RAISE_TIMER |           |   |  |   MAX_PROBES)         |
   |                    |           |   |  |                       |
-  |                    |           |   |   \                      |  
+  |                    |           |   |   \                      |
   |        +-----------+           |   |    \   Suspend DPLPMTUD: |
   |        |                       |   |     \                    |
   |        |                       |   |      \---------+         |
@@ -1287,12 +1289,12 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
   |    |             or          |  | |                           |
   |    |    (PTB_SIZE < PLPMTU)  |  | | Probe BASE_PMTU:          |
   |    |                         |  | | (PROBE_COUNT = MAX_PROBES)|
-  |    |                         |  | +---------------------------+            
-  +----+                         +--+   
+  |    |                         |  | +---------------------------+
+  +----+                         +--+
  Confirmation:                 PROBE_TIMER expiry:
-(PROBE_COUNT < MAX_PROBES)    (PROBE_COUNT < MAX_PROBES) 
-         or                              
- PLPMTU Probe acked        
+(PROBE_COUNT < MAX_PROBES)    (PROBE_COUNT < MAX_PROBES)
+         or
+ PLPMTU Probe acked
 
 ]]></artwork>
         </figure>
