@@ -1146,7 +1146,7 @@
           terminate the search by entering the PROBE_BASE phase, see <xref
           target="phases-base"></xref>.</t>
 
-          <section title="Resilience to inconsistent path information">
+          <section title="Resilience to Inconsistent Path Information">
             <t>Sometimes a PL sender is able to detect inconsistent results
             from the sequence of PLPMTU probes that it sends or the sequence
             of PTB messages that it receives. This could be manifested as
@@ -1223,7 +1223,7 @@
           MIN_PMTU, the method suspends DPLPMTUD, see <xref
           target="phases-error"></xref>.</t>
 
-          <section anchor="robustness" title="Robustness to inconsistent path">
+          <section anchor="robustness" title="Robustness to Inconsistent Path">
             <t>Robustness to paths unable to sustain the BASE_PMTU. Some paths
             could be unable to sustain packets of the BASE_PMTU size. These
             paths could use an alternate algorithm to implement the
@@ -1396,7 +1396,7 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
         <t>This section describes the algorithms used by DPLPMTUD to search
         for a larger PLPMTU.</t>
 
-        <section anchor="Increase" title="Probing for a larger PLPMTU">
+        <section anchor="Increase" title="Probing for a Larger PLPMTU">
           <t>Implementations use a search algorithm across the search range to
           determine whether a larger PLPMTU can be supported across a network
           path.</t>
@@ -1453,7 +1453,7 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
           to mandate a single method. xxx</t>
         </section>
 
-        <section title="Resilience to inconsistent Path information">
+        <section title="Resilience to Inconsistent Path Information">
           <t>A decision to increase the PLPMTU needs to be resilient to the
           possibility that information learned about the network path is
           inconsistent (this could happen when probe packets are lost due to
