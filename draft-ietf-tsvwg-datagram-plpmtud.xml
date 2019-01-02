@@ -970,9 +970,9 @@
               packet size. For IPv6, this value is 1280 bytes, as specified in
               <xref target="RFC2460"></xref>. For IPv4, the minimum value is
               68 bytes. (An IPv4 router is required to be able to forward a
-              datagram of 68 octets without further fragmentation. This is the
+              datagram of 68 bytes without further fragmentation. This is the
               combined size of an IPv4 header and the minimum fragment size of
-              8 octets. In addition, receivers are required to be able to
+              8 bytes. In addition, receivers are required to be able to
               reassemble fragmented datagrams at least up to 576B, as stated
               in section 3.3.3 of <xref target="RFC1122"></xref>))</t>
 
