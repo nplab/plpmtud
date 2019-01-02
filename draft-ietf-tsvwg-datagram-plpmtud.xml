@@ -416,7 +416,7 @@
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
       "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
       "OPTIONAL" in this document are to be interpreted as described in BCP 14
-      <xref target="RFC2119"></xref> [<xref target="RFC8174"></xref>] when,
+      <xref target="RFC2119"></xref> <xref target="RFC8174"></xref> when,
       and only when, they appear in all capitals, as shown here.</t>
 
       <t>Other terminology is directly copied from <xref
@@ -472,6 +472,9 @@
           not part of IP or the IP payload. Other standards organizations
           generally define the link MTU to include the link layer headers.</t>
 
+          <t hangText="MAX_PMTU:">
+          The MAX_PMTU is the largest size of PLPMTU that DPLPMTUD will attempt
+          to use.</t>
           <t hangText="MPS:">The Maximum Packet Size (MPS) is the largest size
           of application data block that can be sent across a network path. In
           DPLPMTUD this quantity is derived from the PLPMTU by taking into
@@ -1009,7 +1012,7 @@
               title="Relationships between probe and packet sizes">
               <artwork><![CDATA[
 
-     MIN_PMTU                                             PMTU_MAX
+     MIN_PMTU                                             MAX_PMTU
        <------------------------------------------------------>
                       |       |    |     |           |   
                       V       |    |     |           V
@@ -1324,7 +1327,7 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
             within the period of the PROBE_TIMER, the PROBE_COUNT is
             incremented and the probe packet is retransmitted. The state is
             exited when the PROBE_COUNT reaches MAX_PROBES; a PTB message is
-            validated; a probe of size PMTU_MAX is acknowledged or black hole
+            validated; a probe of size MAX_PMTU is acknowledged or black hole
             detection is triggered.</t>
 
             <t hangText="SEARCH_COMPLETE:">The SEARCH_COMPLETE state indicates
@@ -1399,8 +1402,8 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
 
           <t>The method discovers the search range by confirming the minimum
           PLPMTU and then using the probe method to select a PROBED_SIZE less
-          than or equal to PMTU_MAX. PMTU_MAX is the minimum of the local MTU
-          and EMTU_R (learned from the remote endpoint). The PMTU_MAX MAY be
+          than or equal to MAX_PMTU. MAX_PMTU is the minimum of the local MTU
+          and EMTU_R (learned from the remote endpoint). The MAX_PMTU MAY be
           reduced by an application that sets a maximum to the size of
           datagrams it will send.</t>
 
@@ -1560,7 +1563,7 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
         <t>Section 5.6 of<xref target="I-D.ietf-tsvwg-udp-options"></xref>
         defines the Maximum Segment Size (MSS) option, which allows the local
         sender to indicate the EMTU_R to the peer. The value received in this
-        option can be used to initialise PMTU_MAX.</t>
+        option can be used to initialise MAX_PMTU.</t>
 
         <t>UDP Options enables padding to be added to UDP datagrams that are
         used as Probe Packets. Feedback confirming reception of each Probe
