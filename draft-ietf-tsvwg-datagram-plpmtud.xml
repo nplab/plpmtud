@@ -202,7 +202,7 @@
       method can also probe a network path with progressively larger packets
       to find whether the maximum packet size can be increased. This allows a
       sender to determine an appropriate packet size, providing functionally
-      for datagram transports that is equivalent to the Packetization layer
+      for datagram transports that is equivalent to the Packetization Layer
       PMTUD specification for TCP, specified in RFC 4821.</t>
 
       <t>The document also provides implementation notes for incorporating
@@ -524,7 +524,8 @@
       PLs require additional mechanisms to implement PLPMTUD.</t>
 
       <t>There are eight requirements for performing the datagram PLPMTUD
-      method described in this specification: <list style="numbers">
+      method described in this specification:
+        <list style="numbers">
           <t>PMTU parameters: A DPLPMTUD sender is RECOMMENDED to provide
           information about the maximum size of packet that can be transmitted
           by the sender on the local link (the local Link MTU). It MAY utilize
@@ -598,10 +599,10 @@
           values should be incorporated in the search algorithms. Section 5.2
           of <xref target="RFC8201"></xref> provides guidance on the caching
           of PMTU information and also the relation to IPv6 flow labels.</t>
-        </list>In addition, the following principles are stated for design of
-      a DPLPMTUD method:</t>
-
-      <t><list style="symbols">
+        </list></t>
+      <t>In addition, the following principles are stated for design of
+      a DPLPMTUD method:
+      <list style="symbols">
           <t>MPS: A method is REQUIRED to signal an appropriate MPS to the
           higher layer using the PL. The value of the MPS can change following
           a change to the path. It is RECOMMENDED that methods avoid forcing
@@ -709,7 +710,7 @@
         this loss, or make use of an additional transport method such as
         UDP-Options <xref target="I-D.ietf-tsvwg-udp-options"></xref>.</t>
 
-        <t>Section <xref target="Spec"></xref> specifies this function for a
+        <t><xref target="Spec"></xref> specifies this function for a
         set of IETF-specified protocols.</t>
       </section>
 
