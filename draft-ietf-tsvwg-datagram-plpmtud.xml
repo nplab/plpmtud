@@ -973,7 +973,7 @@
               datagram of 68 bytes without further fragmentation. This is the
               combined size of an IPv4 header and the minimum fragment size of
               8 bytes. In addition, receivers are required to be able to
-              reassemble fragmented datagrams at least up to 576B, as stated
+              reassemble fragmented datagrams at least up to 576 bytes, as stated
               in section 3.3.3 of <xref target="RFC1122"></xref>))</t>
 
               <t hangText="MAX_PMTU:">The MAX_PMTU is the largest size of
