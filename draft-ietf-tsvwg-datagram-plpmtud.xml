@@ -907,7 +907,7 @@
         </figure></t>
 
       <t>The central idea of DPLPMTUD is probing by a sender. Probe packets
-      are sent to find the maximum size of user message that is completely
+      are sent to find the maximum size of a user message that can be completely
       transferred across the network path from the sender to the
       destination.</t>
 
@@ -918,11 +918,12 @@
         <t>This section describes components of DPLPMTUD.</t>
 
         <section anchor="Timers" title="Timers">
-          <t>The method utilises three timers:<list style="hanging">
+          <t>The method utilises three timers:
+            <list style="hanging">
               <t hangText="PROBE_TIMER:">The PROBE_TIMER is configured to
               expire after a period longer than the maximum time to receive an
-              acknowledgment to a probe packet. This value MUST be larger than
-              1 second, and SHOULD be larger than 15 seconds. Guidance on
+              acknowledgment to a probe packet. This value MUST NOT be smaller
+              than 1 second, and SHOULD be larger than 15 seconds. Guidance on
               selection of the timer value are provided in section 3.1.1 of
               the UDP Usage Guidelines <xref target="RFC8085"></xref>.</t>
 
@@ -956,13 +957,13 @@
             </list></t>
 
           <t>An implementation could implement the various timers using a
-          single timer process.</t>
+          single timer.</t>
         </section>
 
         <section title="Constants">
-          <t>The following constants are defined:</t>
+          <t>The following constants are defined:
 
-          <t><list style="hanging">
+          <list style="hanging">
               <t hangText="MAX_PROBES:">MAX_PROBES is the maximum value of the
               PROBE_ERROR_COUNTER. The default value of MAX_PROBES is 10.</t>
 
@@ -992,7 +993,8 @@
         </section>
 
         <section title="Variables">
-          <t>This method utilises a set of variables: <list style="hanging">
+          <t>This method utilises a set of variables:
+            <list style="hanging">
               <t hangText="PROBED_SIZE:">The PROBED_SIZE is the size of the
               current probe packet. This is a tentative value for the PLPMTU,
               which is awaiting confirmation by an acknowledgment.</t>
@@ -1044,22 +1046,22 @@
         by an end-to-end flow (e.g., after a routing or path fail-over
         decision).</t>
 
-        <t>Black hole detection, see <xref target="mechanism-bhd"></xref> and
-        PTB processing <xref target="mechanism-ptb"></xref> proceed in
+        <t>Black hole detection (<xref target="mechanism-bhd"></xref>) and
+        PTB processing (<xref target="mechanism-ptb"></xref>) proceed in
         parallel with these phases of operation.</t>
 
         <t><figure anchor="fig-phases" title="DPLPMTUD Phases">
             <artwork align="center"><![CDATA[
                         +-------------------+
                         | Path Confirmation +--       Connectivity 
-                        +--------+----------+  \-----   or BASE_PMTU  
-                                 |     /\          \/ Confirmation Fails   
+                        +--------+----------+  \----+   or BASE_PMTU  
+                                 |     ^            V Confirmation Fails   
             Connectivity and     |     |         +-------+
-             BASE_PMTU confirmed |      ---------+ Error |
+             BASE_PMTU confirmed |     +---------+ Error |
                                  |               +-------+
                                  |   CONFIRMATION_TIMER 
                                  |        Fires
-                                 \/   
+                                 V   
 +----------------+          +--------------+
 | Search Complete|<---------+   Search     |
 +----------------+          +--------------+
@@ -1480,7 +1482,7 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
       DPLPMTUD method as a part of an application using UDP or UDP-Lite. The
       guidance also applies to other datagram services that do not include a
       specific transport protocol (such as a tunnel encapsulation). The
-      following subsection describe how DPLPMTUD can be implemented as a part
+      following subsections describe how DPLPMTUD can be implemented as a part
       of the transport service, allowing applications using the service to
       benefit from discovery of the PLPMTU without themselves needing to
       implement this method.</t>
