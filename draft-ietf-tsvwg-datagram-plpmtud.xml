@@ -879,9 +879,11 @@
 
     <section anchor="Spec" title="Datagram Packetization Layer PMTUD">
       <t>This section specifies Datagram PLPMTUD (DPLPMTUD). The method can be
-      introduced at various points in the IP protocol stack to discover the
-      PLPMTU so that an application can utilise an appropriate MPS for the
-      current network path.</t>
+      introduced at various points (as indicated with * in the figure below)
+      in the IP protocol stack to discover the PLPMTU so that an application
+      can utilise an appropriate MPS for the current network path.
+      Please note the DPLPMTUD SHOULD NOT be implemented and used in the APP, if
+      it is already implemented and used in a lower layer.</t>
 
       <t><figure anchor="fig-plpmtudimplement"
           title="Examples where DPLPMTUD can be implemented">
