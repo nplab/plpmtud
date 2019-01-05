@@ -967,7 +967,7 @@
 
           <list style="hanging">
               <t hangText="MAX_PROBES:">MAX_PROBES is the maximum value of the
-              PROBE_ERROR_COUNTER. The default value of MAX_PROBES is 10.</t>
+              PROBE_COUNT counter. The default value of MAX_PROBES is 10.</t>
 
               <t hangText="MIN_PMTU:">The MIN_PMTU is smallest allowed probe
               packet size. For IPv6, this value is 1280 bytes, as specified in
