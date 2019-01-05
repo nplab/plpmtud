@@ -1650,10 +1650,10 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
           <figure anchor="fig-echoreq" title="UDP Probe REQ Option Format">
             <artwork align="center"><![CDATA[
           +----------+--------+-----------------+
-          | Kind=9* | Len=6  |     Token       |
+          | Kind=9*  | Len=6  |     Token       |
           +----------+--------+-----------------+
             1 byte    1 byte       4 bytes
-            
+
              * To be confirmed by IANA.
   ]]></artwork>
           </figure>
