@@ -920,7 +920,7 @@
         <t>This section describes components of DPLPMTUD.</t>
 
         <section anchor="Timers" title="Timers">
-          <t>The method utilises three timers:
+          <t>The method utilises up to three timers:
             <list style="hanging">
               <t hangText="PROBE_TIMER:">The PROBE_TIMER is configured to
               expire after a period longer than the maximum time to receive an
@@ -943,7 +943,9 @@
               when no application data has been sent since the previous probe
               packet.</t>
 
-              <t hangText="CONFIRMATION_TIMER:">The CONFIRMATION_TIMER is
+              <t hangText="CONFIRMATION_TIMER:">
+              When an acknowledged PL is used, this timer MUST NOT be used.
+              For other PLs, the CONFIRMATION_TIMER is
               configured to the period a PL sender waits before confirming the
               current PLPMTU is still supported. This is less than the
               PMTU_RAISE_TIMER and used to decrease the PLPMTU (e.g., when a
