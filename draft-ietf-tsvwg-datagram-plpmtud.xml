@@ -1267,14 +1267,14 @@
                         +-------------------+       +--------------+
                                    |                              ^
                                    | Path confirmed               |
-                                   v                              |
+                                   V                              |
 MAX_PMTU acked or           +--------------+-+ (PROBE_COUNT       |
 PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
   PTB_SIZE        |    +--> +--------------+<+  or Probe acked    |
-<PROBED_SIZE)     |    |           |   ^  |                       |
+< PROBED_SIZE)    |    |           |   ^  |                       |
     or            |    |           |   |  |                       |
 (PROBE_COUNT      |    |           |   |  |((PTB_SIZE <           |
-  =MAX_PROBES)    |    |           |   |  |  BASE_PMTU)           |
+  = MAX_PROBES)   |    |           |   |  |  BASE_PMTU)           |
   +---------------+    |           |   |  | or                    |
   |                    |           |   |  |(PLPMTU < BASE_PMTU))  |
   |                    |           |   |  |and (PROBE_COUNT =     |
@@ -1287,11 +1287,11 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
   |        |    (PTB_SIZE < PLPMTU)|   |                |         |
   |        |           or          |   | BASE_PMTU      |         |
   |        |   Black hole detected |   | Probe acked    |         |
-  v        |                       v   |                v         |
+  v        |                       V   |                V         |
 +----------+----+            +--------------+        +-------------+
 |SEARCH_COMPLETE|----------->|  PROBE_BASE  |<-------| PROBE_ERROR |
 +------+--------+            +--------------+        +-------------+
- /\    |    Black hole detected  ^  | |  BASE_PMTU Probe acked:   ^
+  ^    |    Black hole detected  ^  | |  BASE_PMTU Probe acked:   ^
   |    |             or          |  | |                           |
   |    |    (PTB_SIZE < PLPMTU)  |  | | Probe BASE_PMTU:          |
   |    |                         |  | | (PROBE_COUNT = MAX_PROBES)|
