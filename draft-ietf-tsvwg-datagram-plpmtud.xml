@@ -179,6 +179,25 @@
         <email>i.ruengeler@fh-muenster.de</email>
       </address>
     </author>
+    <author fullname="Timo Voelker" initials="T" surname="Voelker">
+      <organization>Muenster University of Applied Sciences</organization>
+
+      <address>
+        <postal>
+          <street>Stegerwaldstrasse 39</street>
+
+          <code>48565</code>
+
+          <city>Steinfurt</city>
+
+          <region></region>
+
+          <country>DE</country>
+        </postal>
+
+        <email>timo.voelker@fh-muenster.de</email>
+      </address>
+    </author>
 
     <date day="20" month="November" year="2018" />
 
@@ -2109,6 +2128,145 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
           PROBE_BASE.</t>
         </list></t>
     </section>
+
+<section title="DPLPMTUD Scenarios">
+<t>The following subsections discuss some common scenarios and describe the
+expected result of a DPLPMTUD implementation.
+In general, a DPLPMTUD implementation must be able to estimate a safe path MTU
+value (e. g. 1200 bytes) after about t_safe.
+After that, the estimated value must converge towards the actual path MTU.
+The result must not be less than the actual path MTU, if
+<list style='numbers'>
+<t>it is a common path MTU,</t>
+<t>a validated ICMP PTB message reports the path MTU, or</t>
+<t>it is equal to the local source interface MTU.</t>
+</list></t>
+<t>Once a final path MTU value is estimated, this value should be confirmed
+periodically. It must not change as long as the path does not change.</t>
+
+<section title="Default Ethernet MTU">
+<t>The default MTU for ethernet is 1500 bytes.
+Due to the wide deployment of ethernet, 1500 bytes is a common path MTU.</t>
+<t>After a few iterations, the estimated path MTU value of a DPLPMTUD
+implementation must be equal to 1500 bytes.</t>
+</section>
+
+<section title="PPPoE">
+<t>If a part of a network path consists of a PPPoE connection, the path MTU
+reduces by 8 bytes to 1492 bytes.
+PPPoE is often used to connect to a DSL service provider, which make 1492 bytes
+a common path MTU.</t>
+<t>After a few iterations, the estimated value of a DPLPMTUD implementation
+must be equal to 1492 bytes.
+The estimated value should not be less than 1492 bytes, because it is a
+common path MTU value.</t>
+</section>
+
+<section title="IP Tunnel">
+<t>Tunneling IP packets inside IP packets is a technique often used with
+different IP versions.
+For example, in order to send IPv6 packets through an IPv4 (only) over Ethernet
+network.
+If a part of a network path consists of such an IPv6 in IPv4 tunnel, the path MTU
+reduces typically by 20 bytes to 1480 bytes.</t>
+<t>After a few iterations, the estimated value of an DPLPMTUD implementation
+must be equal to 1480 bytes.
+The estimated value should not be less than 1480 bytes, because it is a
+common path MTU.</t>
+</section>
+
+<section title="Multiple Tunnels: One after Another">
+<t>As described in the last two subsections tunnels are commonly used in the
+Internet.
+Hence, it is possible that two or more tunnels are used one after another on
+a network path.
+Path MTU reduces by the maximum of the tunnel overheads.
+If, for example, a host connected with DSL sends IPv4 packets to a host
+connected with DS-Lite, the network path consists of a PPPoE tunnel (DSL)
+followed by an IPv4 in IPv6 tunnel (DS-Lite).
+The PPPoE tunnel reduces MTU by 8 bytes and the IPv4 in IPv6 tunnel by 40 bytes.
+Thus, MTU for this path reduces by 40 bytes to 1460 bytes.</t>
+<t>After a few iterations, the estimated value of an DPLPMTUD implementation
+must be equal to 1460 bytes.
+The estimated value should not be less than 1460 bytes, because it is a
+common path MTU value.
+An implementation must be able to handle multiple PTB messages.
+In the example, each of the two tunnel ingress routers might send a PTB.
+One reporting a MTU of 1492 bytes (PPPoE) and the other a MTU of 1460 bytes
+(DS-Lite).</t>
+</section>
+
+<section title="Multiple Tunnels: One in Another">
+<t>There exist various tunnel techniques for various requirements.
+Sometimes it is necessary to use one tunnel inside another tunnel.
+For example, if an endpoint is connected to the internet by a
+PPPoE tunnel (DSL) and that tunnel uses IPv4 only, the endpoint needs to
+use an IPv6 in IPv4 tunnel inside the PPPoE tunnel in order to communicate
+using IPv6.
+A PPPoE tunnel reduces the path MTU by 8 byes, an IPv6 in IPv4 tunnel by
+additional 20 bytes.
+In total the path MTU reduces by 28 bytes to 1472 bytes.</t>
+<t>After a few iterations, the estimated value of an DPLPMTUD implementation
+must be less or equal to 1472 bytes.
+This value must not be less than 1460 bytes (see above).</t>
+</section>
+
+<section title="Path Change, Path MTU Decreased">
+<t>There is no guarantee that a path through the internet keeps constant
+during communication to an endpoint.
+When the path changes, the path MTU might change as well.
+The path MTU could for example change from 1500 bytes to 1480 bytes due to an
+IPv6 in IPv4 tunnel in the new path.</t>
+<t>A DPLPMTUD implementation must determine the path MTU reduction.
+It further must estimate a new safe path MTU value after about t_safe.
+After a few more iterations, the estimated value of an implementation must
+be equal to 1480 bytes.</t>
+</section>
+
+<section title="Path Change, Path MTU Increased">
+<t>As described in the last subsection, a path as well as the path MTU might
+change during communication.
+The path MTU could for example change from 1492 bytes to 1500 bytes,
+because there is a PPPoE tunnel in the old path, but not in the new one.</t>
+<t>A DPLPMTUD implementation must determine the path MTU increase.
+Once determined, the implementation must increase its estimated path MTU value
+from 1492 bytes to 1500 bytes after a few iterations.</t>
+</section>
+
+<section title="Continuous Path Change">
+<t>A node on the path between two endpoints might choose different routes for
+the packets of the endpoints communication.
+If this is the case, the path changes continuously.
+This could affect the path MTU as well.</t>
+<t>A DPLPMTUD implementation should estimate a stable path MTU value.
+That is, in this case, at most the lowest MTU of the different paths.</t>
+</section>
+
+<section title="Larger MTU Values">
+<t>The largest possible IPv4 packet size is 65,535 bytes (for IPv6 with
+Jumbograms it is  possible to use even larger packet sizes).
+However, a common MTU value for Gigabit  Ethernet, that is larger than the
+default MTU size, is 9000 bytes.</t>
+<t>After some iterations the estimated value of a DPLPMTUD implementation must
+be equal to 9000 bytes.
+The number of iterations should increase less than linear for finding a 9000
+bytes path MTU compared to finding a 1500 bytes path MTU.</t>
+</section>
+
+<section title="Spurious Value in PTB">
+<t>IP nodes react on a packet that is too big for forwarding with an
+ICMP PTB message.
+The PTB message contains the MTU the IP node can process.
+This MTU value could be spurious, either by a software/hardware bug or on
+purpose.</t>
+<t>If a DPLPMTUD implementation receives an ICMP PTB message containing a MTU
+value which is obviously spurious, the PTB message must not affect the
+estimated path MTU value.
+A obviously spurious MTU value is a value that is less than the minimum MTU
+(58 bytes for IPv4, 1280 bytes for IPv6) or greater than the size of the last
+packet sent out by the DPLPMTUD implementation.</t>
+</section>
+</section>
 
     <section title="Revision Notes">
       <t>Note to RFC-Editor: please remove this entire section prior to
