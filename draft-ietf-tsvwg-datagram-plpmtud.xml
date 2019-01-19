@@ -1075,10 +1075,10 @@
 
         <t><figure anchor="fig-phases" title="DPLPMTUD Phases">
             <artwork align="center"><![CDATA[
-                        +-------------------+
-                        | Path Confirmation +--       Connectivity 
-                        +--------+----------+  \----+   or BASE_PMTU  
-                                 |     ^            V Confirmation Fails   
+                    +------------------------+
+                    | BASE_PMTU Confirmation +--       Connectivity
+                    +------------+-----------+  \----+   or BASE_PMTU
+                                 |     ^             V Confirmation Fails
             Connectivity and     |     |         +-------+
              BASE_PMTU confirmed |     +---------+ Error |
                                  |               +-------+
@@ -1094,7 +1094,7 @@
           </figure></t>
 
         <t><list style="hanging">
-            <t hangText="Path Confirmation"><list style="symbols">
+            <t hangText="BASE_PMTU Confirmation"><list style="symbols">
                 <t>Connectivity is confirmed.</t>
 
                 <t>DPLPMTUD confirms the BASE_PMTU is supported across the
@@ -1130,8 +1130,8 @@
               </list></t>
           </list></t>
 
-        <section anchor="phases-confirmation" title="Path Confirmation Phase">
-          <t>DPLPMTUD starts in the Path confirmation phase. Path confirmation
+        <section anchor="phases-confirmation" title="BASE_PMTU Confirmation Phase">
+          <t>DPLPMTUD starts in the BASE_PMTU confirmation phase. BASE_PMTU confirmation
           is performed in two stages:</t>
 
           <t><list style="numbers">
@@ -1151,7 +1151,7 @@
           <t>A PL MAY respond to PTB messages while in this phase, see <xref
           target="mechanism-ptb"></xref>.</t>
 
-          <t>Once path confirmation has completed, DPLPMTUD can advertise an
+          <t>Once BASE_PMTU confirmation has completed, DPLPMTUD can advertise an
           MPS to an upper layer.</t>
 
           <t>If DPLPMTUD fails to complete these tests it enters the
