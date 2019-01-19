@@ -1285,7 +1285,7 @@
                         |    PROBE_START    +------>|PROBE_DISABLED|
                         +-------------------+       +--------------+
                                    |                              ^
-                                   | Path confirmed               |
+                                   | BASE_PMTU confirmed          |
                                    V                              |
 MAX_PMTU acked or           +--------------+-+ (PROBE_COUNT       |
 PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
