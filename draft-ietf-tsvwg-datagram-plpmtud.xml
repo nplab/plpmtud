@@ -613,8 +613,8 @@
           particular path, all Packetization Layer sessions that share the
           path representation (as described in Section 5.2 of <xref
           target="RFC4821"></xref>) SHOULD be notified to make use of the new
-          MTU and make the required congestion control adjustments". Such
-          methods MUST be robust to the wide variety of underlying network
+          MTU".
+          Such methods MUST be robust to the wide variety of underlying network
           forwarding behaviours, PLPMTU adjustments based on shared PLPMTU
           values should be incorporated in the search algorithms. Section 5.2
           of <xref target="RFC8201"></xref> provides guidance on the caching
@@ -851,7 +851,7 @@
                   style="symbols">
                   <t>A robust PL MAY enter the PROBE_ERROR state for an IPv4
                   path when the PTB_SIZE reported in the PTB message &gt;=
-                  576 bytes and when this is less than the BASE_PMTU.</t>
+                  68 bytes and when this is less than the BASE_PMTU.</t>
 
                   <t>A robust PL MAY enter the PROBE_ERROR state for an IPv6
                   path when the PTB_SIZE reported in the PTB message &gt;=
