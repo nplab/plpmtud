@@ -591,20 +591,21 @@
           at the sending node is REQUIRED to pass this feedback to the
           sender-side DPLPMTUD method.</t>
 
-          <t anchor="CC">Probing and congestion control: The isolated loss of
-          a probe packet SHOULD NOT be treated as an indication of congestion
-          and its loss SHOULD NOT directly trigger a congestion control
-          reaction <xref target="RFC4821"></xref>.</t>
-
-          <t>Probe loss recovery: If the data block carried by a probe packet
-          needs to be sent reliably, the PL (or layers above) are REQUIRED to
-          arrange any retransmission/repair of any resulting loss. This method
-          is REQUIRED to be robust in the case where probe packets are lost
-          due to other reasons (including link transmission error,
-          congestion). The DPLPMTUD sender treats isolated loss of a probe
-          packet (with or without an PTB message) as a potential indication of
-          a PMTU limit for the path, but not as an indication of congestion,
-          see <xref target="CC"></xref>.</t>
+          <t>Probe loss recovery: It is RECOMMENDED to use a probe packet that
+          does not carry any user data.
+          Most datagram transports permit this.
+          If a probe packet contains user data requiring retransmission
+          in case of loss, the PL (or layers above) are REQUIRED
+          to arrange any retransmission/repair of any resulting loss.
+          DPLPMTUD is REQUIRED to be robust in the case where probe packets
+          are lost due to other reasons (including link transmission error,
+          congestion).</t>
+          <t>Probing and congestion control: The DPLPMTUD sender treats
+          isolated loss of a probe packet (with or without a corresponding
+          PTB message) as a potential indication of a PMTU limit for the path.
+          Loss of a probe packet SHOULD NOT be treated as an indication of
+          congestion and the loss SHOULD NOT directly trigger a congestion
+          control reaction <xref target="RFC4821"></xref>.</t>
 
           <t>Shared PLPMTU state: The PLPMTU value could also be stored with
           the corresponding entry in the destination cache and used by other
