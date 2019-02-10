@@ -591,8 +591,9 @@
           at the sending node is REQUIRED to pass this feedback to the
           sender-side DPLPMTUD method.</t>
 
-          <t>Probe loss recovery: It is RECOMMENDED to use a probe packet that
-          does not carry any user data.
+          <t>Probe loss recovery:
+          It is RECOMMENDED to use probe packets that do not carry any user
+          data.
           Most datagram transports permit this.
           If a probe packet contains user data requiring retransmission
           in case of loss, the PL (or layers above) are REQUIRED
@@ -764,10 +765,14 @@
             packets sent without receiving an acknowledgement, PROBE_COUNT,
             becomes greater than the MAX_PROBES). These messages need to be
             generated periodically (e.g., using the confirmation timer <xref
-            target="Timers"></xref>), and should be suppressed when the PL is
-            not actively sending data. Successive loss of probes is an
-            indication that the current path no longer supports the
-            PLPMTU.</t>
+            target="Timers"></xref>), and MAY inhibit sending probe packets
+            when no application data has been sent since the previous probe
+            packet. A PL preferring to use an up-to-data PMTU once user
+            data is sent again, MAY choose to continue PMTU discovery for
+            each path. However, this may result in additional packets being
+            sent.
+            Successive loss of probes is an indication that the current path
+            no longer supports the PLPMTU.</t>
           </list></t>
 
         <t>When the method detects the current PLPMTU is not supported (a
@@ -959,10 +964,12 @@
               timer has a period of 600 secs, as recommended by PLPMTUD <xref
               target="RFC4821"></xref>.</t>
 
-              <t hangText="">DPLPMTUD SHOULD inhibit sending probe packets
-              when no application data has been sent since the previous probe
-              packet.</t>
-
+              <t hangText="">DPLPMTUD MAY inhibit sending probe packets when
+              no application data has been sent since the previous probe packet.
+              A PL preferring to use an up-to-data PMTU once user data is sent
+              again, can choose to continue PMTU discovery for each path.
+              However, this may result in sending additional packets.</t>
+              
               <t hangText="CONFIRMATION_TIMER:">
               When an acknowledged PL is used, this timer MUST NOT be used.
               For other PLs, the CONFIRMATION_TIMER is
@@ -975,9 +982,11 @@
               timer value are provided in section 3.1.1 of the UDP Usage
               Guidelines <xref target="RFC8085"></xref>.</t>
 
-              <t hangText="">DPLPMTUD SHOULD inhibit sending probe packets
-              when no application data has been sent since the previous probe
-              packet.</t>
+              <t hangText="">DPLPMTUD MAY inhibit sending probe packets when
+              no application data has been sent since the previous probe packet.
+              A PL preferring to use an up-to-data PMTU once user data is sent
+              again, can choose to continue PMTU discovery for each path.
+              However, this may result in sending additional packets.</t>
             </list></t>
 
           <t>An implementation could implement the various timers using a
