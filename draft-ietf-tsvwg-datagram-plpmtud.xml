@@ -1052,7 +1052,6 @@
           <t><figure anchor="fig-mps"
               title="Relationships between probe and packet sizes">
               <artwork><![CDATA[
-
      MIN_PMTU                                             MAX_PMTU
        <------------------------------------------------------>
                       |       |    |     |           |   
@@ -1291,7 +1290,6 @@
         <figure anchor="fig-states"
                 title="State machine for Datagram PLPMTUD.  Note: Some state changes are not show to simplify the diagram.">
           <artwork align="center"><![CDATA[
-
                                           PROBE_TIMER expiry
                                       (PROBE_COUNT = MAX_PROBES)
                         +-------------------+       +--------------+
@@ -1333,7 +1331,6 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
 (PROBE_COUNT < MAX_PROBES)    (PROBE_COUNT < MAX_PROBES)
          or
  PLPMTU Probe acked
-
 ]]></artwork>
         </figure>
 
@@ -2065,7 +2062,6 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
                        \                            +--------------+
                         --------------------------> |  PROBE_BASE  |
                                                     +--------------+
-
 ]]></artwork>
 
               <postamble>Condition 1: The maximum PMTU size has not yet been
@@ -2109,7 +2105,6 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
 +---------------+             \                     +---------------+
 |SEARCH_COMPLETE|              -------------------> |SEARCH_COMPLETE|
 +---------------+                                   +---------------+
-
 ]]></artwork>
 
               <postamble>Condition 1: The maximum number of probe packets has
