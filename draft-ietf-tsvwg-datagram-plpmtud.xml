@@ -1405,8 +1405,7 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
             case where the network path is not known to support a PLPMTU of at
             least the BASE_PMTU size. It is entered when either a probe of
             size BASE_PMTU has not been acknowledged or a validated PTB
-            message indicates a smaller PTB_SIZE smaller than the
-            BASE_PMTU.</t>
+            message indicates a PTB_SIZE smaller than the BASE_PMTU.</t>
 
             <t hangText="">On entry, the PROBE_COUNT is set to zero and the
             PROBED_SIZE is set to the MIN_PMTU size, and the PLPMTU is reset
