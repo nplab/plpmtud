@@ -1285,7 +1285,7 @@
       <section anchor="States" title="State Machine">
         <t>A state machine for DPLPMTUD is depicted in <xref
         target="fig-states"></xref>. If multihoming is supported, a state
-        machine is needed for each active path.</t>
+        machine is needed for each path.</t>
 
         <figure anchor="fig-states"
                 title="State machine for Datagram PLPMTUD.  Note: Some state changes are not show to simplify the diagram.">
