@@ -1320,7 +1320,7 @@ PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
   V        |                       V   |                V         |
 +----------+----+            +--------------+        +-------------+
 |SEARCH_COMPLETE|----------->|  PROBE_BASE  |<-------| PROBE_ERROR |
-+------+--------+            +--------------+        +-------------+
++---------------+            +--------------+        +-------------+
   ^    |    Black hole detected  ^  | |  BASE_PMTU Probe acked:   ^
   |    |             or          |  | |                           |
   |    |    (PTB_SIZE < PLPMTU)  |  | | Probe BASE_PMTU:          |
