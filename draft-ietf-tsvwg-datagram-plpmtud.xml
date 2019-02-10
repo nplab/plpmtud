@@ -969,7 +969,7 @@
               A PL preferring to use an up-to-data PMTU once user data is sent
               again, can choose to continue PMTU discovery for each path.
               However, this may result in sending additional packets.</t>
-              
+
               <t hangText="CONFIRMATION_TIMER:">
               When an acknowledged PL is used, this timer MUST NOT be used.
               For other PLs, the CONFIRMATION_TIMER is
