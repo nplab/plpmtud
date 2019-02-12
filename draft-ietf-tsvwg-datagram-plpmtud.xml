@@ -1297,10 +1297,10 @@
 +---------------+                                   +---------------+
 |    DISABLED   |                                   |     ERROR     |
 +---------------+                                   +---------------+
-        |                       PROBE_TIMER expiry:    ^         |
-        |                    PROBE_COUNT = MAX_PROBES  |         |
+        | PL indicates           PROBE_TIMER expiry:   ^         |
+        | connectivity        PROBE_COUNT = MAX_PROBES |         |
         +--------------------+         +---------------+         |
-   PL indicates connectivity |         |                         |
+                             |         |                         |
                              V         |         BASE_PMTU Probe |
                           +---------------+            acked     |
                           |      BASE     |----------------------+
