@@ -1336,20 +1336,31 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
         <t>The following states are defined:</t>
 
         <t><list style="hanging">
-            <t hangText="PROBE_START:">The PROBE_START state is the initial
-            state before probing has started. The state confirms connectivity
-            to the remote PL.</t>
+            <t hangText="DISABLED:">The DISABLED state is the initial
+            state before probing has started. It is also entered from
+            any other state, when the PL indicates loss of connectivity.
+            This state is left, once the PL indicates connectivity to the
+            remote PL.</t>
 
-            <t hangText="">The PLPMTU is set to the BASE_PMTU size. Probing
-            ought to start immediately after connection setup to prevent the
-            prevent the loss of user data. PLPMTUD is not performed in this
-            state. The state transitions to PROBE_SEARCH, when a network path
-            has been confirmed, i.e., when a sent packet has been acknowledged
-            on this network path and the BASE_PMTU is confirmed to be
-            supported. If the network path cannot be confirmed this state
-            transitions to PROBE_DISABLED.</t>
+            <t hangText="BASE:">The BASE state is used to confirm that the
+            BASE_PMTU size is supported by the network path and is
+            designed to allow an application to continue working when there
+            are transient reductions in the actual PMTU. It also seeks to
+            avoid long periods where traffic is black holed while searching
+            for a larger PLPMTU.</t>
 
-            <t hangText="PROBE_SEARCH:">The PROBE_SEARCH state is the main
+            <t hangText="">On entry, the PROBED_SIZE is set to the BASE_PMTU
+            size and the PROBE_COUNT is set to zero.</t>
+
+            <t hangText="">Each time a probe packet is sent, and the
+            PROBE_TIMER is started. The state is exited when the probe packet
+            is acknowledged, and the PL sender enters the SEARCHING state.</t>
+
+            <t hangText="">The state is also left when the PROBE_COUNT reaches
+            MAX_PROBES; a PTB message is validated. This causes the PL sender
+            to enter the ERROR state.</t>
+
+            <t hangText="SEARCHING:">The SEARCHING state is the main
             probing state. This state is entered when probing for the
             BASE_PMTU was successful.</t>
 
@@ -1375,42 +1386,15 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
             the SEARCH_COMPLETE state, a CONFIRMATION_TIMER periodically
             resets the PROBE_COUNT and schedules a probe packet with the size
             of the PLPMTU. If the probe packet fails to be acknowledged after
-            MAX_PROBES attempts, the method enters the PROBE_BASE state. When
+            MAX_PROBES attempts, the method enters the BASE state. When
             used with an acknowledged PL (e.g., SCTP), DPLPMTUD SHOULD NOT
             continue to generate PLPMTU probes in this state.</t>
 
-            <t hangText="PROBE_BASE:">The PROBE_BASE state is used to confirm
-            whether the BASE_PMTU size is supported by the network path and is
-            designed to allow an application to continue working when there
-            are transient reductions in the actual PMTU. It also seeks to
-            avoid long periods where traffic is black holed while searching
-            for a larger PLPMTU.</t>
-
-            <t hangText="">On entry, the PROBED_SIZE is set to the BASE_PMTU
-            size and the PROBE_COUNT is set to zero.</t>
-
-            <t hangText="">Each time a probe packet is sent, and the
-            PROBE_TIMER is started. The state is exited when the probe packet
-            is acknowledged, and the PL sender enters the PROBE_SEARCH
-            state.</t>
-
-            <t hangText="">The state is also left when the PROBE_COUNT reaches
-            MAX_PROBES; a PTB message is validated. This causes the PL sender
-            to enter the PROBE_ERROR state.</t>
-
-            <t hangText="PROBE_ERROR:">The PROBE_ERROR state represents the
+            <t hangText="ERROR:">The ERROR state represents the
             case where the network path is not known to support a PLPMTU of at
-            least the BASE_PMTU size. It is entered when either a probe of
-            size BASE_PMTU has not been acknowledged or a validated PTB
-            message indicates a PTB_SIZE smaller than the BASE_PMTU.</t>
-
-            <t hangText="">On entry, the PROBE_COUNT is set to zero and the
-            PROBED_SIZE is set to the MIN_PMTU size, and the PLPMTU is reset
-            to MIN_PMTU size. In this state, a probe packet is sent, and the
-            PROBE_TIMER is started. The state transitions to the PROBE_SEARCH
-            state when a probe packet is acknowledged of at least size
-            BASE_PMTU. Robust implementations may validate the BASE_PMTU
-            several times before transition to the PROBE_SEARCH.</t>
+            least the BASE_PMTU size. It implements a method to mitigate
+            oscillation in the state-event engine. The handling in this state
+            is implementation dependent.</t>
 
             <t hangText="">Implementations are permitted to enable endpoint
             fragmentation if the DPLPMTUD is unable to validate MIN_PMTU
@@ -1418,9 +1402,6 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
             MIN_PMTU the implementation should transition to
             PROBE_DISABLED.</t>
 
-            <t hangText="PROBE_DISABLED:">The PROBE_DISABLED state indicates
-            that connectivity could not be established. DPLPMTUD MUST NOT
-            probe in this state.</t>
           </list><xref target="StateChanges"></xref> contains an informative
         description of key events.</t>
       </section>
