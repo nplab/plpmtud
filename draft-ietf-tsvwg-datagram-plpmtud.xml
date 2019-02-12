@@ -1291,8 +1291,8 @@
                 title="State machine for Datagram PLPMTUD.  Note: Some state changes are not show to simplify the diagram.">
           <artwork align="center"><![CDATA[
    |         |
-   |         | PL indicates loss
-   | Start   |  of connectivity
+   | Start   | PL indicates loss
+   |         |  of connectivity
    V         V
 +---------------+                                   +---------------+
 |    DISABLED   |                                   |     ERROR     |
