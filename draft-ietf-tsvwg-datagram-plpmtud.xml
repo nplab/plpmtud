@@ -1290,47 +1290,44 @@
         <figure anchor="fig-states"
                 title="State machine for Datagram PLPMTUD.  Note: Some state changes are not show to simplify the diagram.">
           <artwork align="center"><![CDATA[
-                                          PROBE_TIMER expiry
-                                      (PROBE_COUNT = MAX_PROBES)
-                        +-------------------+       +--------------+
-                        |    PROBE_START    +------>|PROBE_DISABLED|
-                        +-------------------+       +--------------+
-                                   |                              ^
-                                   | BASE_PMTU confirmed          |
-                                   V                              |
-MAX_PMTU acked or           +--------------+-+ (PROBE_COUNT       |
-PTB (BASE_PMTU <= +---------| PROBE_SEARCH | |  < MAX_PROBES)     |
-  PTB_SIZE        |    +--> +--------------+<+  or Probe acked    |
-< PROBED_SIZE)    |    |           |   ^  |                       |
-    or            |    |           |   |  |                       |
-(PROBE_COUNT      |    |           |   |  |((PTB_SIZE <           |
-  = MAX_PROBES)   |    |           |   |  |  BASE_PMTU)           |
-  +---------------+    |           |   |  | or                    |
-  |                    |           |   |  |(PLPMTU < BASE_PMTU))  |
-  |                    |           |   |  |and (PROBE_COUNT =     |
-  |   PMTU_RAISE_TIMER |           |   |  |   MAX_PROBES)         |
-  |                    |           |   |  |                       |
-  |                    |           |   |   \                      |
-  |        +-----------+           |   |    \   Suspend DPLPMTUD: |
-  |        |                       |   |     \                    |
-  |        |                       |   |      \---------+         |
-  |        |    (PTB_SIZE < PLPMTU)|   |                |         |
-  |        |           or          |   | BASE_PMTU      |         |
-  |        |   Black hole detected |   | Probe acked    |         |
-  V        |                       V   |                V         |
-+----------+----+            +--------------+        +-------------+
-|SEARCH_COMPLETE|----------->|  PROBE_BASE  |<-------| PROBE_ERROR |
-+---------------+            +--------------+        +-------------+
-  ^    |    Black hole detected  ^  | |  BASE_PMTU Probe acked:   ^
-  |    |             or          |  | |                           |
-  |    |    (PTB_SIZE < PLPMTU)  |  | | Probe BASE_PMTU:          |
-  |    |                         |  | | (PROBE_COUNT = MAX_PROBES)|
-  |    |                         |  | +---------------------------+
-  +----+                         +--+
- Confirmation:                 PROBE_TIMER expiry:
-(PROBE_COUNT < MAX_PROBES)    (PROBE_COUNT < MAX_PROBES)
-         or
- PLPMTU Probe acked
+   |         |
+   |         | PL indicates loss
+   | Start   |  of connectivity
+   V         V
++---------------+                                   +---------------+
+|    DISABLED   |                                   |     ERROR     |
++---------------+                                   +---------------+
+        |                       PROBE_TIMER expiry:    ^         |
+        |                    PROBE_COUNT = MAX_PROBES  |         |
+        +--------------------+         +---------------+         |
+   PL indicates connectivity |         |                         |
+                             V         |         BASE_PMTU Probe |
+                          +---------------+            acked     |
+                          |      BASE     |----------------------+
+                          +---------------+                      |
+      Black hole detected or ^ |    ^  ^ Black hole detected or  |
+        PTB_SIZE < PLPMTU    | |    |  |   PTB_SIZE < PLPMTU     |
+        +--------------------+ |    |  +--------------------+    |
+        |                      +----+                       |    |
+        |                PROBE_TIMER expiry:                |    |
+        |             PROBE_COUNT < MAX_PROBES              |    |
+        |                                                   |    |
+        |               PMTU_RAISE_TIMER expiry             |    |
+        |    +-----------------------------------------+    |    |
+        |    |                                         |    |    |
+        |    |                                         V    |    V
++---------------+                                   +---------------+
+|SEARCH_COMPLETE|                                   |   SEARCHING   |
++---------------+                                   +---------------+
+   |    ^    ^                                         |    |    ^
+   |    |    |                                         |    |    |
+   |    |    +-----------------------------------------+    |    |
+   |    |             MAX_PMTU Probe acked or               |    |
+   |    |     PTB (BASE_PMTU <= PTB_SIZE < PROBED_SIZE) or  |    |
+   +----+               PROBE_COUNT = MAX_PROBES            +----+
+CONFIRMATION_TIMER expiry:                        PROBE_TIMER expiry:
+PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
+     PLPMTU Probe acked                           Probe acked
 ]]></artwork>
         </figure>
 
