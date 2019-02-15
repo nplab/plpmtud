@@ -309,7 +309,7 @@
           misconfiguration of the layer 2 path between nodes, for instance
           the MTU configured in a layer 2 switch, or misconfiguration of the
           Maximum Receive Unit (MRU). If the packet is dropped by the link,
-          this will not cause in a PTB message to be sent, and result in
+          this will not cause a PTB message to be sent, and result in
           consequent black-holing.</t>
         </list></t>
         <t>Another failure could result if a node that is not on the
@@ -574,14 +574,17 @@
           without source fragmentation (as specified in section 5.4 of <xref
           target="RFC8201"></xref>).</t>
 
-          <t>Processing PTB messages: A DPLPMTUD sender MAY optionally utilize
-          PTB messages received from the network layer to help identify when a
-          network path does not support the current size of probe packet. Any
-          received PTB message MUST be validated before it is used to update
-          the PLPMTU discovery information <xref target="RFC8201"></xref>.
-          This validation confirms that the PTB message was sent in response
-          to a packet originating by the sender, and needs to be performed
-          before the PLPMTU discovery method reacts to the PTB message.</t>
+	  <t>Processing PTB messages: A DPLPMTUD sender MAY optionally utilize
+	  PTB messages received from the network layer to help identify when a
+	  network path does not support the current size of probe packet. Any
+	  received PTB message MUST be validated before it is used to update
+	  the PLPMTU discovery information <xref target="RFC8201"></xref>.
+	  This validation confirms that the PTB message was sent in response to
+	  a packet originating by the sender, and needs to be performed before
+	  the PLPMTU discovery method reacts to the PTB message.  A PTB message
+	  MUST NOT be used to increase the PLPMTU <xref
+	  target="RFC8201"></xref>. </t>
+	  
 
           <t>Reception feedback: The destination PL endpoint is REQUIRED to
           provide a feedback method that indicates to the DPLPMTUD sender when
@@ -806,12 +809,12 @@
               <t>An implementation that supports PTB messages MUST validate
               messages before they are further processed.</t>
             </list></t>
-          <t>A PL that receives a PTB message from a router or
-          middlebox, performs ICMP validation as specified in Section 5.2 of
-          <xref target="RFC8085"></xref>. Because DPLPMTUD operates at the PL,
-          the PL needs to check that each received PTB message is received in
-          response to a packet transmitted by the endpoint PL performing
-          DPLPMTUD.</t>
+	  <t>A PL that receives a PTB message from a router or middlebox,
+	  performs ICMP validation as specified in Section 5.2 of <xref
+	  target="RFC8085"></xref><xref target="RFC8201"></xref>. Because
+	  DPLPMTUD operates at the PL, the PL needs to check that each received
+	  PTB message is received in response to a packet transmitted by the
+	  endpoint PL performing DPLPMTUD.</t>
 
           <t>The PL MUST check the protocol information in the quoted packet
           carried in the ICMP PTB message payload to validate the message
@@ -910,14 +913,14 @@
       introduced at various points (as indicated with * in the figure below)
       in the IP protocol stack to discover the PLPMTU so that an application
       can utilise an appropriate MPS for the current network path.
-      Please note the DPLPMTUD SHOULD NOT be implemented and used in the APP, if
-      it is already implemented and used in a lower layer.</t>
+      DPLPMTUD SHOULD NOT be used by an application if
+      it is already used in a lower layer.</t>
 
       <t><figure anchor="fig-plpmtudimplement"
           title="Examples where DPLPMTUD can be implemented">
           <artwork><![CDATA[
   +----------------------+
-  |         APP*         |
+  |      Application*    |
   +-+-------+----+---+---+
     |       |    |   |
 +---+--+ +--+--+ | +-+---+
@@ -971,7 +974,7 @@
               no application data has been sent since the previous probe packet.
               A PL preferring to use an up-to-data PMTU once user data is sent
               again, can choose to continue PMTU discovery for each path.
-              However, this may result in sending additional packets.</t>
+              However, this may could in sending additional packets.</t>
 
               <t hangText="CONFIRMATION_TIMER:">
               When an acknowledged PL is used, this timer MUST NOT be used.
@@ -1052,14 +1055,14 @@
           <t><figure anchor="fig-mps"
               title="Relationships between probe and packet sizes">
               <artwork><![CDATA[
-     MIN_PMTU                                             MAX_PMTU
-       <------------------------------------------------------>
-                      |       |    |     |           |   
-                      V       |    |     |           V
-                  BASE_PMTU   V    |     V     Actual PMTU
-                             MPS   |  PROBED_SIZE  
-                                   V  
-                                 PLPMTU
+     MIN_PMTU                                        MAX_PMTU
+       <-------------------------------------------------->
+                      |        |     |           |   
+                      V        |     |           V
+                  BASE_PMTU    |     V     Actual PMTU
+                               |  PROBED_SIZE  
+                               V  
+                             PLPMTU
 ]]></artwork>
             </figure></t>
         </section>
@@ -1394,7 +1397,9 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
             case where the network path is not known to support a PLPMTU of at
             least the BASE_PMTU size. It implements a method to mitigate
             oscillation in the state-event engine. The handling in this state
-            is implementation dependent.</t>
+            is implementation dependent.
+	    
+	    XXX additioal text is required here XXX</t>
 
             <t hangText="">Implementations are permitted to enable endpoint
             fragmentation if the DPLPMTUD is unable to validate MIN_PMTU
