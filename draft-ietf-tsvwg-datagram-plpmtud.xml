@@ -199,7 +199,7 @@
       </address>
     </author>
 
-    <date day="18" month="February" year="2018" />
+    <date day="18" month="February" year="2019" />
 
     <!-- Meta-data Declarations -->
 
@@ -2409,7 +2409,7 @@ packet sent out by the DPLPMTUD implementation.</t>
 
       <t><list style="symbols">
           <t>Moved description of the PTB processing method from the PTB
-          requirements seection.</t>
+          requirements section.</t>
 
           <t>Clarified what is performed in the PTB validation check.</t>
 
