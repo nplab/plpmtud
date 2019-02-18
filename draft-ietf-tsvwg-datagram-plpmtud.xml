@@ -75,7 +75,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-06"
+<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-07"
      ipr="trust200902" updates="4821">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
@@ -199,7 +199,7 @@
       </address>
     </author>
 
-    <date day="20" month="November" year="2018" />
+    <date day="18" month="February" year="2018" />
 
     <!-- Meta-data Declarations -->
 
@@ -1393,13 +1393,16 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
             used with an acknowledged PL (e.g., SCTP), DPLPMTUD SHOULD NOT
             continue to generate PLPMTU probes in this state.</t>
 
-            <t hangText="ERROR:">The ERROR state represents the
-            case where the network path is not known to support a PLPMTU of at
-            least the BASE_PMTU size. It implements a method to mitigate
-            oscillation in the state-event engine. The handling in this state
-            is implementation dependent.
-	    
-	    XXX additioal text is required here XXX</t>
+	    <t hangText="ERROR:"> The ERROR state represents the case where
+	    either the network path is not known to support a PLPMTU of at
+	    least the BASE_PMTU size or when there is contradictory information
+	    about the network path that would otherwise result in excessive
+	    variation in the MPS signalled to the higher layer. The state
+	    implements a method to mitigate oscillation in the state-event
+	    engine. It signals a conservative value of the MPS to the higher
+	    layer by the PL. The state is exited when Packet Probes no longer
+	    detect the error or when the PL indicates that connectivity has
+	    been lost.</t>
 
             <t hangText="">Implementations are permitted to enable endpoint
             fragmentation if the DPLPMTUD is unable to validate MIN_PMTU
@@ -2118,7 +2121,7 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
           PROBE_BASE.</t>
         </list></t>
     </section>
-
+<!--
 <section title="DPLPMTUD Scenarios">
 <t>The following subsections discuss some common scenarios and describe the
 expected result of a DPLPMTUD implementation.
@@ -2257,7 +2260,7 @@ A obviously spurious MTU value is a value that is less than the minimum MTU
 packet sent out by the DPLPMTUD implementation.</t>
 </section>
 </section>
-
+-->
     <section title="Revision Notes">
       <t>Note to RFC-Editor: please remove this entire section prior to
       publication.</t>
@@ -2412,6 +2415,8 @@ packet sent out by the DPLPMTUD implementation.</t>
 
           <t>Updated security consideration to explain PTB security without
           needing to read the rest of the document.</t>
+
+	  <t>Reformatted state machine diagram</t>
         </list></t>
     </section>
   </back>
