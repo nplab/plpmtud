@@ -75,7 +75,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-07"
+<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-08"
      ipr="trust200902" updates="4821">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
@@ -1979,7 +1979,18 @@
           needing to read the rest of the document.</t>
 
 	  <t>Reformatted state machine diagram</t>
+        </list>Working group draft -08:</t>
+
+      <t><list style="symbols">
+          <t>Moved to rfcxml v3+</t>
+
+          <t>Rendered diagrams to svg in html version</t>
+
+          <t>Removed Appendix A.  Event-driven state changes</t>
+
+	  <t>Removed section on DPLPMTUD with UDP Options</t>
         </list></t>
+
     </section>
   </back>
 </rfc>
