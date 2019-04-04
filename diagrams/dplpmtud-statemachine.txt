@@ -1,0 +1,38 @@
+   |         |
+   | Start   | PL indicates loss
+   |         |  of connectivity
+   v         v
++---------------+                                   +---------------+
+|    DISABLED   |                                   |     ERROR     |
++---------------+                                   +---------------+
+        | PL indicates           PROBE_TIMER expiry:   ^         |
+        | connectivity        PROBE_COUNT = MAX_PROBES |         |
+        +--------------------+         +---------------+         |
+                             |         |                         |
+                             v         |         BASE_PMTU Probe |
+                          +---------------+            acked     |
+                          |      BASE     |----------------------+
+                          +---------------+                      |
+      Black hole detected or ^ |    ^  ^ Black hole detected or  |
+        PTB_SIZE < PLPMTU    | |    |  |   PTB_SIZE < PLPMTU     |
+        +--------------------+ |    |  +--------------------+    |
+        |                      +----+                       |    |
+        |                PROBE_TIMER expiry:                |    |
+        |             PROBE_COUNT < MAX_PROBES              |    |
+        |                                                   |    |
+        |               PMTU_RAISE_TIMER expiry             |    |
+        |    +-----------------------------------------+    |    |
+        |    |                                         |    |    |
+        |    |                                         v    |    v
++---------------+                                   +---------------+
+|SEARCH_COMPLETE|                                   |   SEARCHING   |
++---------------+                                   +---------------+
+   |    ^    ^                                         |    |    ^
+   |    |    |                                         |    |    |
+   |    |    +-----------------------------------------+    |    |
+   |    |             MAX_PMTU Probe acked or               |    |
+   |    |     PTB (BASE_PMTU <= PTB_SIZE < PROBED_SIZE) or  |    |
+   +----+               PROBE_COUNT = MAX_PROBES            +----+
+CONFIRMATION_TIMER expiry:                        PROBE_TIMER expiry:
+PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
+     PLPMTU Probe acked                           Probe acked
