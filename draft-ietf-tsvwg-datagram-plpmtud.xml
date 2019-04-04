@@ -918,25 +918,10 @@
 
       <t><figure anchor="fig-plpmtudimplement"
           title="Examples where DPLPMTUD can be implemented">
-          <artwork><![CDATA[
-  +----------------------+
-  |      Application*    |
-  +-+-------+----+---+---+
-    |       |    |   |
-+---+--+ +--+--+ | +-+---+
-| QUIC*| |UDPO*| | |SCTP*|
-+---+--+ +--+--+ | ++--+-+
-    |       |    |  |  |
-    +-------+-+  |  |  |
-              |  |  |  |
-             ++-+--++  |
-             | UDP  |  |
-             +---+--+  |
-                 |     |
-  +--------------+-----+-+
-  |  Network Interface   |
-  +----------------------+
-]]></artwork>
+	  <artset>
+         	 <artwork type="svg" src="diagrams/dplpmtud-impl-examples.svg"></artwork>
+          	<artwork type="ascii-art" src="diagrams/dplpmtud-impl-examples.txt"></artwork>
+	  </artset>
         </figure></t>
 
       <t>The central idea of DPLPMTUD is probing by a sender. Probe packets
@@ -1054,16 +1039,12 @@
 
           <t><figure anchor="fig-mps"
               title="Relationships between probe and packet sizes">
-              <artwork><![CDATA[
-     MIN_PMTU                                        MAX_PMTU
-       <-------------------------------------------------->
-                      |        |     |           |   
-                      V        |     |           V
-                  BASE_PMTU    |     V     Actual PMTU
-                               |  PROBED_SIZE  
-                               V  
-                             PLPMTU
-]]></artwork>
+
+		  <artset>
+		      <artwork type="svg" src="diagrams/packet-sizes-relationships.svg"></artwork>
+		      <artwork type="ascii-art" src="diagrams/packet-sizes-relationships.txt"></artwork>
+		  </artset>
+
             </figure></t>
         </section>
       </section>
@@ -1089,23 +1070,12 @@
         parallel with these phases of operation.</t>
 
         <t><figure anchor="fig-phases" title="DPLPMTUD Phases">
-            <artwork align="center"><![CDATA[
-                    +------------------------+
-                    | BASE_PMTU Confirmation +--       Connectivity
-                    +------------+-----------+  \----+   or BASE_PMTU
-                                 |     ^             V Confirmation Fails
-            Connectivity and     |     |         +-------+
-             BASE_PMTU confirmed |     +---------+ Error |
-                                 |               +-------+
-                                 |   CONFIRMATION_TIMER 
-                                 |        Fires
-                                 V   
-+----------------+          +--------------+
-| Search Complete|<---------+   Search     |
-+----------------+          +--------------+
-                Search Algorithm
-                   Completes
-]]></artwork>
+
+	  <artset>
+              <artwork type="svg" src="diagrams/dplpmtud-phases.svg"></artwork>
+              <artwork type="ascii-art" src="diagrams/dplpmtud-phases.txt"></artwork>
+	  </artset>
+
           </figure></t>
 
         <t><list style="hanging">
@@ -1291,47 +1261,14 @@
         machine is needed for each path.</t>
 
         <figure anchor="fig-states"
-                title="State machine for Datagram PLPMTUD.  Note: Some state changes are not show to simplify the diagram.">
-          <artwork align="center"><![CDATA[
-   |         |
-   | Start   | PL indicates loss
-   |         |  of connectivity
-   V         V
-+---------------+                                   +---------------+
-|    DISABLED   |                                   |     ERROR     |
-+---------------+                                   +---------------+
-        | PL indicates           PROBE_TIMER expiry:   ^         |
-        | connectivity        PROBE_COUNT = MAX_PROBES |         |
-        +--------------------+         +---------------+         |
-                             |         |                         |
-                             V         |         BASE_PMTU Probe |
-                          +---------------+            acked     |
-                          |      BASE     |----------------------+
-                          +---------------+                      |
-      Black hole detected or ^ |    ^  ^ Black hole detected or  |
-        PTB_SIZE < PLPMTU    | |    |  |   PTB_SIZE < PLPMTU     |
-        +--------------------+ |    |  +--------------------+    |
-        |                      +----+                       |    |
-        |                PROBE_TIMER expiry:                |    |
-        |             PROBE_COUNT < MAX_PROBES              |    |
-        |                                                   |    |
-        |               PMTU_RAISE_TIMER expiry             |    |
-        |    +-----------------------------------------+    |    |
-        |    |                                         |    |    |
-        |    |                                         V    |    V
-+---------------+                                   +---------------+
-|SEARCH_COMPLETE|                                   |   SEARCHING   |
-+---------------+                                   +---------------+
-   |    ^    ^                                         |    |    ^
-   |    |    |                                         |    |    |
-   |    |    +-----------------------------------------+    |    |
-   |    |             MAX_PMTU Probe acked or               |    |
-   |    |     PTB (BASE_PMTU <= PTB_SIZE < PROBED_SIZE) or  |    |
-   +----+               PROBE_COUNT = MAX_PROBES            +----+
-CONFIRMATION_TIMER expiry:                        PROBE_TIMER expiry:
-PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
-     PLPMTU Probe acked                           Probe acked
-]]></artwork>
+                title="State machine for Datagram PLPMTUD.  Note: Some state changes are not shown to simplify the diagram.">
+
+
+	  <artset>
+              <artwork type="svg" src="diagrams/dplpmtud-statemachine.svg"></artwork>
+              <artwork type="ascii-art" src="diagrams/dplpmtud-statemachine.txt"></artwork>
+	  </artset>
+
         </figure>
 
         <t></t>
