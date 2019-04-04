@@ -89,7 +89,7 @@
     <!-- The abbreviated title is used in the page header - it is only necessary if the
      full title is longer than 39 characters -->
 
-    <title abbrev="DPLPMTUD ">Packetization Layer Path MTU Discovery for
+    <title abbrev="DPLPMTUD">Packetization Layer Path MTU Discovery for
     Datagram Transports</title>
 
     <!-- add 'role="editor"' below for the editors if appropriate -->
@@ -199,7 +199,7 @@
       </address>
     </author>
 
-    <date day="18" month="February" year="2019" />
+    <date day="4" month="April" year="2019" />
 
     <!-- Meta-data Declarations -->
 
@@ -1347,8 +1347,7 @@
             MIN_PMTU the implementation should transition to
             PROBE_DISABLED.</t>
 
-          </list><xref target="StateChanges"></xref> contains an informative
-        description of key events.</t>
+          </list></t>
       </section>
 
       <section title="Search to Increase the PLPMTU">
