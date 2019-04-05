@@ -53,51 +53,51 @@
     <path d="M 200,0 L 200,32" fill="none" stroke="black"/>
     <path d="M 200,224 L 200,256" fill="none" stroke="black"/>
     <path d="M 208,64 L 208,96" fill="none" stroke="black"/>
+    <text text-anchor="middle" font-family="monospace" x="152" y="244" fill="black" font-size="1em">a</text>
+    <text text-anchor="middle" font-family="monospace" x="96" y="20" fill="black" font-size="1em">l</text>
+    <text text-anchor="middle" font-family="monospace" x="104" y="20" fill="black" font-size="1em">i</text>
+    <text text-anchor="middle" font-family="monospace" x="128" y="20" fill="black" font-size="1em">t</text>
+    <text text-anchor="middle" font-family="monospace" x="136" y="20" fill="black" font-size="1em">i</text>
+    <text text-anchor="middle" font-family="monospace" x="192" y="84" fill="black" font-size="1em">P</text>
+    <text text-anchor="middle" font-family="monospace" x="128" y="180" fill="black" font-size="1em">D</text>
+    <text text-anchor="middle" font-family="monospace" x="48" y="244" fill="black" font-size="1em">e</text>
+    <text text-anchor="middle" font-family="monospace" x="88" y="20" fill="black" font-size="1em">p</text>
     <text text-anchor="middle" font-family="monospace" x="112" y="20" fill="black" font-size="1em">c</text>
+    <text text-anchor="middle" font-family="monospace" x="32" y="84" fill="black" font-size="1em">I</text>
+    <text text-anchor="middle" font-family="monospace" x="176" y="84" fill="black" font-size="1em">C</text>
+    <text text-anchor="middle" font-family="monospace" x="128" y="244" fill="black" font-size="1em">e</text>
+    <text text-anchor="middle" font-family="monospace" x="16" y="84" fill="black" font-size="1em">Q</text>
+    <text text-anchor="middle" font-family="monospace" x="40" y="84" fill="black" font-size="1em">C</text>
+    <text text-anchor="middle" font-family="monospace" x="96" y="84" fill="black" font-size="1em">P</text>
+    <text text-anchor="middle" font-family="monospace" x="104" y="84" fill="black" font-size="1em">O</text>
+    <text text-anchor="middle" font-family="monospace" x="168" y="84" fill="black" font-size="1em">S</text>
+    <text text-anchor="middle" font-family="monospace" x="136" y="180" fill="black" font-size="1em">P</text>
+    <text text-anchor="middle" font-family="monospace" x="56" y="244" fill="black" font-size="1em">t</text>
+    <text text-anchor="middle" font-family="monospace" x="120" y="20" fill="black" font-size="1em">a</text>
+    <text text-anchor="middle" font-family="monospace" x="152" y="20" fill="black" font-size="1em">n</text>
+    <text text-anchor="middle" font-family="monospace" x="160" y="20" fill="black" font-size="1em">*</text>
+    <text text-anchor="middle" font-family="monospace" x="112" y="84" fill="black" font-size="1em">*</text>
     <text text-anchor="middle" font-family="monospace" x="184" y="84" fill="black" font-size="1em">T</text>
-    <text text-anchor="middle" font-family="monospace" x="144" y="244" fill="black" font-size="1em">f</text>
+    <text text-anchor="middle" font-family="monospace" x="200" y="84" fill="black" font-size="1em">*</text>
     <text text-anchor="middle" font-family="monospace" x="40" y="244" fill="black" font-size="1em">N</text>
     <text text-anchor="middle" font-family="monospace" x="136" y="244" fill="black" font-size="1em">r</text>
-    <text text-anchor="middle" font-family="monospace" x="104" y="20" fill="black" font-size="1em">i</text>
-    <text text-anchor="middle" font-family="monospace" x="24" y="84" fill="black" font-size="1em">U</text>
-    <text text-anchor="middle" font-family="monospace" x="40" y="84" fill="black" font-size="1em">C</text>
-    <text text-anchor="middle" font-family="monospace" x="112" y="84" fill="black" font-size="1em">*</text>
-    <text text-anchor="middle" font-family="monospace" x="56" y="244" fill="black" font-size="1em">t</text>
-    <text text-anchor="middle" font-family="monospace" x="64" y="244" fill="black" font-size="1em">w</text>
-    <text text-anchor="middle" font-family="monospace" x="104" y="244" fill="black" font-size="1em">I</text>
-    <text text-anchor="middle" font-family="monospace" x="152" y="244" fill="black" font-size="1em">a</text>
-    <text text-anchor="middle" font-family="monospace" x="88" y="20" fill="black" font-size="1em">p</text>
-    <text text-anchor="middle" font-family="monospace" x="144" y="20" fill="black" font-size="1em">o</text>
-    <text text-anchor="middle" font-family="monospace" x="152" y="20" fill="black" font-size="1em">n</text>
-    <text text-anchor="middle" font-family="monospace" x="96" y="84" fill="black" font-size="1em">P</text>
-    <text text-anchor="middle" font-family="monospace" x="192" y="84" fill="black" font-size="1em">P</text>
-    <text text-anchor="middle" font-family="monospace" x="200" y="84" fill="black" font-size="1em">*</text>
-    <text text-anchor="middle" font-family="monospace" x="128" y="244" fill="black" font-size="1em">e</text>
     <text text-anchor="middle" font-family="monospace" x="160" y="244" fill="black" font-size="1em">c</text>
-    <text text-anchor="middle" font-family="monospace" x="96" y="20" fill="black" font-size="1em">l</text>
-    <text text-anchor="middle" font-family="monospace" x="16" y="84" fill="black" font-size="1em">Q</text>
-    <text text-anchor="middle" font-family="monospace" x="48" y="84" fill="black" font-size="1em">*</text>
-    <text text-anchor="middle" font-family="monospace" x="168" y="84" fill="black" font-size="1em">S</text>
+    <text text-anchor="middle" font-family="monospace" x="24" y="84" fill="black" font-size="1em">U</text>
+    <text text-anchor="middle" font-family="monospace" x="80" y="84" fill="black" font-size="1em">U</text>
+    <text text-anchor="middle" font-family="monospace" x="120" y="180" fill="black" font-size="1em">U</text>
+    <text text-anchor="middle" font-family="monospace" x="120" y="244" fill="black" font-size="1em">t</text>
     <text text-anchor="middle" font-family="monospace" x="168" y="244" fill="black" font-size="1em">e</text>
-    <text text-anchor="middle" font-family="monospace" x="88" y="244" fill="black" font-size="1em">k</text>
+    <text text-anchor="middle" font-family="monospace" x="48" y="84" fill="black" font-size="1em">*</text>
+    <text text-anchor="middle" font-family="monospace" x="80" y="244" fill="black" font-size="1em">r</text>
+    <text text-anchor="middle" font-family="monospace" x="104" y="244" fill="black" font-size="1em">I</text>
+    <text text-anchor="middle" font-family="monospace" x="64" y="244" fill="black" font-size="1em">w</text>
+    <text text-anchor="middle" font-family="monospace" x="72" y="244" fill="black" font-size="1em">o</text>
     <text text-anchor="middle" font-family="monospace" x="112" y="244" fill="black" font-size="1em">n</text>
     <text text-anchor="middle" font-family="monospace" x="72" y="20" fill="black" font-size="1em">A</text>
-    <text text-anchor="middle" font-family="monospace" x="136" y="20" fill="black" font-size="1em">i</text>
-    <text text-anchor="middle" font-family="monospace" x="80" y="84" fill="black" font-size="1em">U</text>
-    <text text-anchor="middle" font-family="monospace" x="128" y="180" fill="black" font-size="1em">D</text>
-    <text text-anchor="middle" font-family="monospace" x="128" y="20" fill="black" font-size="1em">t</text>
-    <text text-anchor="middle" font-family="monospace" x="32" y="84" fill="black" font-size="1em">I</text>
-    <text text-anchor="middle" font-family="monospace" x="104" y="84" fill="black" font-size="1em">O</text>
-    <text text-anchor="middle" font-family="monospace" x="48" y="244" fill="black" font-size="1em">e</text>
-    <text text-anchor="middle" font-family="monospace" x="120" y="244" fill="black" font-size="1em">t</text>
-    <text text-anchor="middle" font-family="monospace" x="120" y="20" fill="black" font-size="1em">a</text>
-    <text text-anchor="middle" font-family="monospace" x="160" y="20" fill="black" font-size="1em">*</text>
-    <text text-anchor="middle" font-family="monospace" x="120" y="180" fill="black" font-size="1em">U</text>
-    <text text-anchor="middle" font-family="monospace" x="72" y="244" fill="black" font-size="1em">o</text>
-    <text text-anchor="middle" font-family="monospace" x="80" y="244" fill="black" font-size="1em">r</text>
     <text text-anchor="middle" font-family="monospace" x="80" y="20" fill="black" font-size="1em">p</text>
+    <text text-anchor="middle" font-family="monospace" x="144" y="20" fill="black" font-size="1em">o</text>
     <text text-anchor="middle" font-family="monospace" x="88" y="84" fill="black" font-size="1em">D</text>
-    <text text-anchor="middle" font-family="monospace" x="176" y="84" fill="black" font-size="1em">C</text>
-    <text text-anchor="middle" font-family="monospace" x="136" y="180" fill="black" font-size="1em">P</text>
+    <text text-anchor="middle" font-family="monospace" x="88" y="244" fill="black" font-size="1em">k</text>
+    <text text-anchor="middle" font-family="monospace" x="144" y="244" fill="black" font-size="1em">f</text>
   </g>
 </svg>
