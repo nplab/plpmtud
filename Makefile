@@ -1,3 +1,7 @@
+# build the document and the svg files
+# building the svg files depends on goat (github.com/blampe/goat) and svgcheck
+# (https://pypi.org/project/svgcheck/).
+
 html = draft-ietf-tsvwg-datagram-plpmtud.html
 text = draft-ietf-tsvwg-datagram-plpmtud.txt
 
