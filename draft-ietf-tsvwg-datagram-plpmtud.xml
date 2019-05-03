@@ -75,7 +75,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-07"
+<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-08"
      ipr="trust200902" updates="4821">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
@@ -89,7 +89,7 @@
     <!-- The abbreviated title is used in the page header - it is only necessary if the
      full title is longer than 39 characters -->
 
-    <title abbrev="DPLPMTUD ">Packetization Layer Path MTU Discovery for
+    <title abbrev="DPLPMTUD">Packetization Layer Path MTU Discovery for
     Datagram Transports</title>
 
     <!-- add 'role="editor"' below for the editors if appropriate -->
@@ -199,7 +199,7 @@
       </address>
     </author>
 
-    <date day="18" month="February" year="2019" />
+    <date day="4" month="April" year="2019" />
 
     <!-- Meta-data Declarations -->
 
@@ -918,25 +918,10 @@
 
       <t><figure anchor="fig-plpmtudimplement"
           title="Examples where DPLPMTUD can be implemented">
-          <artwork><![CDATA[
-  +----------------------+
-  |      Application*    |
-  +-+-------+----+---+---+
-    |       |    |   |
-+---+--+ +--+--+ | +-+---+
-| QUIC*| |UDPO*| | |SCTP*|
-+---+--+ +--+--+ | ++--+-+
-    |       |    |  |  |
-    +-------+-+  |  |  |
-              |  |  |  |
-             ++-+--++  |
-             | UDP  |  |
-             +---+--+  |
-                 |     |
-  +--------------+-----+-+
-  |  Network Interface   |
-  +----------------------+
-]]></artwork>
+	  <artset>
+         	 <artwork type="svg" src="diagrams/dplpmtud-impl-examples.svg"></artwork>
+          	<artwork type="ascii-art" src="diagrams/dplpmtud-impl-examples.txt"></artwork>
+	  </artset>
         </figure></t>
 
       <t>The central idea of DPLPMTUD is probing by a sender. Probe packets
@@ -1054,16 +1039,12 @@
 
           <t><figure anchor="fig-mps"
               title="Relationships between probe and packet sizes">
-              <artwork><![CDATA[
-     MIN_PMTU                                        MAX_PMTU
-       <-------------------------------------------------->
-                      |        |     |           |   
-                      V        |     |           V
-                  BASE_PMTU    |     V     Actual PMTU
-                               |  PROBED_SIZE  
-                               V  
-                             PLPMTU
-]]></artwork>
+
+		  <artset>
+		      <artwork type="svg" src="diagrams/packet-sizes-relationships.svg"></artwork>
+		      <artwork type="ascii-art" src="diagrams/packet-sizes-relationships.txt"></artwork>
+		  </artset>
+
             </figure></t>
         </section>
       </section>
@@ -1089,23 +1070,12 @@
         parallel with these phases of operation.</t>
 
         <t><figure anchor="fig-phases" title="DPLPMTUD Phases">
-            <artwork align="center"><![CDATA[
-                    +------------------------+
-                    | BASE_PMTU Confirmation +--       Connectivity
-                    +------------+-----------+  \----+   or BASE_PMTU
-                                 |     ^             V Confirmation Fails
-            Connectivity and     |     |         +-------+
-             BASE_PMTU confirmed |     +---------+ Error |
-                                 |               +-------+
-                                 |   CONFIRMATION_TIMER 
-                                 |        Fires
-                                 V   
-+----------------+          +--------------+
-| Search Complete|<---------+   Search     |
-+----------------+          +--------------+
-                Search Algorithm
-                   Completes
-]]></artwork>
+
+	  <artset>
+              <artwork type="svg" src="diagrams/dplpmtud-phases.svg"></artwork>
+              <artwork type="ascii-art" src="diagrams/dplpmtud-phases.txt"></artwork>
+	  </artset>
+
           </figure></t>
 
         <t><list style="hanging">
@@ -1291,47 +1261,14 @@
         machine is needed for each path.</t>
 
         <figure anchor="fig-states"
-                title="State machine for Datagram PLPMTUD.  Note: Some state changes are not show to simplify the diagram.">
-          <artwork align="center"><![CDATA[
-   |         |
-   | Start   | PL indicates loss
-   |         |  of connectivity
-   V         V
-+---------------+                                   +---------------+
-|    DISABLED   |                                   |     ERROR     |
-+---------------+                                   +---------------+
-        | PL indicates           PROBE_TIMER expiry:   ^         |
-        | connectivity        PROBE_COUNT = MAX_PROBES |         |
-        +--------------------+         +---------------+         |
-                             |         |                         |
-                             V         |         BASE_PMTU Probe |
-                          +---------------+            acked     |
-                          |      BASE     |----------------------+
-                          +---------------+                      |
-      Black hole detected or ^ |    ^  ^ Black hole detected or  |
-        PTB_SIZE < PLPMTU    | |    |  |   PTB_SIZE < PLPMTU     |
-        +--------------------+ |    |  +--------------------+    |
-        |                      +----+                       |    |
-        |                PROBE_TIMER expiry:                |    |
-        |             PROBE_COUNT < MAX_PROBES              |    |
-        |                                                   |    |
-        |               PMTU_RAISE_TIMER expiry             |    |
-        |    +-----------------------------------------+    |    |
-        |    |                                         |    |    |
-        |    |                                         V    |    V
-+---------------+                                   +---------------+
-|SEARCH_COMPLETE|                                   |   SEARCHING   |
-+---------------+                                   +---------------+
-   |    ^    ^                                         |    |    ^
-   |    |    |                                         |    |    |
-   |    |    +-----------------------------------------+    |    |
-   |    |             MAX_PMTU Probe acked or               |    |
-   |    |     PTB (BASE_PMTU <= PTB_SIZE < PROBED_SIZE) or  |    |
-   +----+               PROBE_COUNT = MAX_PROBES            +----+
-CONFIRMATION_TIMER expiry:                        PROBE_TIMER expiry:
-PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
-     PLPMTU Probe acked                           Probe acked
-]]></artwork>
+                title="State machine for Datagram PLPMTUD.  Note: Some state changes are not shown to simplify the diagram.">
+
+
+	  <artset>
+              <artwork type="svg" src="diagrams/dplpmtud-statemachine.svg"></artwork>
+              <artwork type="ascii-art" src="diagrams/dplpmtud-statemachine.txt"></artwork>
+	  </artset>
+
         </figure>
 
         <t></t>
@@ -1410,8 +1347,7 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
             MIN_PMTU the implementation should transition to
             PROBE_DISABLED.</t>
 
-          </list><xref target="StateChanges"></xref> contains an informative
-        description of key events.</t>
+          </list></t>
       </section>
 
       <section title="Search to Increase the PLPMTU">
@@ -1573,128 +1509,6 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
           target="validPTB_SIZE"></xref>). A validated PTB message MAY be used
           as input to the DPLPMTUD algorithm, but MUST NOT be used directly to
           set the PLPMTU.</t>
-        </section>
-      </section>
-
-      <section anchor="UDPOPT-PLPMTUD" title="DPLPMTUD with UDP Options">
-        <t>UDP Options<xref target="I-D.ietf-tsvwg-udp-options"></xref> can
-        supply the additional functionality required to implement DPLPMTUD
-        within the UDP transport service. Implementing DPLPMTUD using UDP
-        Options avoids the need for each application to implement the DPLPMTUD
-        method.</t>
-
-        <t>Section 5.6 of<xref target="I-D.ietf-tsvwg-udp-options"></xref>
-        defines the Maximum Segment Size (MSS) option, which allows the local
-        sender to indicate the EMTU_R to the peer. The value received in this
-        option can be used to initialise MAX_PMTU.</t>
-
-        <t>UDP Options enables padding to be added to UDP datagrams that are
-        used as Probe Packets. Feedback confirming reception of each Probe
-        Packet is provided by two new UDP Options:</t>
-
-        <t><list style="symbols">
-            <t>The Probe Request Option (<xref
-            target="UDPOPT-ECHOREQ"></xref>) is set by a sending PL to solicit
-            a response from a remote endpoint. A four-byte token identifies
-            each request.</t>
-
-            <t>The Probe Response Option (<xref
-            target="UDPOPT-ECHORES"></xref> is generated by the UDP Options
-            receiver in response to reception of a previously received Probe
-            Request Option. Each Probe Response Option echoes a previously
-            received four-byte token.</t>
-          </list>The token value allows implementations to be distinguish
-        between acknowledgements for initial probe packets and
-        acknowledgements confirming receipt of subsequent probe packets (e.g.,
-        travelling along alternate paths with a larger RTT). Each probe packet
-        needs to be uniquely identifiable by the UDP Options sender within the
-        Maximum Segment Lifetime (MSL). The UDP Options sender therefore needs
-        to not recycle token values until they have expired or have been
-        acknowledged. A 4 byte value for the token field provides sufficient
-        space for multiple unique probes to be made within the MSL.</t>
-
-        <t>The initial value of the four byte token field SHOULD be assigned
-        to a randomised value, as described in section 5.1 of <xref
-        target="RFC8085"></xref>) to enhance protection from off-path
-        attacks.</t>
-
-        <t>Implementations ought to only send a probe packet with a Request
-        Probe Option when required by their local state machine, i.e., when
-        probing to grow the PLPMTU or to confirm the current PLPMTU. The
-        procedure to handle the loss of a response packet is the
-        responsibility of the sender of the request. Implementations are
-        allowed to track multiple requests and respond to them with a single
-        packet.</t>
-
-        <t>A PL needs to determine that the path can still support the size of
-        datagram that the application is currently sending in the DPLPMTUD
-        search_done state (i.e., to detect black-holing of data). One way to
-        achieve this is to send probe packets of size PLPMTU or to utilise a
-        higher-layer method that provides explicit feedback indicating any
-        packet loss. Another possibility is to utilise data packets that carry
-        a Timestamp Option. Reception of a valid timestamp that was echoed by
-        the remote endpoint can be used to infer connectivity. This can
-        provide useful feedback even over paths with asymmetric capacity
-        and/or that carry UDP Option flows that have very asymmetric datagram
-        rates, because an echo of the most recent timestamp still indicates
-        reception of at least one packet of the transmitted size. This is
-        sufficient to confirm there is no black hole.</t>
-
-        <t>In contrast, when sending a probe to increase the PLPMTU, a
-        timestamp might be unable to unambiguously identify that a specific
-        probe packet has been received. Timestamp mechanisms cannot be used to
-        confirm the reception of individual probe messages and cannot be used
-        to stimulate a response from the remote peer.</t>
-
-        <section anchor="UDPOPT-ECHOREQ" title="UDP Probe Request Option">
-          <t>The Probe Request Option allows a sending endpoint to solicit a
-          response from a destination endpoint.</t>
-
-          <t>The Probe Request Option carries a four byte token set by the
-          sender. This token can be set to a value that is likely to be known
-          only to the sender (and is sent along the end-to-end path). The
-          initial value of the token SHOULD be assigned to a randomised value,
-          as described in section 5.1 of <xref target="RFC8085"></xref>) to
-          enhance protection from off-path attacks.</t>
-
-          <t>The sender needs to then check the value returned in the UDP
-          Probe Response Option. The value of the Token field, uniquely
-          identifies a probe within the maximum segment lifetime.</t>
-
-          <figure anchor="fig-echoreq" title="UDP Probe REQ Option Format">
-            <artwork align="center"><![CDATA[
-          +----------+--------+-----------------+
-          | Kind=9*  | Len=6  |     Token       |
-          +----------+--------+-----------------+
-            1 byte    1 byte       4 bytes
-
-             * To be confirmed by IANA.
-  ]]></artwork>
-          </figure>
-        </section>
-
-        <section anchor="UDPOPT-ECHORES" title="UDP Probe Response Option">
-          <t>The Probe Response Option is generated in response to reception
-          of a previously received Probe Request Option. This response is
-          generated by the UDP Option processing.</t>
-
-          <t>The Probe Response Option carries a four byte token field. The
-          Token field associates the response with the Token value carried in
-          the most recently-received Echo Request. The rate of generation of
-          UDP packets carrying a Probe Response Option is expected to be less
-          than once per RTT and SHOULD be rate-limited (see <xref
-          target="Security"></xref>).</t>
-
-          <figure anchor="fig-echores" title="UDP Probe RES Option Format">
-            <artwork align="center"><![CDATA[
-          +----------+--------+-----------------+
-          | Kind=10* | Len=6  |     Token       |
-          +----------+--------+-----------------+
-            1 byte    1 byte       4 bytes
-            
-            * To be confirmed by IANA.
-  ]]></artwork>
-          </figure>
         </section>
       </section>
 
@@ -2008,347 +1822,95 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
       &I-D.ietf-intarea-tunnels;
     </references>
 
-    <section anchor="StateChanges" title="Event-driven state changes">
-      <t>This appendix contains an informative description of key events:</t>
-
-      <t><list style="hanging">
-          <t hangText="Path Setup:">When a new path is initiated, the state is
-          set to PROBE_START. This sends a probe packet with the size of the
-          BASE_PMTU. As soon as the path is confirmed, the state changes to
-          PROBE_SEARCH.</t>
-
-          <t hangText="Arrival of an Acknowledgment:">Depending on the probing
-          state, the reaction differs according to <xref
-          target="fig-acks"></xref>, which is a simplification of <xref
-          target="fig-states"></xref> focusing on this event. <figure
-              anchor="fig-acks"
-              title="State changes at the arrival of an acknowledgment">
-              <artwork align="center"><![CDATA[
-+--------------+                                    +----------------+
-| PROBE_START  | --3------------------------------> | PROBE_DISABLED |
-+--------------+ --4----------------  ------------> +----------------+
-                                    \/
-+--------------+                    /\              +--------------+         
-| PROBE_ERROR  | -------------------- \ ----------> |  PROBE_BASE  |    
-+--------------+ --4--------------/    \            +--------------+
-                                        \          
-+--------------+ --1 --------            \          +--------------+
-|  PROBE_BASE  |             \        --- \ ------> | PROBE_ERROR  | 
-+--------------+ --3--------- \ -----/     \       +--------------+   
-                               \            \
-+--------------+                \            -----> +--------------+
-| PROBE_SEARCH | --2---          -----------------> | PROBE_SEARCH |
-+--------------+       \        ------------------> +--------------+
-                        \ ---- /
-+---------------+      / \                          +---------------+
-|SEARCH_COMPLETE| -1---   \                         |SEARCH_COMPLETE|
-+---------------+ -5--     -----------------------> +---------------+
-                      \
-                       \                            +--------------+
-                        --------------------------> |  PROBE_BASE  |
-                                                    +--------------+
-]]></artwork>
-
-              <postamble>Condition 1: The maximum PMTU size has not yet been
-              reached. Condition 2: The maximum PMTU size has been reached.
-              Condition 3: Probe Timer expires and PROBE_COUNT = MAX_PROBEs.
-              Condition 4: PROBE_ACK received. Condition 5: Black hole
-              detected.</postamble>
-            </figure></t>
-
-          <t hangText="Probing timeout:">The PROBE_COUNT is initialised to
-          zero each time the value of PROBED_SIZE is changed and when a
-          acknowledgment confirming delivery of a probe packet. The
-          PROBE_TIMER is started each time a probe packet is sent. It is
-          stopped when an acknowledgment arrives that confirms delivery of a
-          probe packet of PROBED_SIZE. If the probe packet is not acknowledged
-          before the PROBE_TIMER expires, the PROBE_COUNT is incremented. When
-          the PROBE_COUNT equals the value MAX_PROBES, the state is changed,
-          otherwise a new probe packet of the same size (PROBED_SIZE) is
-          resent. The state transitions are illustrated in <xref
-          target="fig-probeTimer"></xref>. This shows a simplification of
-          <xref target="fig-states"></xref> with a focus only on this event.
-          <figure anchor="fig-probeTimer"
-              title="State changes at the expiration of the probe timer">
-              <artwork align="center"><![CDATA[
-+--------------+                                    +----------------+
-|  PROBE_START | --2------------------------------->| PROBE_DISABLED |
-+--------------+                                    +----------------+
-
-+--------------+                                    +--------------+
-| PROBE_ERROR  |                 -----------------> | PROBE_ERROR  |
-+--------------+                /                   +--------------+
-                               /
-+--------------+ --2----------/                     +--------------+
-|  PROBE_BASE  | --1------------------------------> |  PROBE_BASE  |
-+--------------+                                    +--------------+
-
-+--------------+                                    +--------------+
-| PROBE_SEARCH | --1------------------------------> | PROBE_SEARCH |
-+--------------+ --2---------                       +--------------+
-                             \
-+---------------+             \                     +---------------+
-|SEARCH_COMPLETE|              -------------------> |SEARCH_COMPLETE|
-+---------------+                                   +---------------+
-]]></artwork>
-
-              <postamble>Condition 1: The maximum number of probe packets has
-              not been reached. Condition 2: The maximum number of probe
-              packets has been reached. XXX This diagram has not been
-              validated.</postamble>
-            </figure></t>
-
-          <t hangText="PMTU raise timer timeout:">DPLPMTUD periodically sends
-          a probe packet to detect whether a larger PMTU is possible. This
-          probe packet is generated by the PMTU_RAISE_TIMER.</t>
-
-          <t hangText="Arrival of a PTB message:">The active probing of the
-          path can be supported by the arrival of a PTB message indicating the
-          PTB_SIZE. Two examples are:</t>
-
-          <t><list style="numbers">
-              <t>The PTB_SIZE is between the PLPMTU and the probe that
-              triggered the PTB message.</t>
-
-              <t>The PTB_SIZE is smaller than the PLPMTU.</t>
-            </list></t>
-
-          <t>In first case, the PROBE_BASE state transitions to the
-          PROBE_ERROR state. In the PROBE_SEARCH state, a new probe packet is
-          sent with the size reported by the PTB message.</t>
-
-          <t>In second case, the probing starts again with a value of
-          PROBE_BASE.</t>
-        </list></t>
-    </section>
-<!--
-<section title="DPLPMTUD Scenarios">
-<t>The following subsections discuss some common scenarios and describe the
-expected result of a DPLPMTUD implementation.
-In general, a DPLPMTUD implementation must be able to estimate a safe path MTU
-value (e. g. 1200 bytes) after about t_safe.
-After that, the estimated value must converge towards the actual path MTU.
-The result must not be less than the actual path MTU, if
-<list style='numbers'>
-<t>it is a common path MTU,</t>
-<t>a validated ICMP PTB message reports the path MTU, or</t>
-<t>it is equal to the local source interface MTU.</t>
-</list></t>
-<t>Once a final path MTU value is estimated, this value should be confirmed
-periodically. It must not change as long as the path does not change.</t>
-
-<section title="Default Ethernet MTU">
-<t>The default MTU for ethernet is 1500 bytes.
-Due to the wide deployment of ethernet, 1500 bytes is a common path MTU.</t>
-<t>After a few iterations, the estimated path MTU value of a DPLPMTUD
-implementation must be equal to 1500 bytes.</t>
-</section>
-
-<section title="PPPoE">
-<t>If a part of a network path consists of a PPPoE connection, the path MTU
-reduces by 8 bytes to 1492 bytes.
-PPPoE is often used to connect to a DSL service provider, which make 1492 bytes
-a common path MTU.</t>
-<t>After a few iterations, the estimated value of a DPLPMTUD implementation
-must be equal to 1492 bytes.
-The estimated value should not be less than 1492 bytes, because it is a
-common path MTU value.</t>
-</section>
-
-<section title="IP Tunnel">
-<t>Tunneling IP packets inside IP packets is a technique often used with
-different IP versions.
-For example, in order to send IPv6 packets through an IPv4 (only) over Ethernet
-network.
-If a part of a network path consists of such an IPv6 in IPv4 tunnel, the path MTU
-reduces typically by 20 bytes to 1480 bytes.</t>
-<t>After a few iterations, the estimated value of an DPLPMTUD implementation
-must be equal to 1480 bytes.
-The estimated value should not be less than 1480 bytes, because it is a
-common path MTU.</t>
-</section>
-
-<section title="Multiple Tunnels: One after Another">
-<t>As described in the last two subsections tunnels are commonly used in the
-Internet.
-Hence, it is possible that two or more tunnels are used one after another on
-a network path.
-Path MTU reduces by the maximum of the tunnel overheads.
-If, for example, a host connected with DSL sends IPv4 packets to a host
-connected with DS-Lite, the network path consists of a PPPoE tunnel (DSL)
-followed by an IPv4 in IPv6 tunnel (DS-Lite).
-The PPPoE tunnel reduces MTU by 8 bytes and the IPv4 in IPv6 tunnel by 40 bytes.
-Thus, MTU for this path reduces by 40 bytes to 1460 bytes.</t>
-<t>After a few iterations, the estimated value of an DPLPMTUD implementation
-must be equal to 1460 bytes.
-The estimated value should not be less than 1460 bytes, because it is a
-common path MTU value.
-An implementation must be able to handle multiple PTB messages.
-In the example, each of the two tunnel ingress routers might send a PTB.
-One reporting a MTU of 1492 bytes (PPPoE) and the other a MTU of 1460 bytes
-(DS-Lite).</t>
-</section>
-
-<section title="Multiple Tunnels: One in Another">
-<t>There exist various tunnel techniques for various requirements.
-Sometimes it is necessary to use one tunnel inside another tunnel.
-For example, if an endpoint is connected to the internet by a
-PPPoE tunnel (DSL) and that tunnel uses IPv4 only, the endpoint needs to
-use an IPv6 in IPv4 tunnel inside the PPPoE tunnel in order to communicate
-using IPv6.
-A PPPoE tunnel reduces the path MTU by 8 byes, an IPv6 in IPv4 tunnel by
-additional 20 bytes.
-In total the path MTU reduces by 28 bytes to 1472 bytes.</t>
-<t>After a few iterations, the estimated value of an DPLPMTUD implementation
-must be less or equal to 1472 bytes.
-This value must not be less than 1460 bytes (see above).</t>
-</section>
-
-<section title="Path Change, Path MTU Decreased">
-<t>There is no guarantee that a path through the internet keeps constant
-during communication to an endpoint.
-When the path changes, the path MTU might change as well.
-The path MTU could for example change from 1500 bytes to 1480 bytes due to an
-IPv6 in IPv4 tunnel in the new path.</t>
-<t>A DPLPMTUD implementation must determine the path MTU reduction.
-It further must estimate a new safe path MTU value after about t_safe.
-After a few more iterations, the estimated value of an implementation must
-be equal to 1480 bytes.</t>
-</section>
-
-<section title="Path Change, Path MTU Increased">
-<t>As described in the last subsection, a path as well as the path MTU might
-change during communication.
-The path MTU could for example change from 1492 bytes to 1500 bytes,
-because there is a PPPoE tunnel in the old path, but not in the new one.</t>
-<t>A DPLPMTUD implementation must determine the path MTU increase.
-Once determined, the implementation must increase its estimated path MTU value
-from 1492 bytes to 1500 bytes after a few iterations.</t>
-</section>
-
-<section title="Continuous Path Change">
-<t>A node on the path between two endpoints might choose different routes for
-the packets of the endpoints communication.
-If this is the case, the path changes continuously.
-This could affect the path MTU as well.</t>
-<t>A DPLPMTUD implementation should estimate a stable path MTU value.
-That is, in this case, at most the lowest MTU of the different paths.</t>
-</section>
-
-<section title="Larger MTU Values">
-<t>The largest possible IPv4 packet size is 65,535 bytes (for IPv6 with
-Jumbograms it is  possible to use even larger packet sizes).
-However, a common MTU value for Gigabit  Ethernet, that is larger than the
-default MTU size, is 9000 bytes.</t>
-<t>After some iterations the estimated value of a DPLPMTUD implementation must
-be equal to 9000 bytes.
-The number of iterations should increase less than linear for finding a 9000
-bytes path MTU compared to finding a 1500 bytes path MTU.</t>
-</section>
-
-<section title="Spurious Value in PTB">
-<t>IP nodes react on a packet that is too big for forwarding with an
-ICMP PTB message.
-The PTB message contains the MTU the IP node can process.
-This MTU value could be spurious, either by a software/hardware bug or on
-purpose.</t>
-<t>If a DPLPMTUD implementation receives an ICMP PTB message containing a MTU
-value which is obviously spurious, the PTB message must not affect the
-estimated path MTU value.
-A obviously spurious MTU value is a value that is less than the minimum MTU
-(58 bytes for IPv4, 1280 bytes for IPv6) or greater than the size of the last
-packet sent out by the DPLPMTUD implementation.</t>
-</section>
-</section>
--->
     <section title="Revision Notes">
+
       <t>Note to RFC-Editor: please remove this entire section prior to
       publication.</t>
 
       <t>Individual draft -00: <list style="symbols">
-          <t hangText="Individual draft -00">Comments and corrections are
+          <t>Comments and corrections are
           welcome directly to the authors or via the IETF TSVWG working group
           mailing list.</t>
 
-          <t hangText="Individual draft -00">This update is proposed for WG
+          <t>This update is proposed for WG
           comments.</t>
         </list>Individual draft -01:</t>
 
       <t><list style="symbols">
-          <t hangText="Individual draft -00">Contains the first representation
+          <t>Contains the first representation
           of the algorithm, showing the states and timers</t>
 
-          <t hangText="Individual draft -00">This update is proposed for WG
+          <t>This update is proposed for WG
           comments.</t>
         </list>Individual draft -02:</t>
 
       <t><list style="symbols">
-          <t hangText="Individual draft -00">Contains updated representation
+          <t>Contains updated representation
           of the algorithm, and textual corrections.</t>
 
-          <t hangText="Individual draft -00">The text describing when to set
+          <t>The text describing when to set
           the effective PMTU has not yet been validated by the authors</t>
 
-          <t hangText="Individual draft -00">To determine security to
+          <t>To determine security to
           off-path-attacks: We need to decide whether a received PTB message
           SHOULD/MUST be validated? The text on how to handle a PTB message
           indicating a link MTU larger than the probe has yet not been
           validated by the authors</t>
 
-          <t hangText="Individual draft -00">No text currently describes how
+          <t>No text currently describes how
           to handle inconsistent results from arbitrary re-routing along
           different parallel paths</t>
 
-          <t hangText="Individual draft -00">This update is proposed for WG
+          <t>This update is proposed for WG
           comments.</t>
         </list>Working Group draft -00:</t>
 
       <t><list style="symbols">
-          <t hangText="Individual draft -00">This draft follows a successful
+          <t>This draft follows a successful
           adoption call for TSVWG</t>
 
-          <t hangText="Individual draft -00">There is still work to complete,
+          <t>There is still work to complete,
           please comment on this draft.</t>
         </list>Working Group draft -01:</t>
 
       <t><list style="symbols">
-          <t hangText="Individual draft -00">This draft includes improved
+          <t>This draft includes improved
           introduction.</t>
 
-          <t hangText="Individual draft -00">The draft is updated to require
+          <t>The draft is updated to require
           ICMP validation prior to accepting PTB messages - this to be
           confirmed by WG</t>
 
-          <t hangText="Individual draft -00">Section added to discuss
+          <t>Section added to discuss
           Selection of Probe Size - methods to be evlauated and
           recommendations to be considered</t>
 
-          <t hangText="Individual draft -00">Section added to align with work
+          <t>Section added to align with work
           proposed in the QUIC WG.</t>
         </list>Working Group draft -02:</t>
 
       <t><list style="symbols">
-          <t hangText="Individual draft -00">The draft was updated based on
+          <t>The draft was updated based on
           feedback from the WG, and a detailed review by Magnus
           Westerlund.</t>
 
-          <t hangText="Individual draft -00">The document updates RFC
+          <t>The document updates RFC
           4821.</t>
 
-          <t hangText="Individual draft -00">Requirements list updated.</t>
+          <t>Requirements list updated.</t>
 
-          <t hangText="Individual draft -00">Added more explicit discussion of
+          <t>Added more explicit discussion of
           a simpler black-hole detection mode.</t>
 
-          <t hangText="Individual draft -00">This draft includes
+          <t>This draft includes
           reorganisation of the section on IETF protocols.</t>
 
-          <t hangText="Individual draft -00">Added more discussion of
+          <t>Added more discussion of
           implementation within an application.</t>
 
-          <t hangText="Individual draft -00">Added text on flapping paths.</t>
+          <t>Added text on flapping paths.</t>
 
-          <t hangText="Individual draft -00">Replaced 'effective MTU' with new
+          <t>Replaced 'effective MTU' with new
           term PLPMTU.</t>
         </list></t>
 
@@ -2417,7 +1979,18 @@ packet sent out by the DPLPMTUD implementation.</t>
           needing to read the rest of the document.</t>
 
 	  <t>Reformatted state machine diagram</t>
+        </list>Working group draft -08:</t>
+
+      <t><list style="symbols">
+          <t>Moved to rfcxml v3+</t>
+
+          <t>Rendered diagrams to svg in html version</t>
+
+          <t>Removed Appendix A.  Event-driven state changes</t>
+
+	  <t>Removed section on DPLPMTUD with UDP Options</t>
         </list></t>
+
     </section>
   </back>
 </rfc>
