@@ -327,15 +327,14 @@
             <t>When a router issuing the ICMP message implements RFC792 <xref
             target="RFC0792"></xref>, it is only required to include the first
             64 bits of the IP payload of the packet within the quoted payload.
-            This may be insufficient to perform the tunnel processing
-            described in the previous bullet. There could be insufficient
-            bytes remaining for the sender to interpret the quoted transport
-            information. The recommendation in RFC1812 <xref
-            target="RFC1812"></xref> is that IPv4 routers return a quoted
-            packet with as much of the original datagram as possible without
-            the length of the ICMP datagram exceeding 576 bytes. (IPv6 routers
-            include as much of invoking packet as possible without the ICMPv6
-            packet exceeding 1280 bytes <xref target="RFC4443"></xref>.)</t>
+            There could be insufficient bytes remaining for the sender to interpret
+            the quoted transport information. <vspace/>
+            Note: The recommendation in RFC1812 <xref target="RFC1812"></xref> is
+            that IPv4 routers return a quoted packet with as much of the original
+            datagram as possible without the length of the ICMP datagram exceeding
+            576 bytes. IPv6 routers include as much of the invoking packet as possible
+            without the ICMPv6 packet exceeding 1280 bytes
+            <xref target="RFC4443"></xref>.</t>
 
             <t>The use of tunnels/encryption can reduce the size of the quoted
             packet returned to the original source address, increasing the
