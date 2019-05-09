@@ -574,17 +574,17 @@
           without source fragmentation (as specified in section 5.4 of <xref
           target="RFC8201"></xref>).</t>
 
-	  <t>Processing PTB messages: A DPLPMTUD sender MAY optionally utilize
-	  PTB messages received from the network layer to help identify when a
-	  network path does not support the current size of probe packet. Any
-	  received PTB message MUST be validated before it is used to update
-	  the PLPMTU discovery information <xref target="RFC8201"></xref>.
-	  This validation confirms that the PTB message was sent in response to
-	  a packet originating by the sender, and needs to be performed before
-	  the PLPMTU discovery method reacts to the PTB message.  A PTB message
-	  MUST NOT be used to increase the PLPMTU <xref
-	  target="RFC8201"></xref>. </t>
-	  
+          <t>Processing PTB messages: A DPLPMTUD sender MAY optionally utilize
+          PTB messages received from the network layer to help identify when a
+          network path does not support the current size of probe packet. Any
+          received PTB message MUST be validated before it is used to update
+          the PLPMTU discovery information <xref target="RFC8201"></xref>.
+          This validation confirms that the PTB message was sent in response to
+          a packet originating by the sender, and needs to be performed before
+          the PLPMTU discovery method reacts to the PTB message.  A PTB message
+          MUST NOT be used to increase the PLPMTU <xref
+          target="RFC8201"></xref>. </t>
+
 
           <t>Reception feedback: The destination PL endpoint is REQUIRED to
           provide a feedback method that indicates to the DPLPMTUD sender when
@@ -809,12 +809,13 @@
               <t>An implementation that supports PTB messages MUST validate
               messages before they are further processed.</t>
             </list></t>
-	  <t>A PL that receives a PTB message from a router or middlebox,
-	  performs ICMP validation as specified in Section 5.2 of <xref
-	  target="RFC8085"></xref><xref target="RFC8201"></xref>. Because
-	  DPLPMTUD operates at the PL, the PL needs to check that each received
-	  PTB message is received in response to a packet transmitted by the
-	  endpoint PL performing DPLPMTUD.</t>
+
+          <t>A PL that receives a PTB message from a router or middlebox,
+          performs ICMP validation as specified in Section 5.2 of <xref
+          target="RFC8085"></xref><xref target="RFC8201"></xref>. Because
+          DPLPMTUD operates at the PL, the PL needs to check that each received
+          PTB message is received in response to a packet transmitted by the
+          endpoint PL performing DPLPMTUD.</t>
 
           <t>The PL MUST check the protocol information in the quoted packet
           carried in the ICMP PTB message payload to validate the message
@@ -918,13 +919,13 @@
 
       <t><figure anchor="fig-plpmtudimplement"
           title="Examples where DPLPMTUD can be implemented">
-	  <!--
-	  <artset>
-         	 <artwork type="svg" src="diagrams/dplpmtud-impl-examples.svg"></artwork>
-          	<artwork type="ascii-art" src="diagrams/dplpmtud-impl-examples.txt"></artwork>
-	  </artset>
-	  -->
-	  		<artwork>
+          <!--
+          <artset>
+            <artwork type="svg" src="diagrams/dplpmtud-impl-examples.svg"></artwork>
+            <artwork type="ascii-art" src="diagrams/dplpmtud-impl-examples.txt"></artwork>
+          </artset>
+          -->
+          <artwork>
 <![CDATA[
   +----------------------+
   |      Application*    |
@@ -944,7 +945,7 @@
   |  Network Interface   |
   +----------------------+
 ]]>
-	  		</artwork>
+          </artwork>
         </figure></t>
 
       <t>The central idea of DPLPMTUD is probing by a sender. Probe packets
@@ -1063,24 +1064,24 @@
           <t><figure anchor="fig-mps"
               title="Relationships between probe and packet sizes">
 
-		  <!--
-		  <artset>
-		      <artwork type="svg" src="diagrams/packet-sizes-relationships.svg"></artwork>
-		      <artwork type="ascii-art" src="diagrams/packet-sizes-relationships.txt"></artwork>
-		  </artset>
-		  -->
-		  	<artwork>
+              <!--
+              <artset>
+                <artwork type="svg" src="diagrams/packet-sizes-relationships.svg"></artwork>
+                <artwork type="ascii-art" src="diagrams/packet-sizes-relationships.txt"></artwork>
+              </artset>
+              -->
+              <artwork>
 <![CDATA[
      MIN_PMTU                                        MAX_PMTU
        <-------------------------------------------------->
-                      |        |     |           |   
+                      |        |     |           |
                       v        |     |           v
                   BASE_PMTU    |     v     Actual PMTU
-                               |  PROBED_SIZE  
-                               v  
+                               |  PROBED_SIZE
+                               v
                              PLPMTU
 ]]>
-		  	</artwork>
+              </artwork>
 
             </figure></t>
         </section>
@@ -1108,13 +1109,13 @@
 
         <t><figure anchor="fig-phases" title="DPLPMTUD Phases">
 
-	  <!--
-	  <artset>
+            <!--
+            <artset>
               <artwork type="svg" src="diagrams/dplpmtud-phases.svg"></artwork>
               <artwork type="ascii-art" src="diagrams/dplpmtud-phases.txt"></artwork>
-	  </artset>
-	  -->
-			<artwork>
+            </artset>
+            -->
+            <artwork>
 <![CDATA[
                     +------------------------+
                     | BASE_PMTU Confirmation +-------+ Connectivity
@@ -1123,16 +1124,16 @@
             Connectivity and     |     |         +-------+
              BASE_PMTU confirmed |     +---------+ Error |
                                  |               +-------+
-                                 |   CONFIRMATION_TIMER 
+                                 |   CONFIRMATION_TIMER
                                  |        Fires
-                                 v   
+                                 v
 +----------------+          +--------------+
 | Search Complete|<---------+   Search     |
 +----------------+          +--------------+
                 Search Algorithm
                    Completes
 ]]>
-			</artwork>
+            </artwork>
 
           </figure></t>
 
@@ -1321,13 +1322,13 @@
         <figure anchor="fig-states"
                 title="State machine for Datagram PLPMTUD.  Note: Some state changes are not shown to simplify the diagram.">
 
-	  <!--
-	  <artset>
+            <!--
+            <artset>
               <artwork type="svg" src="diagrams/dplpmtud-statemachine.svg"></artwork>
               <artwork type="ascii-art" src="diagrams/dplpmtud-statemachine.txt"></artwork>
-	  </artset>
-	  -->
-			<artwork>
+            </artset>
+            -->
+            <artwork>
 <![CDATA[
    |         |
    | Start   | PL indicates loss
@@ -1368,8 +1369,8 @@ CONFIRMATION_TIMER expiry:                        PROBE_TIMER expiry:
 PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
      PLPMTU Probe acked                           Probe acked
 ]]>
-			</artwork>
-        </figure>
+            </artwork>
+          </figure>
 
         <t></t>
 
@@ -1430,16 +1431,16 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
             used with an acknowledged PL (e.g., SCTP), DPLPMTUD SHOULD NOT
             continue to generate PLPMTU probes in this state.</t>
 
-	    <t hangText="ERROR:"> The ERROR state represents the case where
-	    either the network path is not known to support a PLPMTU of at
-	    least the BASE_PMTU size or when there is contradictory information
-	    about the network path that would otherwise result in excessive
-	    variation in the MPS signalled to the higher layer. The state
-	    implements a method to mitigate oscillation in the state-event
-	    engine. It signals a conservative value of the MPS to the higher
-	    layer by the PL. The state is exited when Packet Probes no longer
-	    detect the error or when the PL indicates that connectivity has
-	    been lost.</t>
+            <t hangText="ERROR:"> The ERROR state represents the case where
+            either the network path is not known to support a PLPMTU of at
+            least the BASE_PMTU size or when there is contradictory information
+            about the network path that would otherwise result in excessive
+            variation in the MPS signalled to the higher layer. The state
+            implements a method to mitigate oscillation in the state-event
+            engine. It signals a conservative value of the MPS to the higher
+            layer by the PL. The state is exited when Packet Probes no longer
+            detect the error or when the PL indicates that connectivity has
+            been lost.</t>
 
             <t hangText="">Implementations are permitted to enable endpoint
             fragmentation if the DPLPMTUD is unable to validate MIN_PMTU
@@ -2078,7 +2079,7 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
           <t>Updated security consideration to explain PTB security without
           needing to read the rest of the document.</t>
 
-	  <t>Reformatted state machine diagram</t>
+      <t>Reformatted state machine diagram</t>
         </list>Working group draft -08:</t>
 
       <t><list style="symbols">
@@ -2088,7 +2089,7 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
 
           <t>Removed Appendix A.  Event-driven state changes</t>
 
-	  <t>Removed section on DPLPMTUD with UDP Options</t>
+          <t>Removed section on DPLPMTUD with UDP Options</t>
         </list></t>
 
     </section>
