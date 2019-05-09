@@ -918,10 +918,33 @@
 
       <t><figure anchor="fig-plpmtudimplement"
           title="Examples where DPLPMTUD can be implemented">
+	  <!--
 	  <artset>
          	 <artwork type="svg" src="diagrams/dplpmtud-impl-examples.svg"></artwork>
           	<artwork type="ascii-art" src="diagrams/dplpmtud-impl-examples.txt"></artwork>
 	  </artset>
+	  -->
+	  		<artwork>
+<![CDATA[
+  +----------------------+
+  |      Application*    |
+  +-+-------+----+----+--+
+    |       |    |    |
++---+--+ +--+--+ |  +-+---+
+| QUIC*| |UDPO*| |  |SCTP*|
++---+--+ +--+--+ |  +--+--+
+    |       |    |  |  |
+    +-------+--+ |  |  |
+               | |  |  |
+             +-+-+--+  |
+             | UDP  |  |
+             +---+--+  |
+                 |     |
+  +--------------+-----+-+
+  |  Network Interface   |
+  +----------------------+
+]]>
+	  		</artwork>
         </figure></t>
 
       <t>The central idea of DPLPMTUD is probing by a sender. Probe packets
@@ -1040,10 +1063,24 @@
           <t><figure anchor="fig-mps"
               title="Relationships between probe and packet sizes">
 
+		  <!--
 		  <artset>
 		      <artwork type="svg" src="diagrams/packet-sizes-relationships.svg"></artwork>
 		      <artwork type="ascii-art" src="diagrams/packet-sizes-relationships.txt"></artwork>
 		  </artset>
+		  -->
+		  	<artwork>
+<![CDATA[
+     MIN_PMTU                                        MAX_PMTU
+       <-------------------------------------------------->
+                      |        |     |           |   
+                      v        |     |           v
+                  BASE_PMTU    |     v     Actual PMTU
+                               |  PROBED_SIZE  
+                               v  
+                             PLPMTU
+]]>
+		  	</artwork>
 
             </figure></t>
         </section>
@@ -1071,10 +1108,31 @@
 
         <t><figure anchor="fig-phases" title="DPLPMTUD Phases">
 
+	  <!--
 	  <artset>
               <artwork type="svg" src="diagrams/dplpmtud-phases.svg"></artwork>
               <artwork type="ascii-art" src="diagrams/dplpmtud-phases.txt"></artwork>
 	  </artset>
+	  -->
+			<artwork>
+<![CDATA[
+                    +------------------------+
+                    | BASE_PMTU Confirmation +-------+ Connectivity
+                    +------------+-----------+       |   or BASE_PMTU
+                                 |     ^             v Confirmation Fails
+            Connectivity and     |     |         +-------+
+             BASE_PMTU confirmed |     +---------+ Error |
+                                 |               +-------+
+                                 |   CONFIRMATION_TIMER 
+                                 |        Fires
+                                 v   
++----------------+          +--------------+
+| Search Complete|<---------+   Search     |
++----------------+          +--------------+
+                Search Algorithm
+                   Completes
+]]>
+			</artwork>
 
           </figure></t>
 
@@ -1263,12 +1321,54 @@
         <figure anchor="fig-states"
                 title="State machine for Datagram PLPMTUD.  Note: Some state changes are not shown to simplify the diagram.">
 
-
+	  <!--
 	  <artset>
               <artwork type="svg" src="diagrams/dplpmtud-statemachine.svg"></artwork>
               <artwork type="ascii-art" src="diagrams/dplpmtud-statemachine.txt"></artwork>
 	  </artset>
-
+	  -->
+			<artwork>
+<![CDATA[
+   |         |
+   | Start   | PL indicates loss
+   |         |  of connectivity
+   v         v
++---------------+                                   +---------------+
+|    DISABLED   |                                   |     ERROR     |
++---------------+                                   +---------------+
+        | PL indicates           PROBE_TIMER expiry:   ^         |
+        | connectivity        PROBE_COUNT = MAX_PROBES |         |
+        +--------------------+         +---------------+         |
+                             |         |                         |
+                             v         |         BASE_PMTU Probe |
+                          +---------------+            acked     |
+                          |      BASE     |----------------------+
+                          +---------------+                      |
+      Black hole detected or ^ |    ^  ^ Black hole detected or  |
+        PTB_SIZE < PLPMTU    | |    |  |   PTB_SIZE < PLPMTU     |
+        +--------------------+ |    |  +--------------------+    |
+        |                      +----+                       |    |
+        |                PROBE_TIMER expiry:                |    |
+        |             PROBE_COUNT < MAX_PROBES              |    |
+        |                                                   |    |
+        |               PMTU_RAISE_TIMER expiry             |    |
+        |    +-----------------------------------------+    |    |
+        |    |                                         |    |    |
+        |    |                                         v    |    v
++---------------+                                   +---------------+
+|SEARCH_COMPLETE|                                   |   SEARCHING   |
++---------------+                                   +---------------+
+   |    ^    ^                                         |    |    ^
+   |    |    |                                         |    |    |
+   |    |    +-----------------------------------------+    |    |
+   |    |             MAX_PMTU Probe acked or               |    |
+   |    |     PTB (BASE_PMTU <= PTB_SIZE < PROBED_SIZE) or  |    |
+   +----+               PROBE_COUNT = MAX_PROBES            +----+
+CONFIRMATION_TIMER expiry:                        PROBE_TIMER expiry:
+PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
+     PLPMTU Probe acked                           Probe acked
+]]>
+			</artwork>
         </figure>
 
         <t></t>
