@@ -1647,7 +1647,7 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
             <t>When a PTB message has been validated, the PTB_SIZE reported in
             the PTB message SHOULD be used with the DPLPMTUD algorithm,
             providing that the reported PTB_SIZE is less than the current
-            probe size.</t>
+            probe size (see <xref target="mechanism-ptb" />).</t>
           </section>
         </section>
 
