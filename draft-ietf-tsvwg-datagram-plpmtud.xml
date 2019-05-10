@@ -1015,17 +1015,19 @@
 
           <list style="hanging">
               <t hangText="MAX_PROBES:">The MAX_PROBES is the maximum value of the
-              PROBE_COUNT counter. The default value of MAX_PROBES is 10.</t>
+              PROBE_COUNT counter (see <xref target="Variables" />). The default
+              value of MAX_PROBES is 10.</t>
 
               <t hangText="MIN_PMTU:">The MIN_PMTU is the smallest allowed probe
               packet size. For IPv6, this value is 1280 bytes, as specified in
               <xref target="RFC2460"></xref>. For IPv4, the minimum value is
-              68 bytes. (An IPv4 router is required to be able to forward a
+              68 bytes.<vspace />
+              Note: An IPv4 router is required to be able to forward a
               datagram of 68 bytes without further fragmentation. This is the
               combined size of an IPv4 header and the minimum fragment size of
               8 bytes. In addition, receivers are required to be able to
               reassemble fragmented datagrams at least up to 576 bytes, as stated
-              in section 3.3.3 of <xref target="RFC1122"></xref>))</t>
+              in section 3.3.3 of <xref target="RFC1122"></xref>.</t>
 
               <t hangText="MAX_PMTU:">The MAX_PMTU is the largest size of
               PLPMTU. This has to be less than or equal to the minimum of the
@@ -1042,7 +1044,7 @@
             </list></t>
         </section>
 
-        <section title="Variables">
+        <section anchor="Variables" title="Variables">
           <t>This method utilizes a set of variables:
             <list style="hanging">
               <t hangText="PROBED_SIZE:">The PROBED_SIZE is the size of the
@@ -1056,15 +1058,14 @@
             </list></t>
 
           <t>The figure below illustrates the relationship between the packet
-          size constants and variables, in this case when the DPLPMTUD
+          size constants and variables at a point of time when the DPLPMTUD
           algorithm performs path probing to increase the size of the PLPMTU.
-          The MPS is less than the PLPMTU. A probe packet has been sent of
-          size PROBED_SIZE. When this is acknowledged, the PLPMTU will be
-          raised to PROBED_SIZE allowing the PROBED_SIZE to be increased
-          towards the actual PMTU.</t>
+          A probe packet has been sent of size PROBED_SIZE. Once this is acknowledged,
+          the PLPMTU will raise to PROBED_SIZE allowing the DPLPMTUD algorithm to
+          further increase PROBED_SIZE towards the actual PMTU.</t>
 
           <t><figure anchor="fig-mps"
-              title="Relationships between probe and packet sizes">
+              title="Relationships between packet size constants and variables">
 
               <!--
               <artset>
