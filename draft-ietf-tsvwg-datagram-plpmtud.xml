@@ -858,23 +858,26 @@
           <t><list style="hanging">
               <t hangText="MIN_PMTU &lt; PTB_SIZE &lt; BASE_PMTU"><list
                   style="symbols">
-                  <t>A robust PL MAY enter the PROBE_ERROR state for an IPv4
-                  path when the PTB_SIZE reported in the PTB message is larger than
-                  or equal to 68 bytes and when this is less than the BASE_PMTU.</t>
+                  <t>A robust PL MAY enter an error state (see
+                  <xref target="States" />) for an IPv4 path when the PTB_SIZE
+                  reported in the PTB message is larger than or equal to 68
+                  bytes and when this is less than the BASE_PMTU.</t>
 
-                  <t>A robust PL MAY enter the PROBE_ERROR state for an IPv6
-                  path when the PTB_SIZE reported in the PTB message is larger than
-                  or equal to 1280 bytes and when this is less than the BASE_PMTU.</t>
+                  <t>A robust PL MAY enter an error state (see
+                  <xref target="States" />) for an IPv6 path when the PTB_SIZE
+                  reported in the PTB message is larger than or equal to 1280
+                  bytes and when this is less than the BASE_PMTU.</t>
                 </list></t>
 
               <t hangText="PTB_SIZE = PLPMTU"><list style="symbols">
-                  <t>Transition to SEARCH_COMPLETE.</t>
+                  <t>Completes the search for a better PLPMTU.</t>
                 </list></t>
 
               <t hangText="PTB_SIZE &gt; PROBED_SIZE"><list style="symbols">
-                  <t>The PTB_SIZE &gt; PROBED_SIZE, inconsistent network
-                  signal. These PTB messages ought to be discarded without
-                  further processing (the PLPMTU not updated).</t>
+                  <t>Inconsistent network signal.</t>
+
+                  <t>PTB message ought to be discarded without
+                  further processing (e. g. PLPMTU not modified).</t>
 
                   <t>The information could be utilized as an input to trigger
                   enabling a resilience mode.</t>
