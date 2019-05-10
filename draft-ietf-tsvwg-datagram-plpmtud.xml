@@ -1312,9 +1312,9 @@
    v         v
 +---------------+                                   +---------------+
 |    DISABLED   |                                   |     ERROR     |
-+---------------+                                   +---------------+
-        | PL indicates           PROBE_TIMER expiry:   ^         |
-        | connectivity        PROBE_COUNT = MAX_PROBES |         |
++---------------+               PROBE_TIMER expiry: +---------------+
+        | PL indicates        PROBE_COUNT = MAX_PROBES ^         |
+        | connectivity        or PTB_SIZE < BASE_PMTU  |         |
         +--------------------+         +---------------+         |
                              |         |                         |
                              v         |         BASE_PMTU Probe |
@@ -1374,8 +1374,8 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
             is acknowledged, and the PL sender enters the SEARCHING state.</t>
 
             <t hangText="">The state is also left when the PROBE_COUNT reaches
-            MAX_PROBES; a PTB message is validated. This causes the PL sender
-            to enter the ERROR state.</t>
+            MAX_PROBES or a received PTB message is validated. This causes the
+            PL sender to enter the ERROR state.</t>
 
             <t hangText="SEARCHING:">The SEARCHING state is the main
             probing state. This state is entered when probing for the
@@ -1389,14 +1389,14 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
             <t hangText="">When a probe packet is sent and not acknowledged
             within the period of the PROBE_TIMER, the PROBE_COUNT is
             incremented and the probe packet is retransmitted. The state is
-            exited when the PROBE_COUNT reaches MAX_PROBES; a PTB message is
-            validated; a probe of size MAX_PMTU is acknowledged or a black hole
-            is detected.</t>
+            exited when the PROBE_COUNT reaches MAX_PROBES, a received PTB
+            message is validated, a probe of size MAX_PMTU is acknowledged, or
+            a black hole is detected.</t>
 
             <t hangText="SEARCH_COMPLETE:">The SEARCH_COMPLETE state indicates
             a successful end to the PROBE_SEARCH state. DPLPMTUD remains in
-            this state until either the PMTU_RAISE_TIMER expires; a received
-            PTB message is validated; or a black hole is detected.</t>
+            this state until either the PMTU_RAISE_TIMER expires, a received
+            PTB message is validated, or a black hole is detected.</t>
 
             <t hangText="">When DPLPMTUD uses an unacknowledged PL and is in
             the SEARCH_COMPLETE state, a CONFIRMATION_TIMER periodically
