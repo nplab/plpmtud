@@ -1295,7 +1295,8 @@
         machine is needed for each path.</t>
 
         <figure anchor="fig-states"
-                title="State machine for Datagram PLPMTUD.  Note: Some state changes are not shown to simplify the diagram.">
+                title="State machine for Datagram PLPMTUD">
+            <preamble>Note: Some state changes are not shown to simplify the diagram.</preamble>
 
             <!--
             <artset>
