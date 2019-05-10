@@ -1724,11 +1724,11 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
         recommends the use of PADDING frames to build the probe packet. Pure
         probe-only packets are constructed with PADDING frames and PING frames
         to create a padding only packet that will elicit an acknowledgement.
-        Padding only frames enable probing the without affecting the transfer
+        Such padding only packets enable probing without affecting the transfer
         of other QUIC frames.</t>
 
         <t>The recommendation for QUIC endpoints implementing DPLPMTUD is
-        therefore that a MPS is maintained for each combination of local and
+        that a MPS is maintained for each combination of local and
         remote IP addresses <xref target="I-D.ietf-quic-transport"></xref>. If
         a QUIC endpoint determines that the PMTU between any pair of local and
         remote IP addresses has fallen below an acceptable MPS, it needs to
@@ -1740,7 +1740,7 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
           <t>A probe packet consists of a QUIC Header and a payload containing
           PADDING Frames and a PING Frame. PADDING Frames are a single octet
           (0x00) and several of these can be used to create a probe packet of
-          size PROBED_SIZE. QUIC provides an acknowledged PL, A sender can
+          size PROBED_SIZE. QUIC provides an acknowledged PL, a sender can
           therefore enter the BASE state as soon as connectivity has
           been confirmed.</t>
 
