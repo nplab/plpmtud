@@ -1394,7 +1394,7 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
             a black hole is detected.</t>
 
             <t hangText="SEARCH_COMPLETE:">The SEARCH_COMPLETE state indicates
-            a successful end to the PROBE_SEARCH state. DPLPMTUD remains in
+            a successful end to the SEARCHING state. DPLPMTUD remains in
             this state until either the PMTU_RAISE_TIMER expires, a received
             PTB message is validated, or a black hole is detected.</t>
 
@@ -1604,7 +1604,7 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
         <section anchor="sctp_over_ip" title="SCTP/IPv4 and SCTP/IPv6">
           <t>The base protocol is specified in <xref target="RFC4960"></xref>.
           This provides an acknowledged PL. A sender can therefore enter the
-          PROBE_BASE state as soon as connectivity has been confirmed.</t>
+          BASE state as soon as connectivity has been confirmed.</t>
 
           <section anchor="sctp_over_ip_probing"
                    title="Sending SCTP Probe Packets">
@@ -1741,7 +1741,7 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
           PADDING Frames and a PING Frame. PADDING Frames are a single octet
           (0x00) and several of these can be used to create a probe packet of
           size PROBED_SIZE. QUIC provides an acknowledged PL, A sender can
-          therefore enter the PROBE_BASE state as soon as connectivity has
+          therefore enter the BASE state as soon as connectivity has
           been confirmed.</t>
 
           <t>The current specification of QUIC sets the following:<list
@@ -1821,7 +1821,7 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
       mitigated against such attacks: First, by ensuring that a PL sender
       never reduces the PLPMTU below the base size, solely in response to
       receiving a PTB message. This is achieved by first entering the
-      PROBE_BASE state when such a message is received. Second, the design
+      BASE state when such a message is received. Second, the design
       does not require processing of PTB messages, a PL sender could therefore
       suspend processing of PTB messages (e.g., in a robustness mode after
       detecting that subsequent probes actually confirm that a size larger
