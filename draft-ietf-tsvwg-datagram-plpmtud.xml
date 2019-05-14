@@ -383,10 +383,10 @@
         Classical PMTUD, or at the other extreme, all PTB processing can be
         disabled and PLPMTUD can completely replace Classical PMTUD.</t>
 
-        <t>PLPMTUD can also include additional consistency checks without
-        increasing the risk of increased black-holing. For instance, the
-        information available at the PL, or higher layers, makes PTB message
-        validation more straight forward.</t>
+        <t>PLPMTUD can also include additional consistency checks without increasing
+        the risk that data is lost when probing to discover the path MTU. For
+        example, information available at the PL, or higher layers, enables
+        received PTB messages to be validated before being utilized.</t>
       </section>
 
       <section title="Path MTU Discovery for Datagram Services">
