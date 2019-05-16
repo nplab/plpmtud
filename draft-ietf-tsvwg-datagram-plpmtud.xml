@@ -1227,18 +1227,6 @@ confirmation |       | Search |<--------------+ confirmed
           target="mechanism-ptb"></xref>. Similarly black hole detection can
           terminate the search by entering the BASE_PMTU Confirmation phase, see <xref
           target="phases-confirmation"></xref>.</t>
-
-          <section title="Resilience to Inconsistent Path Information">
-            <t>Sometimes a PL sender is able to detect inconsistent results
-            from the sequence of PLPMTU probes that it sends or the sequence
-            of PTB messages that it receives. This could be manifested as
-            excessive fluctuation of the MPS.</t>
-
-            <t>When inconsistent path information is detected, a PL sender can
-            enable an alternate search mode that clamps the offered MPS to a
-            smaller value for a period of time. This avoids unnecessary
-            black-holing of packets.</t>
-          </section>
         </section>
 
         <section anchor="phases-complete" title="Search Complete Phase">
@@ -1497,15 +1485,19 @@ PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
         <section title="Resilience to Inconsistent Path Information">
           <t>A decision to increase the PLPMTU needs to be resilient to the
           possibility that information learned about the network path is
-          inconsistent (this could happen when probe packets are lost due to
-          other reasons, or some of the packets in a flow are forwarded along
-          a portion of the path that supports a different actual PMTU).</t>
+          inconsistent. A path is inconsistent, when, for example, probe packets
+          are lost due to other reasons (i. e. not packet size) or due to
+          frequent path changes. Frequent path changes could occur by
+          unexpected "flapping" - where some packets from a flow pass along
+          one path, but other packets follow a different path with different
+          properties.</t>
 
-          <t>Frequent path changes could occur due to unexpected "flapping" -
-          where some packets from a flow pass along one path, but other
-          packets follow a different path with different properties. DPLPMTUD
-          can be made resilient to these anomalies by introducing hysteresis
-          into the search decision to increase the MPS.</t>
+          <t>A PL sender is able to detect inconsistency from the
+          sequence of PLPMTU probes that it sends or the sequence of PTB messages
+          that it receives. When inconsistent path information is detected, a PL
+          sender could use an alternate search mode that clamps the offered MPS to a
+          smaller value for a period of time. This avoids unnecessary
+          loss of packets due to MTU limitation.</t>
         </section>
       </section>
     </section>
