@@ -1110,6 +1110,10 @@
         PTB processing (<xref target="mechanism-ptb"></xref>) proceed in
         parallel with these phases of operation.</t>
 
+        <t>This section aims to give a higher level view of the DPLPMTUD method
+        than the States section does. For more
+        details see <xref target="States" />.</t>
+
         <t><figure anchor="fig-phases" title="DPLPMTUD Phases">
 
             <!--
