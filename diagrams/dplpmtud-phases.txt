@@ -1,15 +1,23 @@
-                    +------------------------+
-                    | BASE_PMTU Confirmation +-------+ Connectivity
-                    +------------+-----------+       |   or BASE_PMTU
-                                 |     ^             v Confirmation Fails
-            Connectivity and     |     |         +-------+
-             BASE_PMTU confirmed |     +---------+ Error |
-                                 |               +-------+
-                                 |   CONFIRMATION_TIMER 
-                                 |        Fires
-                                 v   
-+----------------+          +--------------+
-| Search Complete|<---------+   Search     |
-+----------------+          +--------------+
-                Search Algorithm
-                   Completes
+                      +------+
+             +------->| Base |----------------+ Connectivity
+             |        +------+                | or BASE_PMTU
+             |           |                    | confirmation failed
+             |           |                    v
+             |           | Connectivity   +-------+
+             |           | and BASE_PMTU  | Error |
+             |           | confirmed      +-------+
+             |           |                    |
+             |           v                    | Consistent connectivity
+      PLPMTU |       +--------+               | and BASE_PMTU
+confirmation |       | Search |<--------------+ confirmed
+      failed |       +--------+
+             |          ^  |
+             |          |  |
+             |    Raise |  | Search
+             |    timer |  | algorithm
+             |  expired |  | completed
+             |          |  |
+             |          |  v
+             |   +-----------------+
+             +---| Search Complete |
+                 +-----------------+

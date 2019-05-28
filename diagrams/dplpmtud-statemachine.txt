@@ -4,9 +4,9 @@
    v         v
 +---------------+                                   +---------------+
 |    DISABLED   |                                   |     ERROR     |
-+---------------+                                   +---------------+
-        | PL indicates           PROBE_TIMER expiry:   ^         |
-        | connectivity        PROBE_COUNT = MAX_PROBES |         |
++---------------+               PROBE_TIMER expiry: +---------------+
+        | PL indicates     PROBE_COUNT = MAX_PROBES or ^         |
+        | connectivity       PTB: PTB_SIZE < BASE_PMTU |         |
         +--------------------+         +---------------+         |
                              |         |                         |
                              v         |         BASE_PMTU Probe |
@@ -14,7 +14,7 @@
                           |      BASE     |----------------------+
                           +---------------+                      |
       Black hole detected or ^ |    ^  ^ Black hole detected or  |
-        PTB_SIZE < PLPMTU    | |    |  |   PTB_SIZE < PLPMTU     |
+      PTB: PTB_SIZE < PLPMTU | |    |  | PTB: PTB_SIZE < PLPMTU  |
         +--------------------+ |    |  +--------------------+    |
         |                      +----+                       |    |
         |                PROBE_TIMER expiry:                |    |
@@ -30,9 +30,10 @@
    |    ^    ^                                         |    |    ^
    |    |    |                                         |    |    |
    |    |    +-----------------------------------------+    |    |
-   |    |             MAX_PMTU Probe acked or               |    |
-   |    |     PTB (BASE_PMTU <= PTB_SIZE < PROBED_SIZE) or  |    |
-   +----+               PROBE_COUNT = MAX_PROBES            +----+
+   |    |        MAX_PMTU Probe acked or PROBE_TIMER        |    |
+   |    |        expiry: PROBE_COUNT = MAX_PROBES or        |    |
+   +----+               PTB: PTB_SIZE = PLPMTU              +----+
 CONFIRMATION_TIMER expiry:                        PROBE_TIMER expiry:
 PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
-     PLPMTU Probe acked                           Probe acked
+     PLPMTU Probe acked                           Probe acked or PTB:
+                                      PLPMTU < PTB_SIZE < PROBED_SIZE
