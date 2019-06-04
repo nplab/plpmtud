@@ -438,113 +438,117 @@
       target="RFC4821"></xref>, and the definitions in <xref
       target="RFC1122"></xref>.</t>
 
-      <t><list style="hanging">
-          <t hangText="Actual PMTU:">The Actual PMTU is the PMTU of a network
+      <t><dl>
+          <dt>Actual PMTU:</dt>
+	  <dd>The Actual PMTU is the PMTU of a network
           path between a sender PL and a destination PL, which the DPLPMTUD
-          algorithm seeks to determine.</t>
+          algorithm seeks to determine.</dd>
 
-          <t hangText="Black Hole:">A Black Hole is encountered when a sender
+          <dt>Black Hole:</dt>
+	  <dd><t>A Black Hole is encountered when a sender
           is unaware that packets are not being delivered to the destination
-          end point. Two types of Black Hole are relevant to DPLPMTUD: <t>
-              <list style="hanging">
-                <t hangText="Packet Black Hole:">Packets encounter a Packet
+          end point. Two types of Black Hole are relevant to DPLPMTUD: </t>
+              <dl>
+                <dt>Packet Black Hole:</dt>
+		<dd>Packets encounter a Packet
                 Black Hole when packets are not delivered to the destination
                 endpoint (e.g., when the sender transmits packets of a
                 particular size with a previously known effective PMTU and
-                they are discarded by the network).</t>
+                they are discarded by the network).</dd>
 
-                <t hangText="ICMP Black Hole">An ICMP Black
+                <dt>ICMP Black Hole</dt>
+		<dd>An ICMP Black
                 Hole is encounbtered when the sender is unaware that packets
                 are not delivered to the destination endpoint because PTB
-                messages are not received by the originating PL sender.</t>
-              </list>
-            </t></t>
+                messages are not received by the originating PL sender.</dd>
+              </dl>
+          </dd>
 
-          <t hangText="Black holed :">Traffic is black-holed when the sender
+          <dt>Black holed :</dt><dd>Traffic is black-holed when the sender
           is unaware that packets are not being delivered. This could be due
-          to a Packet Black Hole or an ICMP Black Hole.</t>
+          to a Packet Black Hole or an ICMP Black Hole.</dd>
 
-          <t hangText="Classical Path MTU Discovery:">Classical PMTUD is a
+          <dt>Classical Path MTU Discovery:</dt><dd>Classical PMTUD is a
           process described in <xref target="RFC1191"></xref> and <xref
           target="RFC8201"></xref>, in which nodes rely on PTB messages to
           learn the largest size of unfragmented datagram that can be used
-          across a network path.</t>
+          across a network path.</dd>
 
-          <t hangText="Datagram:">A datagram is a transport-layer protocol
-          data unit, transmitted in the payload of an IP packet.</t>
+          <dt>Datagram:</dt><dd>A datagram is a transport-layer protocol
+          data unit, transmitted in the payload of an IP packet.</dd>
 
-          <t hangText="Effective PMTU:">The Effective PMTU is the current
+          <dt>Effective PMTU:</dt><dd>The Effective PMTU is the current
           estimated value for PMTU that is used by a PMTUD. This is equivalent
-          to the PLPMTU derived by PLPMTUD.</t>
+          to the PLPMTU derived by PLPMTUD.</dd>
 
-          <t hangText="EMTU_S:">The Effective MTU for sending (EMTU_S) is
+          <dt>EMTU_S:</dt><dd>The Effective MTU for sending (EMTU_S) is
           defined in <xref target="RFC1122"></xref> as "the maximum IP
           datagram size that may be sent, for a particular combination of IP
-          source and destination addresses...".</t>
+          source and destination addresses...".</dd>
 
-          <t hangText="EMTU_R:">The Effective MTU for receiving (EMTU_R) is
+          <dt>EMTU_R:</dt><dd>The Effective MTU for receiving (EMTU_R) is
           designated in <xref target="RFC1122"></xref> as the largest datagram
-          size that can be reassembled by EMTU_R ("Effective MTU to
-          receive").</t>
+          size that can be reassembled by EMTU_R (Effective MTU to
+          receive).</dd>
 
-          <t hangText="Link:">A Link is a communication facility or medium
+          <dt>Link:</dt><dd>A Link is a communication facility or medium
           over which nodes can communicate at the link layer, i.e., a layer
           below the IP layer. Examples are Ethernet LANs and Internet (or
-          higher) layer and tunnels.</t>
+          higher) layer and tunnels.</dd>
 
-          <t hangText="Link MTU:">The Link Maximum Transmission Unit (MTU) is
+          <dt>Link MTU:</dt><dd>The Link Maximum Transmission Unit (MTU) is
           the size in bytes of the largest IP packet, including the IP header
           and payload, that can be transmitted over a link. Note that this
           could more properly be called the IP MTU, to be consistent with how
           other standards organizations use the acronym. This includes the IP
           header, but excludes link layer headers and other framing that is
           not part of IP or the IP payload. Other standards organizations
-          generally define the link MTU to include the link layer headers.</t>
+          generally define the link MTU to include the link layer headers.</dd>
 
-          <t hangText="MAX_PMTU:">The MAX_PMTU is the largest size of PLPMTU
-          that DPLPMTUD will attempt to use.</t>
+          <dt>MAX_PMTU:</dt><dd>The MAX_PMTU is the largest size of PLPMTU
+          that DPLPMTUD will attempt to use.</dd>
 
-          <t hangText="MPS:">The Maximum Packet Size (MPS) is the largest size
+          <dt>MPS:</dt><dd>The Maximum Packet Size (MPS) is the largest size
           of application data block that can be sent across a network path by
           a PL. In DPLPMTUD this quantity is derived from the PLPMTU by taking
           into consideration the size of the lower protocol layer headers.
           Probe packets generated by DPLPMTUD can have a size larger than the
-          MPS.</t>
+          MPS.</dd>
 
-          <t hangText="MIN_PMTU:">The MIN_PMTU is the smallest size of PLPMTU
-          that DPLPMTUD will attempt to use.</t>
+          <dt>MIN_PMTU:</dt><dd>The MIN_PMTU is the smallest size of PLPMTU
+          that DPLPMTUD will attempt to use.</dd>
 
-          <t hangText="Packet:">A Packet is the IP header plus the IP
-          payload.</t>
+          <dt>Packet:</dt><dd>A Packet is the IP header plus the IP
+          payload.</dd>
 
-          <t hangText="Packetization Layer (PL):">The Packetization Layer (PL)
+          <dt>Packetization Layer (PL):</dt><dd>The Packetization Layer (PL)
           is the layer of the network stack that places data into packets and
-          performs transport protocol functions.</t>
+          performs transport protocol functions.</dd>
 
-          <t hangText="Path:">The Path is the set of links and routers
+          <dt>Path:</dt><dd>The Path is the set of links and routers
           traversed by a packet between a source node and a destination node
-          by a particular flow.</t>
+          by a particular flow.</dd>
 
-          <t hangText="Path MTU (PMTU):">The Path MTU (PMTU) is the minimum of
+          <dt>Path MTU (PMTU):</dt><dd>The Path MTU (PMTU) is the minimum of
           the Link MTU of all the links forming a network path between a
-          source node and a destination node.</t>
+          source node and a destination node.</dd>
 
-          <t hangText="PTB_SIZE:">The PTB_SIZE is a value reported in a
+          <dt>PTB_SIZE:</dt><dd>The PTB_SIZE is a value reported in a
           validated PTB message that indicates next hop link MTU of a router
-          along the path.</t>
+          along the path.</dd>
 
-          <t hangText="PLPMTU:">The Packetization Layer PMTU is an estimate of
-          the actual PMTU provided by the DPLPMTUD algorithm.</t>
+          <dt>PLPMTU:</dt><dd>The Packetization Layer PMTU is an estimate of
+          the actual PMTU provided by the DPLPMTUD algorithm.</dd>
 
-          <t hangText="PLPMTUD:">Packetization Layer Path MTU Discovery
+          <dt>PLPMTUD:</dt><dd>Packetization Layer Path MTU Discovery
           (PLPMTUD), the method described in this document for datagram PLs,
-          which is an extension to Classical PMTU Discovery.</t>
+          which is an extension to Classical PMTU Discovery.</dd>
 
-          <t hangText="Probe packet:">A probe packet is a datagram sent with a
+          <dt>Probe packet:</dt><dd>A probe packet is a datagram sent with a
           purposely chosen size (typically the current PLPMTU or larger) to
           detect if packets of this size can be successfully sent end-to-end
-          across the network path.</t>
-        </list></t>
+          across the network path.</dd>
+        </dl></t>
     </section>
 
     <section anchor="Requirements"
@@ -682,16 +686,20 @@
         padding is not passed on to an application at the receiver.</t>
 
         <t>This results in three possible ways that a sender can create a
-        probe packet listed in order of preference:<list style="hanging">
-            <t hangText="Probing using padding data:">A probe packet that
+        probe packet listed in order of preference:
+	
+	<dl>
+            <dt>Probing using padding data:</dt>
+	    <dd>A probe packet that
             contains only control information together with any padding, which
             is needed to be inflated to the size required for the probe
             packet. Since these probe packets do not carry an
             application-supplied data block, they do not typically require
             retransmission, although they do still consume network capacity
-            and incur endpoint processing.</t>
+            and incur endpoint processing.</dd>
 
-            <t hangText="Probing using application data and padding data:">A
+            <dt>Probing using application data and padding data:</dt>
+	    <dd>A
             probe packet that contains a data block supplied by an application
             that is combined with padding to inflate the length of the
             datagram to the size required for the probe packet. If the
@@ -699,17 +707,20 @@
             packet, the application/transport could perform transport-layer
             retransmission/repair of the data block (e.g., by retransmission
             after loss is detected or by duplicating the data block in a
-            datagram without the padding data).</t>
+            datagram without the padding data).</dd>
 
-            <t hangText="Probing using application data:">A probe packet that
+            <dt>Probing using application data:</dt>
+	    <dd>A probe packet that
             contains a data block supplied by an application that matches the
             size required for the probe packet. This method requests the
             application to issue a data block of the desired probe size. If
             the application/transport needs protection from the loss of an
             unsuccessful probe packet, the application/transport needs then to
             perform transport-layer retransmission/repair of the data block
-            (e.g., by retransmission after loss is detected).</t>
-          </list>A PL that uses a probe packet carrying an application data
+            (e.g., by retransmission after loss is detected).</dd>
+          </dl>
+	  
+	A PL that uses a probe packet carrying an application data
         block, could need to retransmit this application data block if the
         probe fails. This could need the PL to re-fragment the data block to a
         smaller packet size that is expected to traverse the end-to-end path
@@ -860,55 +871,57 @@
           utilized. This processing depends on the PTB_SIZE and the current
           value of a set of variables:</t>
 
-          <t><list style="hanging">
-              <t hangText="MIN_PMTU &lt; PTB_SIZE &lt; BASE_PMTU"><list
-                  style="symbols">
-                  <t>A robust PL MAY enter an error state (see <xref
-                  target="States"></xref>) for an IPv4 path when the PTB_SIZE
-                  reported in the PTB message is larger than or equal to 68
-                  bytes and when this is less than the BASE_PMTU.</t>
+          <t><dl newline="true">
+              <dt>MIN_PMTU &lt; PTB_SIZE &lt; BASE_PMTU</dt>
+	      <dd><ul>
+		  <li>A robust PL MAY enter an error state (see <xref
+		  target="States"></xref>) for an IPv4 path when the PTB_SIZE
+		  reported in the PTB message is larger than or equal to 68
+		  bytes and when this is less than the BASE_PMTU.</li>
 
-                  <t>A robust PL MAY enter an error state (see <xref
-                  target="States"></xref>) for an IPv6 path when the PTB_SIZE
-                  reported in the PTB message is larger than or equal to 1280
-                  bytes and when this is less than the BASE_PMTU.</t>
-                </list></t>
+		  <li>A robust PL MAY enter an error state (see <xref
+		  target="States"></xref>) for an IPv6 path when the PTB_SIZE
+		  reported in the PTB message is larger than or equal to 1280
+		  bytes and when this is less than the BASE_PMTU.</li>
+	      </ul></dd>
 
-              <t hangText="PTB_SIZE = PLPMTU"><list style="symbols">
-                  <t>Completes the search for a larger PLPMTU.</t>
-                </list></t>
+              <dt>PTB_SIZE = PLPMTU</dt>
+	      <dd><ul>
+                  <li>Completes the search for a larger PLPMTU.</li>
+              </ul></dd>
 
-              <t hangText="PTB_SIZE &gt; PROBED_SIZE"><list style="symbols">
-                  <t>Inconsistent network signal.</t>
+              <dt>PTB_SIZE &gt; PROBED_SIZE</dt>
+	      <dd><ul>
+                  <li>Inconsistent network signal.</li>
 
-                  <t>PTB message ought to be discarded without further
-                  processing (e. g. PLPMTU not modified).</t>
+                  <li>PTB message ought to be discarded without further
+                  processing (e. g. PLPMTU not modified).</li>
 
-                  <t>The information could be utilized as an input to trigger
-                  enabling a resilience mode.</t>
-                </list></t>
+                  <li>The information could be utilized as an input to trigger
+                  enabling a resilience mode.</li>
+              </ul></dd>
 
-              <t hangText="BASE_PMTU &lt;= PTB_SIZE &lt; PLPMTU"><list
-                  style="symbols">
-                  <t>Black hole detection is triggered and the PLPMTU ought to
-                  be set to BASE_PMTU.</t>
+              <dt>BASE_PMTU &lt;= PTB_SIZE &lt; PLPMTU</dt>
+	      <dd><ul>
+                  <li>Black hole detection is triggered and the PLPMTU ought to
+                  be set to BASE_PMTU.</li>
 
-                  <t>The PL could use the PTB_SIZE reported in the PTB message
-                  to initialize a search algorithm.</t>
-                </list></t>
+                  <li>The PL could use the PTB_SIZE reported in the PTB message
+                  to initialize a search algorithm.</li>
+              </ul></dd>
 
-              <t hangText="PLPMTU &lt; PTB_SIZE &lt; PROBED_SIZE"><list
-                  style="symbols">
-                  <t>The PLPMTU continues to be valid, but the last
-                  PROBED_SIZE searched was larger than the actual PMTU.</t>
+              <dt>PLPMTU &lt; PTB_SIZE &lt; PROBED_SIZE</dt>
+	      <dd><ul>
+                  <li>The PLPMTU continues to be valid, but the last
+                  PROBED_SIZE searched was larger than the actual PMTU.</li>
 
-                  <t>The PLPMTU is not updated.</t>
+                  <li>The PLPMTU is not updated.</li>
 
-                  <t>The PL can use the reported PTB_SIZE from the PTB message
+                  <li>The PL can use the reported PTB_SIZE from the PTB message
                   as the next search point when it resumes the search
-                  algorithm.</t>
-                </list></t>
-            </list></t>
+                  algorithm.</li>
+              </ul></dd>
+            </dl></t>
 
           <t>xxx Author Note: Do we want to specify how to handle PTB Message
           with PTB_SIZE = 0? xxx</t>
@@ -946,32 +959,43 @@
         DPLPMTUD.</t>
 
         <section anchor="Timers" title="Timers">
-          <t>The method utilizes up to three timers: <list style="hanging">
-              <t hangText="PROBE_TIMER:">The PROBE_TIMER is configured to
+          <t>The method utilizes up to three timers: 
+	  <dl>
+              <dt>PROBE_TIMER:</dt>
+	     
+	      <dd>
+	      <t>The PROBE_TIMER is configured to
               expire after a period longer than the maximum time to receive an
               acknowledgment to a probe packet. This value MUST NOT be smaller
               than 1 second, and SHOULD be larger than 15 seconds. Guidance on
               selection of the timer value are provided in section 3.1.1 of
               the UDP Usage Guidelines <xref target="RFC8085"></xref>.</t>
 
-              <t hangText="">If the PL has a path Round Trip Time (RTT)
+              <t>If the PL has a path Round Trip Time (RTT)
               estimate and timely acknowledgements the PROBE_TIMER can be
               derived from the PL RTT estimate.</t>
+	      </dd>
 
-              <t hangText="PMTU_RAISE_TIMER:">The PMTU_RAISE_TIMER is
+              <dt>PMTU_RAISE_TIMER:</dt>
+	      <dd>
+	      <t>
+	      The PMTU_RAISE_TIMER is
               configured to the period a sender will continue to use the
               current PLPMTU, after which it re-enters the Search phase. This
               timer has a period of 600 secs, as recommended by PLPMTUD <xref
               target="RFC4821"></xref>.</t>
 
-              <t hangText="">DPLPMTUD MAY inhibit sending probe packets when
+              <t>DPLPMTUD MAY inhibit sending probe packets when
               no application data has been sent since the previous probe
               packet. A PL preferring to use an up-to-data PMTU once user data
               is sent again, can choose to continue PMTU discovery for each
               path. However, this may result in sending additional
               packets.</t>
+	      </dd>
 
-              <t hangText="CONFIRMATION_TIMER:">When an acknowledged PL is
+              <dt>CONFIRMATION_TIMER:</dt>
+	      <dd>
+	      <t>When an acknowledged PL is
               used, this timer MUST NOT be used. For other PLs, the
               CONFIRMATION_TIMER is configured to the period a PL sender waits
               before confirming the current PLPMTU is still supported. This is
@@ -982,25 +1006,29 @@
               selection of the timer value are provided in section 3.1.1 of
               the UDP Usage Guidelines <xref target="RFC8085"></xref>.</t>
 
-              <t hangText="">DPLPMTUD MAY inhibit sending probe packets when
+              <t>DPLPMTUD MAY inhibit sending probe packets when
               no application data has been sent since the previous probe
               packet. A PL preferring to use an up-to-data PMTU once user data
               is sent again, can choose to continue PMTU discovery for each
               path. However, this may result in sending additional
               packets.</t>
-            </list></t>
+	      </dd>
+            </dl></t>
 
           <t>An implementation could implement the various timers using a
           single timer.</t>
         </section>
 
         <section title="Constants">
-          <t>The following constants are defined: <list style="hanging">
-              <t hangText="MAX_PROBES:">The MAX_PROBES is the maximum value of
+          <t>The following constants are defined: 
+	  <dl>
+              <dt>MAX_PROBES:</dt>
+	      <dd>The MAX_PROBES is the maximum value of
               the PROBE_COUNT counter (see <xref target="Variables"></xref>).
-              The default value of MAX_PROBES is 10.</t>
+              The default value of MAX_PROBES is 10.</dd>
 
-              <t hangText="MIN_PMTU:">The MIN_PMTU is the smallest allowed
+              <dt>MIN_PMTU:</dt>
+	      <dd>The MIN_PMTU is the smallest allowed
               probe packet size. For IPv6, this value is 1280 bytes, as
               specified in <xref target="RFC2460"></xref>. For IPv4, the
               minimum value is 68 bytes.<vspace />Note: An IPv4 router is
@@ -1009,34 +1037,38 @@
               header and the minimum fragment size of 8 bytes. In addition,
               receivers are required to be able to reassemble fragmented
               datagrams at least up to 576 bytes, as stated in section 3.3.3
-              of <xref target="RFC1122"></xref>.</t>
+              of <xref target="RFC1122"></xref>.</dd>
 
-              <t hangText="MAX_PMTU:">The MAX_PMTU is the largest size of
+              <dt>MAX_PMTU:</dt>
+	      <dd>The MAX_PMTU is the largest size of
               PLPMTU. This has to be less than or equal to the minimum of the
               local MTU of the outgoing interface and the destination PMTU for
               receiving. An application, or PL, MAY reduce the MAX_PMTU when
               there is no need to send packets larger than a specific
-              size.</t>
+              size.</dd>
 
-              <t hangText="BASE_PMTU:">The BASE_PMTU is a configured size
+              <dt>BASE_PMTU:</dt>
+	      <dd>The BASE_PMTU is a configured size
               expected to work for most paths. The size is equal to or larger
               than the MIN_PMTU and smaller than the MAX_PMTU. In the case of
               IPv6, this value is 1280 bytes <xref target="RFC2460"></xref>.
-              When using IPv4, a size of 1200 bytes is RECOMMENDED.</t>
-            </list></t>
+              When using IPv4, a size of 1200 bytes is RECOMMENDED.</dd>
+            </dl></t>
         </section>
 
         <section anchor="Variables" title="Variables">
-          <t>This method utilizes a set of variables: <list style="hanging">
-              <t hangText="PROBED_SIZE:">The PROBED_SIZE is the size of the
+          <t>This method utilizes a set of variables: <dl>
+              <dt>PROBED_SIZE:</dt>
+	      <dd>The PROBED_SIZE is the size of the
               current probe packet. This is a tentative value for the PLPMTU,
-              which is awaiting confirmation by an acknowledgment.</t>
+              which is awaiting confirmation by an acknowledgment.</dd>
 
-              <t hangText="PROBE_COUNT:">The PROBE_COUNT is a count of the
+              <dt>PROBE_COUNT:</dt>
+	      <dd>The PROBE_COUNT is a count of the
               number of unsuccessful probe packets that have been sent with a
               size of PROBED_SIZE. The value is initialized to zero when a
-              particular size of PROBED_SIZE is first attempted.</t>
-            </list></t>
+              particular size of PROBED_SIZE is first attempted.</dd>
+            </dl></t>
 
           <t>The figure below illustrates the relationship between the packet
           size constants and variables at a point of time when the DPLPMTUD
@@ -1069,76 +1101,80 @@
             </artset>
             </figure></t>
 
-          <t><list style="hanging">
-              <t hangText="BASE_PMTU Confirmation Phase"><list style="empty">
-                  <t>The BASE_PMTU Confirmation Phase confirms connectivity to
+          <t><dl newline="true">
+              <dt>BASE_PMTU Confirmation Phase</dt>
+	      <dd><ul>
+                  <li>The BASE_PMTU Confirmation Phase confirms connectivity to
                   the remote peer. This phase is implicit for a
                   connection-oriented PL (where it can be performed in a PL
                   connection handshake). A connectionless PL needs to send an
                   acknowledged probe packet to confirm that the remote peer is
-                  reachable.</t>
+                  reachable.</li>
 
-                  <t>The sender also confirms that BASE_PMTU is supported
-                  across the network path.</t>
+                  <li>The sender also confirms that BASE_PMTU is supported
+                  across the network path.</li>
 
-                  <t>A PL that does not wish to support a path with a PLPMTU
+                  <li>A PL that does not wish to support a path with a PLPMTU
                   less than BASE_PMTU can simplify the phase into a single
                   step by performing the connectivity checks with a probe of
-                  the BASE_PMTU size.</t>
+                  the BASE_PMTU size.</li>
 
-                  <t>Once confirmed, DPLPMTUD enters the Search Phase. If this
-                  phase fails to confirm, DPLPMTUD enters the Error Phase.</t>
-                </list></t>
+                  <li>Once confirmed, DPLPMTUD enters the Search Phase. If this
+                  phase fails to confirm, DPLPMTUD enters the Error Phase.</li>
+                </ul></dd>
 
-              <t hangText="Search Phase"><list style="empty">
-                  <t>The Search Phase utilizes a search algorithm to send
-                  probe packets to seek to increase the PLPMTU.</t>
+              <dt>Search Phase</dt>
+	      <dd><ul>
+                  <li>The Search Phase utilizes a search algorithm to send
+                  probe packets to seek to increase the PLPMTU.</li>
 
-                  <t>The algorithm concludes when it has found a suitable
-                  PLPMTU, by entering the Search Complete Phase.</t>
+                  <li>The algorithm concludes when it has found a suitable
+                  PLPMTU, by entering the Search Complete Phase.</li>
 
-                  <t>A PL could respond to PTB messages using the PTB to
+                  <li>A PL could respond to PTB messages using the PTB to
                   advance or terminate the search, see <xref
-                  target="mechanism-ptb"></xref>.</t>
+                  target="mechanism-ptb"></xref>.</li>
 
-                  <t>Black hole detection can also terminate the search by
-                  entering the BASE_PMTU Confirmation phase.</t>
-                </list></t>
+                  <li>Black hole detection can also terminate the search by
+                  entering the BASE_PMTU Confirmation phase.</li>
+                </ul></dd>
 
-              <t hangText="Search Complete Phase"><list style="empty">
-                  <t>The Search Complete Phase is entered when the PLPMTU is
-                  supported across the network path.</t>
+              <dt>Search Complete Phase</dt>
+	      <dd><ul>
+                  <li>The Search Complete Phase is entered when the PLPMTU is
+                  supported across the network path.</li>
 
-                  <t>A PL can use a CONFIRMATION_TIMER to periodically repeat
+                  <li>A PL can use a CONFIRMATION_TIMER to periodically repeat
                   a probe packet for the current PLPMTU size. If the sender is
                   unable to confirm reachability (e.g., if the
                   CONFIRMATION_TIMER expires) or the PL signals a lack of
                   reachability, DPLPMTUD enters the BASE_PMTU Confirmation
-                  phase.</t>
+                  phase.</li>
 
-                  <t>The PMTU_RAISE_TIMER is used to periodically resume the
-                  search phase to discover if the PLPMTU can be raised.</t>
+                  <li>The PMTU_RAISE_TIMER is used to periodically resume the
+                  search phase to discover if the PLPMTU can be raised.</li>
 
-                  <t>Black Hole Detection or receipt of a validated PTB
+                  <li>Black Hole Detection or receipt of a validated PTB
                   message <xref target="PTB"></xref>) can cause the sender to
-                  enter the BASE_PMTU Confirmation Phase.</t>
-                </list></t>
+                  enter the BASE_PMTU Confirmation Phase.</li>
+                </ul></dd>
 
-              <t hangText="Error Phase"><list style="empty">
-                  <t>The Error Phase is entered when there is conflicting or
+              <dt>Error Phase</dt>
+	      <dd><ul>
+                  <li>The Error Phase is entered when there is conflicting or
                   invalid PLPMTU information for the path (e.g. a failure to
                   support the BASE_PMTU) that cause DPLPMTUD to be unable to
-                  progress and the PLPMTU is lowered</t>
+                  progress and the PLPMTU is lowered</li>
 
-                  <t>DPLPMTUD remains in the Error Phase until a consistent
+                  <li>DPLPMTUD remains in the Error Phase until a consistent
                   view of the path can be discovered and it has also been
                   confirmed that the path supports the BASE_PMTU (or DPLPMTUD
-                  is suspended).</t>
+                  is suspended).</li>
 
-                  <t>Note: MIN_PMTU may be identical to BASE_PMTU, simplifying
-                  the actions in this phase.</t>
-                </list></t>
-            </list></t>
+                  <li>Note: MIN_PMTU may be identical to BASE_PMTU, simplifying
+                  the actions in this phase.</li>
+                </ul></dd>
+            </dl></t>
 
           <t>An implementation that only reduces the PLPMTU to a suitable size
           would be sufficient to ensure reliable operation, but can be very
@@ -1173,60 +1209,71 @@
 
         <t>The following states are defined:</t>
 
-        <t><list style="hanging">
-            <t hangText="DISABLED:">The DISABLED state is the initial state
+        <t><dl>
+            <dt>DISABLED:</dt>
+	    <dd>The DISABLED state is the initial state
             before probing has started. It is also entered from any other
             state, when the PL indicates loss of connectivity. This state is
-            left, once the PL indicates connectivity to the remote PL.</t>
+            left, once the PL indicates connectivity to the remote PL.</dd>
 
-            <t hangText="BASE:">The BASE state is used to confirm that the
+            <dt>BASE:</dt>
+	    <dd><t>The BASE state is used to confirm that the
             BASE_PMTU size is supported by the network path and is designed to
             allow an application to continue working when there are transient
             reductions in the actual PMTU. It also seeks to avoid long periods
             where traffic is black holed while searching for a larger
             PLPMTU.</t>
 
-            <t hangText="">On entry, the PROBED_SIZE is set to the BASE_PMTU
+            <t>On entry, the PROBED_SIZE is set to the BASE_PMTU
             size and the PROBE_COUNT is set to zero.</t>
 
-            <t hangText="">Each time a probe packet is sent, the PROBE_TIMER
+            <t>Each time a probe packet is sent, the PROBE_TIMER
             is started. The state is exited when the probe packet is
             acknowledged, and the PL sender enters the SEARCHING state.</t>
 
-            <t hangText="">The state is also left when the PROBE_COUNT reaches
+            <t>The state is also left when the PROBE_COUNT reaches
             MAX_PROBES or a received PTB message is validated. This causes the
             PL sender to enter the ERROR state.</t>
+	    </dd>
 
-            <t hangText="SEARCHING:">The SEARCHING state is the main probing
+	    <dt>SEARCHING:</dt>
+	    <dd>
+            <t>The SEARCHING state is the main probing
             state. This state is entered when probing for the BASE_PMTU was
             successful.</t>
 
-            <t hangText="">The PROBE_COUNT is set to zero when the first probe
+            <t>The PROBE_COUNT is set to zero when the first probe
             packet is sent for each probe size. Each time a probe packet is
             acknowledged, the PLPMTU is set to the PROBED_SIZE, and then the
             PROBED_SIZE is increased using the search algorithm.</t>
 
-            <t hangText="">When a probe packet is sent and not acknowledged
+            <t>When a probe packet is sent and not acknowledged
             within the period of the PROBE_TIMER, the PROBE_COUNT is
             incremented and the probe packet is retransmitted. The state is
             exited when the PROBE_COUNT reaches MAX_PROBES, a received PTB
             message is validated, a probe of size MAX_PMTU is acknowledged, or
             a black hole is detected.</t>
+	    </dd>
 
-            <t hangText="SEARCH_COMPLETE:">The SEARCH_COMPLETE state indicates
+	    <dt>SEARCH_COMPLETE:</dt>
+	    <dd>
+            <t>The SEARCH_COMPLETE state indicates
             a successful end to the SEARCHING state. DPLPMTUD remains in this
             state until either the PMTU_RAISE_TIMER expires, a received PTB
             message is validated, or a black hole is detected.</t>
 
-            <t hangText="">When DPLPMTUD uses an unacknowledged PL and is in
+            <t>When DPLPMTUD uses an unacknowledged PL and is in
             the SEARCH_COMPLETE state, a CONFIRMATION_TIMER periodically
             resets the PROBE_COUNT and schedules a probe packet with the size
             of the PLPMTU. If the probe packet fails to be acknowledged after
             MAX_PROBES attempts, the method enters the BASE state. When used
             with an acknowledged PL (e.g., SCTP), DPLPMTUD SHOULD NOT continue
             to generate PLPMTU probes in this state.</t>
+	    </dd>
 
-            <t hangText="ERROR:">The ERROR state represents the case where
+	    <dt>ERROR:</dt>
+	    <dd>
+            <t>The ERROR state represents the case where
             either the network path is not known to support a PLPMTU of at
             least the BASE_PMTU size or when there is contradictory
             information about the network path that would otherwise result in
@@ -1237,12 +1284,13 @@
             no longer detect the error or when the PL indicates that
             connectivity has been lost.</t>
 
-            <t hangText="">Implementations are permitted to enable endpoint
+            <t>Implementations are permitted to enable endpoint
             fragmentation if the DPLPMTUD is unable to validate MIN_PMTU
             within PROBE_COUNT probes. If DPLPMTUD is unable to validate
             MIN_PMTU the implementation should transition to the DISABLED
             state.</t>
-          </list></t>
+	    </dd>
+          </dl></t>
       </section>
 
       <section title="Search to Increase the PLPMTU">
