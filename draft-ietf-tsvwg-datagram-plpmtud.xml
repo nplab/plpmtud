@@ -200,7 +200,7 @@
       </address>
     </author>
 
-    <date day="26" month="May" year="2019" />
+    <date day="04" month="June" year="2019" />
 
     <!-- Meta-data Declarations -->
 
@@ -376,7 +376,7 @@
 
         <t>PLPMTUD introduces flexibility in the implementation of PMTU
         discovery. At one extreme, it can be configured to only perform ICMP
-        black hole detection and recovery to increase the robustness of
+        black Hole Detection and recovery to increase the robustness of
         Classical PMTUD, or at the other extreme, all PTB processing can be
         disabled and PLPMTUD can completely replace Classical PMTUD.</t>
 
@@ -903,7 +903,7 @@
 
               <dt>BASE_PMTU &lt;= PTB_SIZE &lt; PLPMTU</dt>
 	      <dd><ul>
-                  <li>Black hole detection is triggered and the PLPMTU ought to
+                  <li>Black Hole Detection is triggered and the PLPMTU ought to
                   be set to BASE_PMTU.</li>
 
                   <li>The PL could use the PTB_SIZE reported in the PTB message
@@ -1135,7 +1135,7 @@
                   advance or terminate the search, see <xref
                   target="mechanism-ptb"></xref>.</li>
 
-                  <li>Black hole detection can also terminate the search by
+                  <li>Black Hole Detection can also terminate the search by
                   entering the BASE_PMTU Confirmation phase.</li>
                 </ul></dd>
 
