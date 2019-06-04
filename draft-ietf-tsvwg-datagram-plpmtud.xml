@@ -458,7 +458,7 @@
 
                 <dt>ICMP Black Hole</dt>
 		<dd>An ICMP Black
-                Hole is encounbtered when the sender is unaware that packets
+                Hole is encountered when the sender is unaware that packets
                 are not delivered to the destination endpoint because PTB
                 messages are not received by the originating PL sender.</dd>
               </dl>
@@ -779,7 +779,7 @@
             target="RFC4821"></xref>).</t>
 
             <t>A PL can use the DPLPMTUD probing mechanism to periodically
-            generate probe packets f the size of the current PLPMTU (e.g.,
+            generate probe packets of the size of the current PLPMTU (e.g.,
             using the confirmation timer <xref target="Timers"></xref>). A
             timer tracks whether acknowledgments are received. Successive loss
             of probes is an indication that the current path no longer
@@ -1502,7 +1502,7 @@
             header. The payload of the PAD chunk contains arbitrary data.</t>
 
             <t>To avoid fragmentation of retransmitted data, probing starts
-            right after the PL handshake, before data is sent. Assuming
+            right after the PL handshake, before data is sent. Assuming this 
             behavior (i.e., the PMTU is smaller than or equal to the interface
             MTU), this process will take a few round trip time periods
             depending on the number of PMTU sizes probed. The Heartbeat timer
