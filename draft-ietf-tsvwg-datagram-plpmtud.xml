@@ -1101,79 +1101,60 @@
             </artset>
             </figure></t>
 
-          <t><dl newline="true">
-              <dt>BASE_PMTU Confirmation Phase</dt>
-	      <dd><ul>
-                  <li>The BASE_PMTU Confirmation Phase confirms connectivity to
-                  the remote peer. This phase is implicit for a
-                  connection-oriented PL (where it can be performed in a PL
-                  connection handshake). A connectionless PL needs to send an
-                  acknowledged probe packet to confirm that the remote peer is
-                  reachable.</li>
+          <t><dl>
+              <dt>Base:</dt>
+	      <dd><t>The Base Phase confirms connectivity to
+              the remote peer. This phase is implicit for a
+              connection-oriented PL (where it can be performed in a PL
+              connection handshake). A connectionless PL needs to send an
+              acknowledged probe packet to confirm that the remote peer is
+              reachable. The sender also confirms that BASE_PMTU is supported
+              across the network path.</t>
 
-                  <li>The sender also confirms that BASE_PMTU is supported
-                  across the network path.</li>
+              <t>A PL that does not wish to support a path with a PLPMTU
+              less than BASE_PMTU can simplify the phase into a single
+              step by performing the connectivity checks with a probe of
+              the BASE_PMTU size.</t>
 
-                  <li>A PL that does not wish to support a path with a PLPMTU
-                  less than BASE_PMTU can simplify the phase into a single
-                  step by performing the connectivity checks with a probe of
-                  the BASE_PMTU size.</li>
+              <t>Once confirmed, DPLPMTUD enters the Search Phase. If this
+              phase fails to confirm, DPLPMTUD enters the Error Phase.</t></dd>
 
-                  <li>Once confirmed, DPLPMTUD enters the Search Phase. If this
-                  phase fails to confirm, DPLPMTUD enters the Error Phase.</li>
-                </ul></dd>
+              <dt>Search:</dt>
+	      <dd><t>The Search Phase utilizes a search algorithm to send
+              probe packets to seek to increase the PLPMTU.
+              The algorithm concludes when it has found a suitable
+              PLPMTU, by entering the Search Complete Phase.</t>
 
-              <dt>Search Phase</dt>
-	      <dd><ul>
-                  <li>The Search Phase utilizes a search algorithm to send
-                  probe packets to seek to increase the PLPMTU.</li>
+              <t>A PL could respond to PTB messages using the PTB to
+              advance or terminate the search, see <xref
+              target="mechanism-ptb"></xref>.</t></dd>
 
-                  <li>The algorithm concludes when it has found a suitable
-                  PLPMTU, by entering the Search Complete Phase.</li>
+              <dt>Search Complete:</dt>
+	      <dd><t>The Search Complete Phase is entered when the PLPMTU is
+              supported across the network path.
+              A PL can use a CONFIRMATION_TIMER to periodically repeat
+              a probe packet for the current PLPMTU size. If the sender is
+              unable to confirm reachability (e.g., if the
+              CONFIRMATION_TIMER expires) or the PL signals a lack of
+              reachability, DPLPMTUD enters the Base
+              phase.</t>
 
-                  <li>A PL could respond to PTB messages using the PTB to
-                  advance or terminate the search, see <xref
-                  target="mechanism-ptb"></xref>.</li>
+              <t>The PMTU_RAISE_TIMER is used to periodically resume the
+              search phase to discover if the PLPMTU can be raised.
+              Black Hole Detection or receipt of a validated PTB
+              message (see <xref target="PTB"></xref>) can cause the sender to
+              enter the Base Phase.</t></dd>
 
-                  <li>Black Hole Detection can also terminate the search by
-                  entering the BASE_PMTU Confirmation phase.</li>
-                </ul></dd>
+              <dt>Error:</dt>
+	      <dd><t>The Error Phase is entered when there is conflicting or
+              invalid PLPMTU information for the path (e.g. a failure to
+              support the BASE_PMTU) that cause DPLPMTUD to be unable to
+              progress and the PLPMTU is lowered.</t>
 
-              <dt>Search Complete Phase</dt>
-	      <dd><ul>
-                  <li>The Search Complete Phase is entered when the PLPMTU is
-                  supported across the network path.</li>
-
-                  <li>A PL can use a CONFIRMATION_TIMER to periodically repeat
-                  a probe packet for the current PLPMTU size. If the sender is
-                  unable to confirm reachability (e.g., if the
-                  CONFIRMATION_TIMER expires) or the PL signals a lack of
-                  reachability, DPLPMTUD enters the BASE_PMTU Confirmation
-                  phase.</li>
-
-                  <li>The PMTU_RAISE_TIMER is used to periodically resume the
-                  search phase to discover if the PLPMTU can be raised.</li>
-
-                  <li>Black Hole Detection or receipt of a validated PTB
-                  message <xref target="PTB"></xref>) can cause the sender to
-                  enter the BASE_PMTU Confirmation Phase.</li>
-                </ul></dd>
-
-              <dt>Error Phase</dt>
-	      <dd><ul>
-                  <li>The Error Phase is entered when there is conflicting or
-                  invalid PLPMTU information for the path (e.g. a failure to
-                  support the BASE_PMTU) that cause DPLPMTUD to be unable to
-                  progress and the PLPMTU is lowered</li>
-
-                  <li>DPLPMTUD remains in the Error Phase until a consistent
-                  view of the path can be discovered and it has also been
-                  confirmed that the path supports the BASE_PMTU (or DPLPMTUD
-                  is suspended).</li>
-
-                  <li>Note: MIN_PMTU may be identical to BASE_PMTU, simplifying
-                  the actions in this phase.</li>
-                </ul></dd>
+              <t>DPLPMTUD remains in the Error Phase until a consistent
+              view of the path can be discovered and it has also been
+              confirmed that the path supports the BASE_PMTU (or DPLPMTUD
+              is suspended).</t></dd>
             </dl></t>
 
           <t>An implementation that only reduces the PLPMTU to a suitable size
@@ -1289,6 +1270,9 @@
             within PROBE_COUNT probes. If DPLPMTUD is unable to validate
             MIN_PMTU the implementation should transition to the DISABLED
             state.</t>
+
+            <t>Note: MIN_PMTU may be identical to BASE_PMTU, simplifying
+            the actions in this state.</t>
 	    </dd>
           </dl></t>
       </section>
