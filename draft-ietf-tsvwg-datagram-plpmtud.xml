@@ -950,7 +950,7 @@
       completely transferred across the network path from the sender to the
       destination.</t>
 
-      <t>The folloowing sections identify the components needed for
+      <t>The following sections identify the components needed for
       implementation, provides an overvoew of the phases of operation, and
       specifies the state machine and search algorithm.</t>
 
