@@ -376,7 +376,7 @@
 
         <t>PLPMTUD introduces flexibility in the implementation of PMTU
         discovery. At one extreme, it can be configured to only perform ICMP
-        black Hole Detection and recovery to increase the robustness of
+        Black Hole Detection and recovery to increase the robustness of
         Classical PMTUD, or at the other extreme, all PTB processing can be
         disabled and PLPMTUD can completely replace Classical PMTUD.</t>
 
