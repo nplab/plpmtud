@@ -1458,11 +1458,6 @@
         and without interfering with congestion control. This is preferred to
         using DATA chunks (with padding as required) as path probes.</t>
 
-        <t>XXX Author Note: Future versions of this document might define a
-        parameter contained in the INIT and INIT ACK chunk to indicate the
-        remote peer MTU to the local peer. However, multihoming makes this a
-        bit complex, so it might not be worth doing. XXX</t>
-
         <section anchor="sctp_over_ip" title="SCTP/IPv4 and SCTP/IPv6">
           <t>The base protocol is specified in <xref target="RFC4960"></xref>.
           This provides an acknowledged PL. A sender can therefore enter the
