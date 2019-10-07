@@ -922,9 +922,6 @@
                   algorithm.</li>
               </ul></dd>
             </dl></t>
-
-          <t>xxx Author Note: Do we want to specify how to handle PTB Message
-          with PTB_SIZE = 0? xxx</t>
         </section>
       </section>
     </section>
