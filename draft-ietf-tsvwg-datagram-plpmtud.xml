@@ -7,6 +7,7 @@
     An alternate method (rfc include) is described in the references. -->
 <!ENTITY RFC678 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.0678.xml">
 <!ENTITY RFC768 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.0768.xml">
+<!ENTITY RFC791 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.0791.xml">
 <!ENTITY RFC792 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.0792.xml">
 <!ENTITY RFC1122 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.1122.xml">
 <!ENTITY RFC1123 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.1123.xml">
@@ -14,7 +15,6 @@
 <!ENTITY RFC1191 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.1191.xml">
 <!ENTITY RFC1981 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.1981.xml">
 <!ENTITY RFC2119 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml">
-<!ENTITY RFC2460 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2460.xml">
 <!ENTITY RFC2475 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2475.xml">
 <!ENTITY RFC2553 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2553.xml">
 <!ENTITY RFC2923 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2923.xml">
@@ -43,6 +43,7 @@
 <!ENTITY RFC6968 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6968.xml">
 <!ENTITY RFC6633 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6633.xml">
 <!ENTITY RFC8085 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8085.xml">
+<!ENTITY RFC8200 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8200.xml">
 <!ENTITY RFC8201 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8201.xml">
 <!ENTITY RFC8261 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8261.xml">
 <!ENTITY RFC8174 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml">
@@ -74,7 +75,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-09"
+<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-12"
      ipr="trust200902" updates="4821">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
@@ -199,7 +200,7 @@
       </address>
     </author>
 
-    <date day="18" month="November" year="2019" />
+    <date day="5" month="December" year="2019" />
 
     <!-- Meta-data Declarations -->
 
@@ -655,18 +656,21 @@
 	  probe packets are lost due to other reasons (including link
 	  transmission error, congestion).</t>
 
-	  <t>Loss of a probe packet SHOULD NOT be treated as an indication of
+	  <t>Probing and congestion control: The DPLPMTUD sender treats
+	  isolated loss of a probe packet (with or without a corresponding PTB
+	  message) as a potential indication of a PMTU limit for the path.
+	  Loss of a probe packet SHOULD NOT be treated as an indication of
 	  congestion.  The loss of a probe packet SHOULD NOT directly trigger a
 	  congestion control reaction <xref target="RFC4821"></xref> because
 	  this could result in unecessary reduction of the sending rate. The
 	  interval between probe packets MUST be at least one RTT. </t>
 
 	  <t>Shared PLPMTU state: The PLPMTU value MAY also be stored with the
-	  corresponding entry in the destination cache and used by other PL
-	  instances. The specification of PLPMTUD <xref
-	  target="RFC4821"></xref> states: "If PLPMTUD updates the MTU for a
-	  particular path, all Packetization Layer sessions that share the path
-	  representation (as described in Section 5.2 of <xref
+	  corresponding entry associated with the destination in the IP
+	  layer cache, and used by other PL instances. The specification of
+	  PLPMTUD <xref target="RFC4821"></xref> states: "If PLPMTUD updates
+	  the MTU for a particular path, all Packetization Layer sessions that
+	  share the path representation (as described in Section 5.2 of <xref
 	  target="RFC4821"></xref>) SHOULD be notified to make use of the new
 	  MTU". Such methods MUST be robust to the wide variety of underlying
 	  network forwarding behaviors. Section 5.2 of <xref
@@ -917,11 +921,11 @@
           value of a set of variables:</t>
 
           <t><dl newline="true">
-              <dt>PTB_SIZE &lt; MIN_MTU OR PTB_SIZE == 0</dt>
+              <dt>PTB_SIZE &lt; MIN_PMTU</dt>
 
               <dd>
                 <ul>
-                  <li>Invalid PTB_SIZE.</li>
+                  <li>Invalid PTB_SIZE see <xref target="PTB"></xref>.</li>
 
                   <li>PTB message ought to be discarded without further
                   processing (e. g. PLPMTU not modified).</li>
@@ -934,15 +938,17 @@
 
               <dd>
                 <ul>
-                  <li>A robust PL MAY enter an error state (see <xref
-                  target="States" />) for an IPv4 path when the PTB_SIZE
-                  reported in the PTB message is larger than or equal to 68
-                  bytes and when this is less than the BASE_PMTU.</li>
+		  <li>A robust PL MAY enter an error state (see <xref
+		  target="States" />) for an IPv4 path when the PTB_SIZE
+		  reported in the PTB message is larger than or equal to 68
+		  bytes <xref target="RFC0791"></xref> and when this is less
+		  than the BASE_PMTU.</li>
 
-                  <li>A robust PL MAY enter an error state (see <xref
-                  target="States" />) for an IPv6 path when the PTB_SIZE
-                  reported in the PTB message is larger than or equal to 1280
-                  bytes and when this is less than the BASE_PMTU.</li>
+		  <li>A robust PL MAY enter an error state (see <xref
+		  target="States" />) for an IPv6 path when the PTB_SIZE
+		  reported in the PTB message is larger than or equal to 1280
+		  bytes <xref target="RFC8200"></xref> and when this is less
+		  than the BASE_PMTU.</li>
                 </ul>
               </dd>
 
@@ -1104,7 +1110,7 @@
 
               <dd>The MIN_PMTU is the smallest allowed probe packet size. For
               IPv6, this value is 1280 bytes, as specified in <xref
-              target="RFC2460" />. For IPv4, the minimum value is 68
+              target="RFC8200" />. For IPv4, the minimum value is 68
               bytes.<vspace />Note: An IPv4 router is required to be able to
               forward a datagram of 68 bytes without further fragmentation.
               This is the combined size of an IPv4 header and the minimum
@@ -1126,7 +1132,7 @@
               <dd>The BASE_PMTU is a configured size expected to work for most
               paths. The size is equal to or larger than the MIN_PMTU and
               smaller than the MAX_PMTU. In the case of IPv6, this value is
-              1280 bytes <xref target="RFC2460" />. When using IPv4, a size of
+              1280 bytes <xref target="RFC8200" />. When using IPv4, a size of
               1200 bytes is RECOMMENDED.</dd>
             </dl></t>
         </section>
@@ -1142,7 +1148,8 @@
               <dt>PROBE_COUNT:</dt>
 
 	      <dd>The PROBE_COUNT is a count of the number of successive
-	      unsuccessful probe packets that have been sent. </dd>
+	      unsuccessful probe packets that have been sent. Each time a probe
+	      packet is acknowledged, the value is set to zero.</dd>
             </dl></t>
 
           <t>The figure below illustrates the relationship between the packet
@@ -1405,7 +1412,7 @@
 	  <t>If the timer expires before a probe packet is acknowledged, the
 	  probe has failed to confirm the PROBED_SIZE. Each time the
 	  PROBE_TIMER expires, the PROBE_COUNT is incremented, the PROBE_TIMER
-	  is reinitialized, and a new probe of the same size or any other sized
+	  is reinitialized, and a new probe of the same size or any other size
 	  (determined by the search algorithm) can be sent.  The maximum number
 	  of consecutive failed probes is configured (MAX_PROBES).  If the
 	  value of the PROBE_COUNT reaches MAX_PROBES, probing will stop, and
@@ -1483,9 +1490,9 @@
         higher-layer protocol features to implement the method <xref
         target="RFC8085"></xref>.</t>
 
-        <t>Some primitives used by DPLPMTUD might not be available via the
-        Datagram API (e.g., the ability to access the PLPMTU cache, or
-        interpret received PTB messages).</t>
+	<t>Some primitives used by DPLPMTUD might not be available via the
+	Datagram API (e.g., the ability to access the PLPMTU from the IP layer
+	cache, or interpret received PTB messages).</t>
 
         <t>In addition, it is desirable that PMTU discovery is not performed
         by multiple protocol layers. An application SHOULD avoid using
@@ -1684,7 +1691,7 @@
       </section>
 
       <section title="DPLPMTUD for QUIC">
-        <t>Quick UDP Internet Connection (QUIC) <xref
+        <t>QUIC <xref
         target="I-D.ietf-quic-transport"></xref> is a UDP-based transport that
         provides reception feedback. The UDP payload includes the QUIC packet
         header, protected payload, and any authentication fields. QUIC depends
@@ -1754,6 +1761,12 @@
       <t>This work was partially funded by the European Union's Horizon 2020
       research and innovation programme under grant agreement No. 644334
       (NEAT). The views expressed are solely those of the author(s).</t>
+
+      <t>
+      Thanks to all that have commented or contributed, the TSVWG and QUIC
+      working groups, and Mathew Calder and Julius Flohr for providing
+      implementations.
+      </t>
     </section>
 
     <section anchor="IANA" title="IANA Considerations">
@@ -1820,11 +1833,13 @@
 
       &RFC768;
 
+      &RFC791;
+
       &RFC1191;
 
       &RFC2119;
 
-      &RFC2460;
+      &RFC8200;
 
       &RFC3828;
 
@@ -2039,7 +2054,23 @@
 	  <t>Redefine MAx_PROBES to 3 </t>
 
 	  <t>Address PTB_SIZE of 0 or less that MIN_PMTU</t>
-        </list></t>
+        </list>Working group draft -11:</t>
+      <t><list style="symbols">
+          <t>Restore a sentence removed in previous rev</t>
+
+          <t>De-acronymise QUIC</t>
+
+          <t>Address some nits</t>
+        </list>Working group draft -12:</t>
+      <t><list style="symbols">
+          <t>Add TSVWG, QUIC and implementers to acknowledgements</t>
+
+	  <t>Shorten a diagram line</t>
+
+	  <t>Address nits from Julius and Wes</t>
+
+	  <t>Be clearer when talking about IP layer caches </t>
+      </list></t>
     </section>
   </back>
 </rfc>

@@ -6,8 +6,8 @@
              |           | Connectivity   +-------+
              |           | and BASE_PMTU  | Error |
              |           | confirmed      +-------+
-             |           |                    |
-             |           v                    | Consistent connectivity
+             |           |                    | Consistent
+             |           v                    | connectivity
       PLPMTU |       +--------+               | and BASE_PMTU
 confirmation |       | Search |<--------------+ confirmed
       failed |       +--------+
