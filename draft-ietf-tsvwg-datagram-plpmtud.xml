@@ -797,7 +797,7 @@
       </section>
 
       <section anchor="mechanism-bhd"
-               title="Detection of Unsupported PLPMTU Size, aka Black Hole Detection">
+               title="Black Hole Detection">
         <t>A PL sender needs to reduce the PLPMTU when it discovers the actual
         PMTU supported by a network path is less than the PLPMTU. This can be
         triggered when a validated PTB message is received, or by another
