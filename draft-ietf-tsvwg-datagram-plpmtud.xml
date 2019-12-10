@@ -217,7 +217,7 @@
       Discovery for IPv4 and IPv6. The method allows a PL, or a datagram
       application that uses a PL, to discover whether a network path can
       support the current size of datagram. This can be used to detect and
-      reduce the message size when a sender encounters a network black hole
+      reduce the message size when a sender encounters a packet black hole
       (where packets are discarded). The method can probe a network path with
       progressively larger packets to discover whether the maximum packet size
       can be increased. This allows a sender to determine an appropriate
