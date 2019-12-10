@@ -1233,9 +1233,7 @@
 
                 <t>The PMTU_RAISE_TIMER is used to periodically resume the
                 search phase to discover if the PLPMTU can be raised. Black
-                Hole Detection or receipt of a validated PTB message (see
-                <xref target="PTB" />) can cause the sender to enter the Base
-                Phase.</t>
+                Hole Detection causes the sender to enter the Base Phase.</t>
               </dd>
 
               <dt>Error:</dt>
