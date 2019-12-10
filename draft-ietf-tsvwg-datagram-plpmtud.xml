@@ -978,8 +978,8 @@
 
               <dd>
                 <ul>
-                  <li>Black Hole Detection is triggered and the PLPMTU ought
-                  to be set to BASE_PMTU.</li>
+                  <li>Black Hole Detection is triggered. When a black hole is
+                  detected, the PLPMTU ought to be set to BASE_PMTU.</li>
 
                   <li>The PL could use the PTB_SIZE reported in the PTB
                   message to initialize a search algorithm.</li>
