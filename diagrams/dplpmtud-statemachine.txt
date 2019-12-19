@@ -13,8 +13,8 @@
                           +---------------+            acked     |
                           |      BASE     |----------------------+
                           +---------------+                      |
-      Black hole detected or ^ |    ^  ^ Black hole detected or  |
-      PTB: PTB_SIZE < PLPMTU | |    |  | PTB: PTB_SIZE < PLPMTU  |
+                             ^ |    ^  ^                         |
+         Black hole detected | |    |  | Black hole detected     |
         +--------------------+ |    |  +--------------------+    |
         |                      +----+                       |    |
         |                PROBE_TIMER expiry:                |    |
@@ -30,8 +30,8 @@
    |    ^    ^                                         |    |    ^
    |    |    |                                         |    |    |
    |    |    +-----------------------------------------+    |    |
-   |    |        MAX_PMTU Probe acked or PROBE_TIMER        |    |
-   |    |        expiry: PROBE_COUNT = MAX_PROBES or        |    |
+   |    |              MAX_PMTU Probe acked or              |    |
+   |    |  PROBE_TIMER expiry: PROBE_COUNT = MAX_PROBES or  |    |
    +----+               PTB: PTB_SIZE = PLPMTU              +----+
 CONFIRMATION_TIMER expiry:                        PROBE_TIMER expiry:
 PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
