@@ -15,7 +15,7 @@ $(text): draft-ietf-tsvwg-datagram-plpmtud.xml svg
 	@echo making text
 	xml2rfc --v3 --text draft-ietf-tsvwg-datagram-plpmtud.xml
 
-svg: diagrams/dplpmtud-impl-examples.svg diagrams/dplpmtud-phases.svg diagrams/dplpmtud-statemachine.svg diagrams/packet-sizes-relationships.svg diagrams/mps-relationship.txt
+svg: diagrams/dplpmtud-impl-examples.svg diagrams/dplpmtud-phases.svg diagrams/dplpmtud-statemachine.svg diagrams/packet-sizes-relationships.svg diagrams/mps-relationship.svg
 
 diagrams/dplpmtud-impl-examples.svg: diagrams/dplpmtud-impl-examples.txt
 	goat diagrams/dplpmtud-impl-examples.txt > tmp.svg
