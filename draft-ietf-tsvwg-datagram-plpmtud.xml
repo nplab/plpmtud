@@ -201,7 +201,7 @@
       </address>
     </author>
 
-    <date day="10" month="January" year="2020" />
+    <date year="2020" />
 
     <!-- Meta-data Declarations -->
 
@@ -415,13 +415,15 @@
         lower layers, although it can utilize PTB messages when these received
         messages are made available to the PL.</t>
 
-	<t>The message
-    size guidelines in section 3.2 of the UDP Usage Guidelines <xref target="RFC8085"></xref> state "an
-	application SHOULD either use the Path MTU information provided by the
-	IP layer or implement Path MTU Discovery (PMTUD)", but does not provide
-	a mechanism for discovering the largest size of unfragmented datagram
-	that can be used on a network path. The present document updates RFC 8085
-    to specify this method in place of PLPMTUD.</t>
+	<t>The message size guidelines in section 3.2 of the UDP Usage
+	Guidelines <xref target="RFC8085"></xref> state "an application SHOULD
+	either use the Path MTU information provided by the IP layer or
+	implement Path MTU Discovery (PMTUD)", but does not provide a mechanism
+	for discovering the largest size of unfragmented datagram that can be
+	used on a network path. The present document updates RFC 8085 to
+	specify this method in place of PLPMTUD and provides a mechanism for
+	sharing the discovered largest size as the Maximum Packet Size (MPS)
+	(see <xref target="mps"></xref>).</t>
 
         <t>Section 10.2 of <xref target="RFC4821"></xref> recommended a PLPMTUD
         probing method for the Stream Control Transport Protocol (SCTP). SCTP
@@ -475,7 +477,8 @@
               <li>Packets encounter a packet Black Hole when packets are not
               delivered to the destination endpoint (e.g., when the sender
               transmits packets of a particular size with a previously known
-              effective PMTU and they are discarded by the network).
+              effective PMTU and they are discarded by the network).</li>
+	      <li>
               An ICMP Black Hole is encountered when the sender is unaware
               that packets are not delivered to the destination endpoint
               because PTB messages are not received by the originating PL
@@ -847,9 +850,11 @@
         <t>There are three ways to detect black holes:</t>
 
         <t><list style="symbols">
- <t>A validated PTB message can be received that indicates a PTB_SIZE less than the current PLPMTU. A DPLPMTUD method MUST NOT rely soley on this method.</t>
+	<t>A validated PTB message can be received that indicates a PTB_SIZE
+	less than the current PLPMTU. A DPLPMTUD method MUST NOT rely soley on
+	this method.</t>
 
- <t>A PL can use the DPLPMTUD probing mechanism to periodically
+	 <t>A PL can use the DPLPMTUD probing mechanism to periodically
             generate probe packets of the size of the current PLPMTU (e.g.,
             using the confirmation timer <xref target="Timers"></xref>). A
             timer tracks whether acknowledgments are received. Successive loss
@@ -883,7 +888,7 @@
         
       </section>
     
-    <section title="The Maximum Packet Size (MPS)">
+    <section anchor="mps" title="The Maximum Packet Size (MPS)">
 
 	<t>The result of probing determines a usable PLPMTU that is used to set
 	the MPS used by the application.  The MPS is smaller than the PLPMTU
