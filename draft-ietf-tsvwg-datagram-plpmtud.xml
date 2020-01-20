@@ -684,7 +684,7 @@
 	  packet SHOULD NOT be treated as an indication of congestion
       and SHOULD NOT trigger a congestion
 	  control reaction <xref target="RFC4821"></xref>, because this could
-	  result in unecessary reduction of the sending rate.  </t>
+	  result in unnecessary reduction of the sending rate.  </t>
       
       <t> An update to the PLPMTU (or MPS) MUST NOT modify the congestion
           window measured in bytes <xref target="RFC4821"></xref>.
@@ -903,7 +903,7 @@
                     </figure></t>
                   
 	<t>A PL is unable to send a packet (other than a probe packet) with a
-	size larger than the curent PLPMTU at the network layer. To avoid this,
+	size larger than the current PLPMTU at the network layer. To avoid this,
 	a PL MAY be designed to segment data blocks larger than the MPS into
 	multiple datagrams.</t>
         
@@ -1067,11 +1067,14 @@
 
               <dd>
                 <ul>
-                  <li>Black Hole Detection is triggered. When a black hole is
-                  detected, the PLPMTU ought to be set to BASE_PMTU.</li>
+		  <li>This could be an indication of a black hole. The PLPMTU
+		  SHOULD be set to BASE_PMTU (the PLPMTU is reduced to the
+		  BASE_PMTU to avoid unnecessary packet loss when a black hole
+		  is encountered).</li>
 
-                  <li>The PL could use the PTB_SIZE reported in the PTB
-                  message to initialize a search algorithm.</li>
+		  <li> The PL ought to start a search to quickly discover the
+		  new PLPMTU. The PTB_SIZE reported in the PTB message can be
+		  used to initialize a search algorithm.</li>
                 </ul>
               </dd>
 
