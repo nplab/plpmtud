@@ -77,7 +77,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-13"
+<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-14"
      ipr="trust200902" updates="4821, 4960, 8085">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
@@ -926,7 +926,7 @@
 	experience reveals that IP fragmentation can reduce the reliability of
 	Internet communication <xref
 	target="I-D.ietf-intarea-frag-fragile"></xref>, which may reduce the
-	success of retransmission </t>
+	success of retransmission.</t>
          </section>
 
         <section anchor="outgoingpmtu" title="Disabling the Effect of PMTUD">
@@ -1194,10 +1194,11 @@
               <dt>MAX_PROBES:</dt>
 
 	      <dd>The MAX_PROBES is the maximum value of the PROBE_COUNT
-	      counter (see <xref target="Variables" />). MAX_PROBES represents
+	      counter (see <xref target="Variables"/>). MAX_PROBES represents
 	      the limit for the number of consecutive probe attempts of any
-	      size. The default value of MAX_PROBES is 3. This value is greater
-	      than 1 to provide robustness to isolated packet loss.</dd>
+	      size. Search algorithms benefit from a MAX_PROBES value greater
+	      than 1 because this can provide robustness to isolated packet
+	      loss. The default value of MAX_PROBES is 3.</dd>
 
               <dt>MIN_PMTU:</dt>
 
@@ -1464,10 +1465,9 @@
 	      path that would otherwise result in excessive variation in the
 	      MPS signalled to the higher layer. The state implements a method
 	      to mitigate oscillation in the state-event engine. It signals a
-	      conservative value of the MPS to the higher layer by the PL.  The
-	      state is exited when packet probes no longer detect the error or
-	      when the PL indicates that connectivity has been lost. The PL
-	      sender then enters the SEARCHING state.  </t>
+	      conservative value of the MPS to the higher layer by the PL. The
+	      state is exited when packet probes no longer detect the error.
+	      The PL sender then enters the SEARCHING state.  </t>
 
               <t>Implementations are permitted to enable endpoint
               fragmentation if the DPLPMTUD is unable to validate MIN_PMTU
