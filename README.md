@@ -22,7 +22,7 @@ ascii artwork is changed.
 For submission the document and the artwork should be built into a single xml
 file by:
 
-    xml2rfc --v3 ----preptool draft-ietf-tsvwg-datagram-plpmtud.xml 
+    xml2rfc --v3 --preptool draft-ietf-tsvwg-datagram-plpmtud.xml 
 
 Which will create the file draft-ietf-tsvwg-datagram-plpmtud.prepped.xml
 
