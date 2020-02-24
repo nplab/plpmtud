@@ -48,7 +48,7 @@
 <!ENTITY RFC8201 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8201.xml">
 <!ENTITY RFC8261 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8261.xml">
 <!ENTITY RFC8174 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml">
-<!ENTITY I-D.ietf-quic-transport SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-quic-transport-20.xml">
+<!ENTITY I-D.ietf-quic-transport SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-quic-transport-27.xml">
 <!ENTITY I-D.ietf-intarea-tunnels SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-intarea-tunnels-10.xml">
 <!ENTITY I-D.ietf-intarea-frag-fragile SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-intarea-frag-fragile-17.xml">
 ]>
@@ -77,8 +77,8 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-14"
-     ipr="trust200902" updates="4821, 4960, 8085">
+<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-15"
+     ipr="trust200902" updates="4821, 4960, 6951, 8085, 8261">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
                  or pre5378Trust200902
@@ -226,19 +226,20 @@
       equivalent to the Packetization Layer PMTUD specification for TCP,
       specified in RFC 4821.</t>
        
-       <t> The document updates RFC 4821 to specify the method for datagram
-       PLs, and updates RFC 8085 as the method to use in place of RFC 4821 with
-       UDP datagrams. Section 7.3 of RFC4960 recommends an endpoint apply the
-       techniques in RFC4821 on a per-destination-address basis.  RFC4960 is
-       updated to recommend that SCTP uses the method specified in this
-       document instead of the method in RFC4821.</t>
-
+      <t> The document updates RFC 4821 to specify the method for datagram PLs,
+      and updates RFC 8085 as the method to use in place of RFC 4821 with UDP
+      datagrams. Section 7.3 of RFC4960 recommends an endpoint apply the
+      techniques in RFC 4821 on a per-destination-address basis.  RFC 4960, RFC
+      6951 and RFC 8261 are updated to recommend that SCTP, SCTP encapsulated
+      in UDP and SCTP encapsulated in DTLS use the method specified in this
+      document instead of the method in RFC 4821.</t>
 
       <t>The document also provides implementation notes for incorporating
       Datagram PMTUD into IETF datagram transports or applications that use
       datagram transports.</t>
 
-      <t>When published, this specification updates RFC 4821 and RFC 8085.</t>
+      <t>When published, this specification updates RFC 4960, RFC 4821, RFC
+      8085  and RFC 8261.</t>
     </abstract>
   </front>
 
@@ -446,6 +447,11 @@
         method for datagram transports and provides information to enable the
         implementation of PLPMTUD with other datagram transports and
         applications that use datagram transports.</t>
+
+        <t><xref target="protocol_specific_methods"></xref>
+	also provides updated recommendations for <xref target="RFC6951"></xref> and <xref
+	target="RFC8261"></xref>.
+	</t>
       </section>
     </section>
 
@@ -1738,8 +1744,16 @@
         </section>
 
         <section title="DPLPMTUD for SCTP/UDP">
-          <t>The UDP encapsulation of SCTP is specified in <xref
-          target="RFC6951"></xref>.</t>
+	  <t>The UDP encapsulation of SCTP is specified in <xref
+	  target="RFC6951"></xref>.</t>  
+
+	  <t>This specification updates the reference to RFC 4821 in section
+	  5.6 of RFC 6951 to refer to XXXTHISRFCXXX.  RFC 6951 is updated
+	  by addition of the following sentence is to be added at the end of
+	  section 5.6: "The RECOMMENDED method for determining the MTU of the
+	  path is specified in XXXTHISRFCXXX".</t>
+
+	  <t> XXX RFC EDITOR - please replace XXXTHISRFCXXX when published XXX </t>
 
           <section title="Initial Connectivity">
             <t>A sender can enter the BASE state as soon as SCTP connectivity
@@ -1775,9 +1789,14 @@
         </section>
 
         <section title="DPLPMTUD for SCTP/DTLS">
-          <t>The Datagram Transport Layer Security (DTLS) encapsulation of
-          SCTP is specified in <xref target="RFC8261"></xref>. This is used for
-          data channels in WebRTC implementations.</t>
+	  <t>The Datagram Transport Layer Security (DTLS) encapsulation of SCTP
+	  is specified in <xref target="RFC8261"></xref> . This is used for
+	  data channels in WebRTC implementations.  This specification updates
+	  the reference to RFC 4821 in section 5 of RFC 8261 to refer to 
+	  XXXTHISRFCXXX.
+	  </t>
+
+	  <t> XXX RFC EDITOR - please replace XXXTHISRFCXXX when published XXX </t>
 
           <section title="Initial Connectivity">
             <t>A sender can enter the BASE state as soon as SCTP connectivity
