@@ -920,7 +920,7 @@
 	PLPMTU because it is reduced by the size of PL headers (including the
 	overhead of security-related fields such as an AEAD tag and TLS record
 	layer padding). The relationship between the MPS and the PLPMTUD is
-	illustrated inFigure 1 <xref target="fig-mps-relationship"></xref>.
+	illustrated in <xref target="fig-mps-relationship"></xref>.
 	The relationship between the MPS and the PLPMTUD is illustrated in
 	<xref target="fig-mps-relationship"></xref>.  </t>
                   
@@ -1035,10 +1035,12 @@
         </section>
 
         <section anchor="validPTB_SIZE" title="Use of PTB Messages">
-          <t>A set of checks are intended to provide protection from a router
-          that reports an unexpected PTB_SIZE. The PL also needs to check that
-          the indicated PTB_SIZE is less than the size used by probe packets
-          and at least the minimum size accepted.</t>
+	  <t>Before using the size reported in the PTB message it must first be
+	  converted to a PL_PTB_SIZE. A set of checks are intended to provide
+	  protection from a router that reports an unexpected PTB_SIZE. The PL
+	  also needs to check that the indicated PL_PTB_SIZE is less than the
+	  size used by probe packets and at least the minimum size
+	  accepted.</t>
 
           <t>This section provides a summary of how PTB messages can be
           utilized. This processing depends on the PL_PTB_SIZE and the current
@@ -1052,13 +1054,13 @@
                   <li>Invalid PL_PTB_SIZE see <xref target="PTB"></xref>.</li>
 
                   <li>PTB message ought to be discarded without further
-                  processing (e.g., PLPMTU not modified).</li>
+                  processing (i.e., PLPMTU is not modified).</li>
 
                   <li>The information could be utilized as an input to a trigger
                   that would enable a resilience mode.</li>
                 </ul>
               </dd>
-              <dt>MIN_PLPMTU &lt; PL_PTB_SIZE &lt; BASE_PMTU</dt>
+              <dt>MIN_PLPMTU &lt; PL_PTB_SIZE &lt; BASE_PLPMTU</dt>
 
               <dd>
                 <ul>
@@ -1066,13 +1068,13 @@
 		  target="States" />) for an IPv4 path when the PL_PTB_SIZE
 		  reported in the PTB message is larger than or equal to 68
 		  bytes <xref target="RFC0791"></xref> and when this is less
-		  than the BASE_PMTU.</li>
+		  than the BASE_PLPMTU.</li>
 
 		  <li>A robust PL MAY enter an error state (see <xref
 		  target="States" />) for an IPv6 path when the PL_PTB_SIZE
 		  reported in the PTB message is larger than or equal to 1280
 		  bytes <xref target="RFC8200"></xref> and when this is less
-		  than the BASE_PMTU.</li>
+		  than the BASE_PLPMTU.</li>
                 </ul>
               </dd>
 
@@ -1098,13 +1100,13 @@
                 </ul>
               </dd>
 
-              <dt>BASE_PMTU &lt;= PL_PTB_SIZE &lt; PLPMTU</dt>
+              <dt>BASE_PLPMTU &lt;= PL_PTB_SIZE &lt; PLPMTU</dt>
 
               <dd>
                 <ul>
 		  <li>This could be an indication of a black hole. The PLPMTU
-		  SHOULD be set to BASE_PMTU (the PLPMTU is reduced to the
-		  BASE_PMTU to avoid unnecessary packet loss when a black hole
+		  SHOULD be set to BASE_PLPMTU (the PLPMTU is reduced to the
+		  BASE_PLPMTU to avoid unnecessary packet loss when a black hole
 		  is encountered).</li>
 
 		  <li> The PL ought to start a search to quickly discover the
@@ -1260,9 +1262,9 @@
 	      MAY choose a smaller MAX_PLPMTU when there is no need to send
 	      packets larger than a specific size.</dd>
 
-              <dt>BASE_PMTU:</dt>
+              <dt>BASE_PLPMTU:</dt>
 
-              <dd>The BASE_PMTU is a configured size expected to work for most
+              <dd>The BASE_PLPMTU is a configured size expected to work for most
               paths. The size is equal to or larger than the MIN_PLPMTU and
               smaller than the MAX_PLPMTU. In the case of IPv6, this value is
               1280 bytes <xref target="RFC8200" />. When using IPv4, a size of
@@ -1328,24 +1330,24 @@
 
               <dd>
 		<t>The Base Phase confirms connectivity to the remote peer
-		using packets of the BASE_PMTU.  This phase is implicit for a
+		using packets of the BASE_PLPMTU.  This phase is implicit for a
 		connection-oriented PL (where it can be performed in a PL
 		connection handshake).  A connectionless PL sends a probe
 		packet and uses acknowledgment of this probe packet to confirm
 		that the remote peer is reachable. </t>
 
-		<t>The sender also confirms that BASE_PMTU is supported across
+		<t>The sender also confirms that BASE_PLPMTU is supported across
 		the network path. This may be achieved using a PL mechanism
-		(e.g., using a handshake packet of size BASE_PMTU), or by
-		sending a probe packet of size BASE_PMTU and confirming that
+		(e.g., using a handshake packet of size BASE_PLPMTU), or by
+		sending a probe packet of size BASE_PLPMTU and confirming that
 		this is received.</t>
 
-		<t>A probe packet of size BASE_PMTU can be sent immediately on
-		the initial entry to the Base Phase (following a connectivity
-		check).  A PL that does not wish to support a path with a
-		PLPMTU less than BASE_PMTU can simplify the phase into a single
-		step by performing the connectivity checks with a probe of the
-		BASE_PMTU size.</t>
+		<t>A probe packet of size BASE_PLPMTU can be sent immediately
+		on the initial entry to the Base Phase (following a
+		connectivity check).  A PL that does not wish to support a path
+		with a PLPMTU less than BASE_PLPMTU can simplify the phase into
+		a single step by performing the connectivity checks with a
+		probe of the BASE_PLPMTU size.</t>
 
                 <t>Once confirmed, DPLPMTUD enters the Search Phase. If this
                 phase fails to confirm, DPLPMTUD enters the Error Phase.</t>
@@ -1385,12 +1387,12 @@
               <dd>
                 <t>The Error Phase is entered when there is conflicting or
                 invalid PLPMTU information for the path (e.g., a failure to
-                support the BASE_PMTU) that cause DPLPMTUD to be unable to
+                support the BASE_PLPMTU) that cause DPLPMTUD to be unable to
                 progress and the PLPMTU is lowered.</t>
 
                 <t>DPLPMTUD remains in the Error Phase until a consistent view
                 of the path can be discovered and it has also been confirmed
-                that the path supports the BASE_PMTU (or DPLPMTUD is
+                that the path supports the BASE_PLPMTU (or DPLPMTUD is
                 suspended).</t>
               </dd>
             </dl></t>
@@ -1436,13 +1438,13 @@
 	    started. It is also entered from any other state, when the PL
 	    indicates loss of connectivity. This state is left once the PL
 	    indicates connectivity to the remote PL. When transitioning to the
-	    BASE state, a probe packet of size BASE_PMTU can be sent
+	    BASE state, a probe packet of size BASE_PLPMTU can be sent
 	    immediately.</dd>
 
             <dt>BASE:</dt>
 
             <dd>
-	      <t>The BASE state is used to confirm that the BASE_PMTU size is
+	      <t>The BASE state is used to confirm that the BASE_PLPMTU size is
 	      supported by the network path and is designed to allow an
 	      application to continue working when there are transient
 	      reductions in the actual PMTU.  It also seeks to avoid long
@@ -1450,7 +1452,7 @@
 	      that packets are not being delivered due to a packet or ICMP
 	      Black Hole.</t>
 
-              <t>On entry, the PROBED_SIZE is set to the BASE_PMTU size and
+              <t>On entry, the PROBED_SIZE is set to the BASE_PLPMTU size and
               the PROBE_COUNT is set to zero.</t>
 
               <t>Each time a probe packet is sent, the PROBE_TIMER is started.
@@ -1467,7 +1469,7 @@
 
             <dd>
               <t>The SEARCHING state is the main probing state. This state is
-              entered when probing for the BASE_PMTU was successful.</t>
+              entered when probing for the BASE_PLPMTU was successful.</t>
 
 	      <t>Each time a probe packet is acknowledged, the PROBE_COUNT is
 	      set to zero, the PLPMTU is set to the PROBED_SIZE and then the
@@ -1507,7 +1509,7 @@
 
             <dd>
 	      <t>The ERROR state represents the case where either the network
-	      path is not known to support a PLPMTU of at least the BASE_PMTU
+	      path is not known to support a PLPMTU of at least the BASE_PLPMTU
 	      size or when there is contradictory information about the network
 	      path that would otherwise result in excessive variation in the
 	      MPS signaled to the higher layer. The state implements a method
@@ -1522,8 +1524,8 @@
               MIN_PLPMTU the implementation will transition to the DISABLED
               state.</t>
 
-              <t>Note: MIN_PLPMTU could be identical to BASE_PMTU, simplifying the
-              actions in this state.</t>
+	      <t>Note: MIN_PLPMTU could be identical to BASE_PLPMTU,
+	      simplifying the actions in this state.</t>
             </dd>
           </dl></t>
       </section>
@@ -1604,12 +1606,12 @@
       </section>
 
       <section anchor="robustness" title="Robustness to Inconsistent Paths">
-        <t>Some paths could be unable to sustain packets of the BASE_PMTU
+        <t>Some paths could be unable to sustain packets of the BASE_PLPMTU
         size. To be robust to these paths an implementation could implement
         the Error State. This allows fallback to a smaller than desired
         PLPMTU, rather than suffer connectivity failure. This could utilize
         methods such as endpoint IP fragmentation to enable the PL sender to
-        communicate using packets smaller than the BASE_PMTU.</t>
+        communicate using packets smaller than the BASE_PLPMTU.</t>
       </section>
     </section>
 
@@ -1755,12 +1757,13 @@
             SCTP common header, the HEARTBEAT request and the PAD chunk
             header. The payload of the PAD chunk contains arbitrary data.</t>
 
-            <t>Probing starts
-            directly after the PL handshake, before data is sent. Assuming this
-            behavior (i.e., the PMTU is smaller than or equal to the interface
-            MTU), this process will take a few round trip time periods,
-            dependent on the number of PMTU probes sent. The Heartbeat timer
-            can be used to implement the PROBE_TIMER.</t>
+	    <t> Probing starts directly after the PL handshake, before data is
+	    sent.  Assuming this behavior (i.e., the PMTU is smaller than or
+	    equal to the interface MTU), this process will take several round
+	    trip time periods, dependent on the number of DPLPMTUD probes sent.
+	    The Heartbeat timer can be used to implement the PROBE_TIMER.</t>
+
+
           </section>
 
           <section title="Validating the Path with SCTP">
@@ -1884,14 +1887,14 @@
         Such padding only packets enable probing without affecting the
         transfer of other QUIC frames.</t>
 
-        <t>The recommendation for QUIC endpoints implementing DPLPMTUD is that
-        a MPS is maintained for each combination of local and remote IP
-        addresses <xref target="I-D.ietf-quic-transport"></xref>. If a QUIC
-        endpoint determines that the PMTU between any pair of local and remote
-        IP addresses has fallen below an acceptable MPS, it
-        immediately ceases to send QUIC packets on the affected path. This
-        could result in termination of the connection if an alternative path
-        cannot be found <xref target="I-D.ietf-quic-transport"></xref>.</t>
+	<t>The recommendation for QUIC endpoints implementing DPLPMTUD is that
+	a MPS is maintained for each combination of local and remote IP
+	addresses <xref target="I-D.ietf-quic-transport"></xref>.  If a QUIC
+	endpoint determines that the PMTU between any pair of local and remote
+	IP addresses has fallen below the size required for an acceptable MPS,
+	it immediately ceases to send QUIC packets on the affected path. This
+	could result in termination of the connection if an alternative path
+	cannot be found <xref target="I-D.ietf-quic-transport"></xref>.</t>
 
         <section title="Initial Connectivity">
           <t>The base protocol is specified in <xref
@@ -2006,8 +2009,9 @@
       about the size of supported probe packets. This could occur when there
       are multiple paths are concurrently in use and these exhibit a different
       PMTU. If not considered, this could result in packets not being delivered
-      (black holed) when the PLPMTU is larger than the smallest actual
-      PMTU.</t>
+      (black holed) when the PLPMTU results in a packet larger than the
+      smallest actual PMTU.
+      </t>
 
       <t>
       DPLPMTUD methods can introduce padding data to inflate the length
@@ -2257,7 +2261,7 @@
 
           <t>Reinforce that PROBE_COUNT is successive attempts to probe for any size</t>
 
-	  <t>Redefine MAx_PROBES to 3 </t>
+	  <t>Redefine MAX_PROBES to 3 </t>
 
 	  <t>Address PTB_SIZE of 0 or less that MIN_PLPMTU</t>
         </list>Working group draft -11:</t>
@@ -2291,7 +2295,7 @@
       <t> Renamed BASE_MTU to BASE_PLPMTU, and MIN and MAX PMTU to PLPMTU
       (because these are about a base for the
       PLPMTU), and ensured consistent separation of PMTU and PLPMTU.</t>
-	  <t> Adopted UD-style English throughout.</t>
+	  <t> Adopted US-style English throughout.</t>
       </list> </t>
 
 
