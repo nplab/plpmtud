@@ -1,15 +1,15 @@
                       +------+
-             +------->| Base |----------------+ Connectivity
-             |        +------+                | or BASE_PMTU
-             |           |                    | confirmation failed
-             |           |                    v
-             |           | Connectivity   +-------+
-             |           | and BASE_PMTU  | Error |
-             |           | confirmed      +-------+
-             |           |                    | Consistent
-             |           v                    | connectivity
-      PLPMTU |       +--------+               | and BASE_PMTU
-confirmation |       | Search |<--------------+ confirmed
+             +------->| Base |-----------------+ Connectivity
+             |        +------+                 | or BASE_PLPMTU
+             |           |                     | confirmation failed
+             |           |                     v
+             |           | Connectivity    +-------+
+             |           | and BASE_PLPMTU | Error |
+             |           | confirmed       +-------+
+             |           |                     | Consistent
+             |           v                     | connectivity
+      PLPMTU |       +--------+                | and BASE_PLPMTU
+confirmation |       | Search |<---------------+ confirmed
       failed |       +--------+
              |          ^  |
              |          |  |

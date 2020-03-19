@@ -1,8 +1,8 @@
-     MIN_PLPMTU                                      MAX_PMTU
-       <-------------------------------------------------->
-                      |        |     |           |   
-                      v        |     |           v
-                  BASE_PMTU    |     v     Actual PMTU
+     MIN_PLPMTU                                MAX_PLPMTU
+       <------------------------------------------->
+                      |        |     |     
+                      v        |     |     
+                BASE_PLPMTU    |     v     
                                |  PROBED_SIZE  
                                v  
                              PLPMTU
