@@ -77,7 +77,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-17"
+<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-18"
      ipr="trust200902" updates="4821, 4960, 6951, 8085, 8261">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
@@ -360,7 +360,7 @@
             insufficient context, or computational power, to reconstruct the
             transport header that would be needed to perform validation.</t>
 
-	    <t> A Network Address Translation (NAT) device that translates a
+            <t> A Network Address Translation (NAT) device that translates a
             packet header, ought to also translate ICMP messages and update
             the ICMP quoted packet <xref target="RFC5508"></xref> in
             that message. If this is not correctly translated
@@ -417,15 +417,15 @@
         lower layers, although it can utilize PTB messages when these received
         messages are made available to the PL.</t>
 
-	<t>The message size guidelines in section 3.2 of the UDP Usage
-	Guidelines <xref target="RFC8085"></xref> state "an application SHOULD
-	either use the Path MTU information provided by the IP layer or
-	implement Path MTU Discovery (PMTUD)", but does not provide a mechanism
-	for discovering the largest size of unfragmented datagram that can be
-	used on a network path. The present document updates RFC 8085 to
-	specify this method in place of PLPMTUD <xref target="RFC4821"></xref>
-	and provides a mechanism for sharing the discovered largest size as the
-	Maximum Packet Size (MPS) (see <xref target="mps"></xref>).</t>
+        <t>The message size guidelines in section 3.2 of the UDP Usage
+        Guidelines <xref target="RFC8085"></xref> state "an application SHOULD
+        either use the Path MTU information provided by the IP layer or
+        implement Path MTU Discovery (PMTUD)", but does not provide a mechanism
+        for discovering the largest size of unfragmented datagram that can be
+        used on a network path. The present document updates RFC 8085 to
+        specify this method in place of PLPMTUD <xref target="RFC4821"></xref>
+        and provides a mechanism for sharing the discovered largest size as the
+        MPS (see <xref target="mps"></xref>).</t>
 
         <t>Section 10.2 of <xref target="RFC4821"></xref> recommended a PLPMTUD
         probing method for the Stream Control Transport Protocol (SCTP). SCTP
@@ -449,9 +449,9 @@
         applications that use datagram transports.</t>
 
         <t><xref target="protocol_specific_methods"></xref>
-	also provides updated recommendations for <xref target="RFC6951"></xref> and <xref
-	target="RFC8261"></xref>.
-	</t>
+        also provides updated recommendations for <xref target="RFC6951"></xref> and <xref
+        target="RFC8261"></xref>.
+        </t>
       </section>
     </section>
 
@@ -468,12 +468,12 @@
 
 
       <t><dl>
-	  <dt>Acknowledged PL:</dt>
-	  <dd> A PL that includes a mechanism that can confirm successful
-	  delivery of datagrams to the remote PL endpoint (e.g., SCTP).
-	  Typically, the PL receiver returns acknowledgments corresponding to
-	  the received datagrams, which can be utilised to detect black-holing
-	  of packets (c.f., Unacknowledged PL).  </dd>
+          <dt>Acknowledged PL:</dt>
+          <dd> A PL that includes a mechanism that can confirm successful
+          delivery of datagrams to the remote PL endpoint (e.g., SCTP).
+          Typically, the PL receiver returns acknowledgments corresponding to
+          the received datagrams, which can be utilised to detect black-holing
+          of packets (c.f., Unacknowledged PL).  </dd>
 
           <dt>Actual PMTU:</dt>
 
@@ -493,7 +493,7 @@
               delivered to the destination endpoint (e.g., when the sender
               transmits packets of a particular size with a previously known
               effective PMTU and they are discarded by the network).</li>
-	      <li>
+              <li>
               An ICMP Black Hole is encountered when the sender is unaware
               that packets are not delivered to the destination endpoint
               because PTB messages are not received by the originating PL
@@ -515,10 +515,10 @@
 
           <dt>Effective PMTU:</dt>
 
-	  <dd>The Effective PMTU is the current estimated value for PMTU that is
-	  used by a PMTUD. This is equivalent to the PLPMTU derived by PLPMTUD
-	  plus the size of any headers added below the PL, including the IP
-	  layer headers.</dd>
+          <dd>The Effective PMTU is the current estimated value for PMTU that is
+          used by a PMTUD. This is equivalent to the PLPMTU derived by PLPMTUD
+          plus the size of any headers added below the PL, including the IP
+          layer headers.</dd>
 
 
           <dt>EMTU_S:</dt>
@@ -531,8 +531,8 @@
           <dt>EMTU_R:</dt>
 
           <dd>The Effective MTU for receiving (EMTU_R) is designated in <xref
-          target="RFC1122" /> as the largest datagram size that can be
-          reassembled by EMTU_R (Effective MTU to receive).</dd>
+          target="RFC1122" /> as "the largest datagram size that can be
+          reassembled".</dd>
 
           <dt>Link:</dt>
 
@@ -562,16 +562,16 @@
           <dd>The MAX_PLPMTU is the largest size of PLPMTU that DPLPMTUD will
           attempt to use.</dd>
 
-          <dt>MPS:</dt>
-
-	  <dd>MPS: The Maximum Packet Size (MPS) is the largest size of
-	  application data block that can be sent across a network path by a PL
-	  using a single Datagram.</dd>
-
           <dt>MIN_PLPMTU:</dt>
 
           <dd>The MIN_PLPMTU is the smallest size of PLPMTU that DPLPMTUD will
           attempt to use.</dd>
+
+          <dt>MPS:</dt>
+
+          <dd>The Maximum Packet Size (MPS) is the largest size of
+          application data block that can be sent across a network path by a PL
+          using a single Datagram.</dd>
 
           <dt>Packet:</dt>
 
@@ -579,9 +579,9 @@
 
           <dt>Packetization Layer (PL):</dt>
 
-	  <dd>The PL is a layer of the network stack that places data into
-	  packets and performs transport protocol functions. Examples of a PL
-	  include: TCP, SCTP, SCTP over DTLS or QUIC.  </dd>
+          <dd>The PL is a layer of the network stack that places data into
+          packets and performs transport protocol functions. Examples of a PL
+          include: TCP, SCTP, SCTP over DTLS or QUIC.  </dd>
 
           <dt>Path:</dt>
 
@@ -600,15 +600,15 @@
           <dd>The PTB_SIZE is a value reported in a validated PTB message that
           indicates next hop link MTU of a router along the path.</dd>
 
-	  <dt>PL_PTB_SIZE:</dt>
+          <dt>PL_PTB_SIZE:</dt>
 
-	  <dd>The size reported in a validated PTB message, reduced by the size of all headers added by layers below the PL.
-	  </dd>
+          <dd>The size reported in a validated PTB message, reduced by the size of all headers added by layers below the PL.
+          </dd>
 
           <dt>PLPMTU:</dt>
 
-	  <dd>The Packetization Layer PMTU is an estimate of the largest size
-	  of PL datagram that can be sent by a path, controled by PLPMTUD.</dd>
+          <dd>The Packetization Layer PMTU is an estimate of the largest size
+          of PL datagram that can be sent by a path, controled by PLPMTUD.</dd>
 
           <dt>PLPMTUD:</dt>
 
@@ -623,12 +623,12 @@
           this size can be successfully sent end-to-end across the network
           path.</dd>
 
-	  <dt>Unacknowledged PL:</dt>
+          <dt>Unacknowledged PL:</dt>
 
-	  <dd>A PL that does not itself provide a mechanism to confirm delivery
-	  of datagrams to the remote PL endpoint (e.g., UDP), and therefore
-	  requires DPLPMTUD to provide a mechanism to detect black-holing of
-	  packets (c.f., Acknowledged PL).</dd>
+          <dd>A PL that does not itself provide a mechanism to confirm delivery
+          of datagrams to the remote PL endpoint (e.g., UDP), and therefore
+          requires DPLPMTUD to provide a mechanism to detect black-holing of
+          packets (c.f., Acknowledged PL).</dd>
         </dl></t>
 
     </section>
@@ -643,10 +643,10 @@
 
       <t>The requirements for datagram PLPMTUD are: <list style="numbers">
 
-	  <t> Managing the PLPMTU: For datagram PLs, the PLPMTU is managed by
-	  DPLPMTUD. A PL MUST NOT send a datagram (other than a probe packet)
-	  with a size at the PL layer that is larger than the current
-	  PLPMTU.</t>
+          <t> Managing the PLPMTU: For datagram PLs, the PLPMTU is managed by
+          DPLPMTUD. A PL MUST NOT send a datagram (other than a probe packet)
+          with a size at the PL layer that is larger than the current
+          PLPMTU.</t>
           
           <t>Probe packets: On request, a DPLPMTUD sender is REQUIRED to be
           able to transmit a packet larger than the PLMPMTU. This is used to
@@ -658,94 +658,96 @@
 
           <t>Reception feedback: The destination PL endpoint is REQUIRED to
           provide a feedback method that indicates to the DPLPMTUD sender when
-          a probe packet has been received by the destination PL endpoint. </t>
+          a probe packet has been received by the destination PL endpoint.
+          <xref target="protocol_specific_methods"></xref> provides examples of
+          how a PL can provide this acknowledgment of received probe packets.
+          </t>
 
-	  <t>Probe loss recovery: It is RECOMMENDED to use probe packets that
-	  do not carry any user data that would require retransmission if lost.
-	  Most datagram transports permit this. If a probe packet contains user
-	  data requiring retransmission in case of loss, the PL (or layers
-	  above) are REQUIRED to arrange any retransmission/repair of any
-	  resulting loss. The PL is REQUIRED to be robust in the case where
-	  probe packets are lost due to other reasons (including link
-	  transmission error, congestion).</t>
+          <t>Probe loss recovery: It is RECOMMENDED to use probe packets that
+          do not carry any user data that would require retransmission if lost.
+          Most datagram transports permit this. If a probe packet contains user
+          data requiring retransmission in case of loss, the PL (or layers
+          above) are REQUIRED to arrange any retransmission/repair of any
+          resulting loss. The PL is REQUIRED to be robust in the case where
+          probe packets are lost due to other reasons (including link
+          transmission error, congestion).</t>
 
-	  <t>PMTU parameters: A DPLPMTUD sender is RECOMMENDED to utilize
-	  information about the maximum size of packet that can be transmitted
-	  by the sender on the local link (e.g., the local Link MTU).  It MAY
-	  utilize similar information about the maximum size a receiver can
-	  accept when this is supplied (note this could be less than EMTU_R).
-	  This avoids implementations trying to send probe packets that can not
-	  be transferred by the local link.  Too high of a value could reduce
-	  the efficiency of the search algorithm. Some applications also have a
-	  maximum transport protocol data unit (PDU) size, in which case there
-	  is no benefit from probing for a size larger than this (unless a
-	  transport allows multiplexing multiple applications PDUs into the
-	  same datagram).</t>
+          <t>PMTU parameters: A DPLPMTUD sender is RECOMMENDED to utilize
+          information about the maximum size of packet that can be transmitted
+          by the sender on the local link (e.g., the local Link MTU).  It MAY
+          utilize similar information about the maximum size a receiver can
+          accept when this is supplied (note this could be less than EMTU_R).
+          This avoids implementations trying to send probe packets that can not
+          be transferred by the local link.  Too high of a value could reduce
+          the efficiency of the search algorithm. Some applications also have a
+          maximum transport protocol data unit (PDU) size, in which case there
+          is no benefit from probing for a size larger than this (unless a
+          transport allows multiplexing multiple applications PDUs into the
+          same datagram).</t>
 
-	  <t>Processing PTB messages: A DPLPMTUD sender MAY optionally utilize
-	  PTB messages received from the network layer to help identify when a
-	  network path does not support the current size of probe packet. Any
-	  received PTB message MUST be validated before it is used to update
-	  the PLPMTU discovery information <xref target="RFC8201"></xref>.
-	  This validation confirms that the PTB message was sent in response to
-	  a packet originating by the sender, and needs to be performed before
-	  the PLPMTU discovery method reacts to the PTB message.  A PTB message
-	  MUST NOT be used to increase the PLPMTU <xref
-	  target="RFC8201"></xref>, but could trigger a probe to test for a
-	  larger PLPMTU. 
+          <t>Processing PTB messages: A DPLPMTUD sender MAY optionally utilize
+          PTB messages received from the network layer to help identify when a
+          network path does not support the current size of probe packet. Any
+          received PTB message MUST be validated before it is used to update
+          the PLPMTU discovery information <xref target="RFC8201"></xref>.
+          This validation confirms that the PTB message was sent in response to
+          a packet originating by the sender, and needs to be performed before
+          the PLPMTU discovery method reacts to the PTB message.  A PTB message
+          MUST NOT be used to increase the PLPMTU <xref
+          target="RFC8201"></xref>, but could trigger a probe to test for a
+          larger PLPMTU. 
 
-	  A PL_PTB_SIZE that is greater than that currently probed MUST be
-	  ignored.  A valid PTB_SIZE is converted to a PL_PTB_SIZE before it is
-	  to be used in the DPLPMTUD state machine.
-	  </t>
+          A PL_PTB_SIZE that is greater than that currently probed MUST be
+          ignored.  A valid PTB_SIZE is converted to a PL_PTB_SIZE before it is
+          to be used in the DPLPMTUD state machine.
+          </t>
 
-	  <t>Probing and congestion control: The decision about when to send a
-	  probe packet does not need to be limited by the congestion
-	  controller. When not controlled by the congestion controller, the
-	  interval between probe packets MUST be at least one RTT. If
-	  transmission of probe packets is limited by the congestion
-	  controller, this could result in transmission of probe packets being
-	  delayed or suspended during congestion.</t>
+          <t>Probing and congestion control: The decision about when to send a
+          probe packet does not need to be limited by the congestion
+          controller. When not controlled by the congestion controller, the
+          interval between probe packets MUST be at least one RTT. If
+          transmission of probe packets is limited by the congestion
+          controller, this could result in transmission of probe packets being
+          delayed or suspended during congestion.</t>
       
-	  <t>Loss of a probe packet SHOULD NOT be treated as an indication of
-	  congestion and SHOULD NOT trigger a congestion control reaction <xref
-	  target="RFC4821"></xref>, because this could result in unnecessary
-	  reduction of the sending rate.  </t>
+          <t>Loss of a probe packet SHOULD NOT be treated as an indication of
+          congestion and SHOULD NOT trigger a congestion control reaction <xref
+          target="RFC4821"></xref>, because this could result in unnecessary
+          reduction of the sending rate.  </t>
       
-	  <t> An update to the PLPMTU (or MPS) MUST NOT modify the congestion
-	  window measured in bytes <xref target="RFC4821"></xref>.  Therefore,
-	  an increase in the packet size does not cause an increase the data
-	  rate in bytes per second.</t>
+          <t> An update to the PLPMTU (or MPS) MUST NOT modify the congestion
+          window measured in bytes <xref target="RFC4821"></xref>.  Therefore,
+          an increase in the packet size does not cause an increase the data
+          rate in bytes per second.</t>
 
-	  <t>Probing and flow control:  Flow control at the PL concerns the
-	  end-to-end flow of data using the PL service.  This does not apply to
-	  DPLPMTU when probe packets use a design that does not carry user data
-	  to the remote application.</t>
+          <t>Probing and flow control:  Flow control at the PL concerns the
+          end-to-end flow of data using the PL service.  This does not apply to
+          DPLPMTU when probe packets use a design that does not carry user data
+          to the remote application.</t>
          
-	  <t>Shared PLPMTU state: The PMTU value
+          <t>Shared PLPMTU state: The PMTU value
           calculated from the PLPMTU MAY also be stored with the
-	  corresponding entry associated with the destination in the IP
-	  layer cache, and used by other PL instances. The specification of
-	  PLPMTUD <xref target="RFC4821"></xref> states: "If PLPMTUD updates
-	  the MTU for a particular path, all Packetization Layer sessions that
-	  share the path representation (as described in Section 5.2 of <xref
-	  target="RFC4821"></xref>) SHOULD be notified to make use of the new
-	  MTU". Such methods MUST be robust to the wide variety of underlying
-	  network forwarding behaviors. Section 5.2 of <xref
-	  target="RFC8201"></xref> provides guidance on the caching of PMTU
-	  information and also the relation to IPv6 flow labels.</t>
+          corresponding entry associated with the destination in the IP
+          layer cache, and used by other PL instances. The specification of
+          PLPMTUD <xref target="RFC4821"></xref> states: "If PLPMTUD updates
+          the MTU for a particular path, all Packetization Layer sessions that
+          share the path representation (as described in Section 5.2 of <xref
+          target="RFC4821"></xref>) SHOULD be notified to make use of the new
+          MTU". Such methods MUST be robust to the wide variety of underlying
+          network forwarding behaviors. Section 5.2 of <xref
+          target="RFC8201"></xref> provides guidance on the caching of PMTU
+          information and also the relation to IPv6 flow labels.</t>
         </list></t>
 
       <t>In addition, the following principles are stated for design of a
       DPLPMTUD method: <list style="symbols">
-          <t>Maximum Packet Size (MPS): A PL MAY be designed to
-          segment data blocks larger than the MPS into multiple datagrams.
-          However, not all datagram PLs support
-          segmentation of data blocks. It is RECOMMENDED that methods avoid forcing
-          an application to use an arbitrary small MPS for
-          transmission while the method is searching for the currently
-          supported PLPMTU. A reduced MPS can adversely impact
-          the performance of an application.</t>
+          <t>A PL MAY be designed to segment data blocks larger than the MPS
+          into multiple datagrams.  However, not all datagram PLs support
+          segmentation of data blocks. It is RECOMMENDED that methods avoid
+          forcing an application to use an arbitrary small MPS for transmission
+          while the method is searching for the currently supported PLPMTU. A
+          reduced MPS can adversely impact the performance of an
+          application.</t>
           
           <t> To assist applications in choosing a suitable data block size, the
           PL is RECOMMENDED to provide a primitive that
@@ -778,24 +780,24 @@
       specification.</t>
 
       <section anchor="Probe" title="PLPMTU Probe Packets">
-	<t>The DPLPMTUD method relies upon the PL sender being able to generate
-	probe packets with a specific size. TCP is able to generate these probe
-	packets by choosing to appropriately segment data being sent <xref
-	target="RFC4821"></xref>. In contrast, a datagram PL that constructs a
-	probe packet has to either request an application to send a data block
-	that is larger than that generated by an application, or to utilize
-	padding functions to extend a datagram beyond the size of the
-	application data block.  Protocols that permit exchange of control
-	messages (without an application data block) can generate a probe
-	packet by extending a control message with padding data. The total size
-	of a probe packet includes all headers and padding added to the payload
-	data being sent (e.g., including protocol option fields,
-	security-related fields such as an AEAD tag and TLS record layer
-	padding).  </t>
+        <t>The DPLPMTUD method relies upon the PL sender being able to generate
+        probe packets with a specific size. TCP is able to generate these probe
+        packets by choosing to appropriately segment data being sent <xref
+        target="RFC4821"></xref>. In contrast, a datagram PL that constructs a
+        probe packet has to either request an application to send a data block
+        that is larger than that generated by an application, or to utilize
+        padding functions to extend a datagram beyond the size of the
+        application data block.  Protocols that permit exchange of control
+        messages (without an application data block) can generate a probe
+        packet by extending a control message with padding data. The total size
+        of a probe packet includes all headers and padding added to the payload
+        data being sent (e.g., including protocol option fields,
+        security-related fields such as an AEAD tag and TLS record layer
+        padding).  </t>
 
-	<t>A receiver is REQUIRED to be able to distinguish an in-band data
-	block from any added padding. This is needed to ensure that any added
-	padding is not passed on to an application at the receiver.</t>
+        <t>A receiver is REQUIRED to be able to distinguish an in-band data
+        block from any added padding. This is needed to ensure that any added
+        padding is not passed on to an application at the receiver.</t>
 
         <t>This results in three possible ways that a sender can create a
         probe packet: <dl>
@@ -821,27 +823,24 @@
             This method requests the application to issue a data block of the
             desired probe size. </dd>
           </dl> </t>
-        <t>A PL that uses a probe packet carrying an application data and
-           needs protection from the loss of this probe
-            packet, could perform transport-layer
-            retransmission/repair of the data block (e.g., by retransmission
-            after loss is detected or by duplicating the data block in a
-            datagram without the padding data).
-            This retransmited data block might possibly need to be
-            sent using a smaller PLPMTU, which
-	        could need the PL to to use a
-        smaller packet size to traverse the end-to-end path.
+        <t>A PL that uses a probe packet carrying application data and needs
+        protection from the loss of this probe packet could perform
+        transport-layer retransmission/repair of the data block (e.g., by
+        retransmission after loss is detected or by duplicating the data block
+        in a datagram without the padding data).  This retransmitted data block
+        might possibly need to be sent using a smaller PLPMTU, which could need
+        the PL to to use a smaller packet size to traverse the end-to-end path.
         (This could utilize endpoint network-layer or a PL that can re-segment
         the data block into multiple datagrams).</t>
     
         <t>DPLPMTUD MAY choose to use only one of these methods to simplify
         the implementation.</t>
 
-	<t>Probe messages sent by a PL MUST contain enough information to
-	uniquely identify the probe within Maximum Segment Lifetime (e.g.,
-	including a unique identifier from the PL or the DPLPMTUD
-	implementation), while being robust to reordering and replay of probe
-	response and PTB messages.</t>
+        <t>Probe messages sent by a PL MUST contain enough information to
+        uniquely identify the probe within Maximum Segment Lifetime (e.g.,
+        including a unique identifier from the PL or the DPLPMTUD
+        implementation), while being robust to reordering and replay of probe
+        response and PTB messages.</t>
       </section>
 
       <section anchor="Valid" title="Confirmation of Probed Packet Size">
@@ -867,6 +866,11 @@
 
       <section anchor="mechanism-bhd"
                title="Black Hole Detection">
+
+        <t> The description that follows uses the set of constants defined in
+        <xref target="Constants"></xref> and variables defined in <xref
+        target="Variables"></xref>.</t>
+
         <t>Black Hole Detection is
         triggered by an indication that the network path could be unable to
         support the current PLPMTU size. </t>
@@ -874,11 +878,11 @@
         <t>There are three ways to detect black holes:</t>
 
         <t><list style="symbols">
-	<t>A validated PTB message can be received that indicates a PL_PTB_SIZE
-	less than the current PLPMTU. A DPLPMTUD method MUST NOT rely solely on
-	this method.</t>
+        <t>A validated PTB message can be received that indicates a PL_PTB_SIZE
+        less than the current PLPMTU. A DPLPMTUD method MUST NOT rely solely on
+        this method.</t>
 
-	 <t>A PL can use the DPLPMTUD probing mechanism to periodically
+         <t>A PL can use the DPLPMTUD probing mechanism to periodically
             generate probe packets of the size of the current PLPMTU (e.g.,
             using the confirmation timer <xref target="Timers"></xref>). A
             timer tracks whether acknowledgments are received. Successive loss
@@ -887,37 +891,37 @@
             without receiving an acknowledgment, PROBE_COUNT, becomes greater
             than MAX_PROBES).</t>
 
-	    <t>A PL can utilize an event that indicates the network path no
-	    longer sustains the sender's PLPMTU size. This could use a
-	    mechanism implemented within the PL to detect excessive loss of
-	    data sent with a specific packet size and then conclude that this
-	    excessive loss could be a result of an invalid PLPMTU (as in
-	    PLPMTUD for TCP <xref target="RFC4821"></xref>).</t>
+            <t>A PL can utilize an event that indicates the network path no
+            longer sustains the sender's PLPMTU size. This could use a
+            mechanism implemented within the PL to detect excessive loss of
+            data sent with a specific packet size and then conclude that this
+            excessive loss could be a result of an invalid PLPMTU (as in
+            PLPMTUD for TCP <xref target="RFC4821"></xref>).</t>
 
           </list></t>
 
         <t>A PL MAY inhibit sending probe packets when no application data has
         been sent since the previous probe packet. A PL preferring to use an
-        up-to-data PLPMTU once user data is sent again, MAY choose to continue
+        up-to-data PLPMTU once user data is sent again MAY choose to continue
         PLPMTU discovery for each path. However, this could result in additional
         packets being sent.</t>
 
-	<t>When the method detects the current PLPMTU is not supported,
-	DPLPMTUD sets a lower PLPMTU, and sets a lower MPS.  The PL then
-	confirms that the new PLPMTU can be successfully used across the path.
-	A probe packet could need to have a size less than the size of the data
-	block generated by the application. </t>
+        <t>When the method detects the current PLPMTU is not supported,
+        DPLPMTUD sets a lower PLPMTU, and sets a lower MPS.  The PL then
+        confirms that the new PLPMTU can be successfully used across the path.
+        A probe packet could need to have a size less than the size of the data
+        block generated by the application. </t>
         
       </section>
     
     <section anchor="mps" title="The Maximum Packet Size (MPS)">
 
-	<t> The result of probing determines a usable PLPMTU, which is used to
-	set the MPS used by the application.  The MPS is smaller than the
-	PLPMTU because it is reduced by the size of PL headers (including the
-	overhead of security-related fields such as an AEAD tag and TLS record
-	layer padding). The relationship between the MPS and the PLPMTUD is
-	illustrated in <xref target="fig-mps-relationship"></xref>.  </t>
+        <t> The result of probing determines a usable PLPMTU, which is used to
+        set the MPS used by the application.  The MPS is smaller than the
+        PLPMTU because it is reduced by the size of PL headers (including the
+        overhead of security-related fields such as an AEAD tag and TLS record
+        layer padding). The relationship between the MPS and the PLPMTUD is
+        illustrated in <xref target="fig-mps-relationship"></xref>.  </t>
                   
                   <t><figure anchor="fig-mps-relationship"
                       title="Relationship between MPS and PLPMTU">
@@ -930,49 +934,49 @@
                       </artset>
                     </figure></t>
                   
-	<t>A PL is unable to send a packet (other than a probe packet) with a
-	size larger than the current PLPMTU at the network layer. To avoid this,
-	a PL MAY be designed to segment data blocks larger than the MPS into
-	multiple datagrams.</t>
+        <t>A PL is unable to send a packet (other than a probe packet) with a
+        size larger than the current PLPMTU at the network layer. To avoid this,
+        a PL MAY be designed to segment data blocks larger than the MPS into
+        multiple datagrams.</t>
         
-	<t> DPLPMTUD seeks to avoid IP fragmentation. An attempt to send a data
-	block larger than the MPS will therefore fail if a PL is unable to
-	segment data.  To determine the largest data block that can be sent, a
-	PL SHOULD provide applications with a primitive that returns the
-	Maximum Packet Size (MPS), derived from the current PLPMTU.</t>
+        <t> DPLPMTUD seeks to avoid IP fragmentation. An attempt to send a data
+        block larger than the MPS will therefore fail if a PL is unable to
+        segment data.  To determine the largest data block that can be sent, a
+        PL SHOULD provide applications with a primitive that returns the MPS,
+        derived from the current PLPMTU.</t>
                       
-	<t> If DPLPMTUD results in a change to the MPS, the application needs
-	to adapt to the new MPS. A particular case can arise when packets have
-	been sent with a size less than the MPS and the PLPMTU was subsequently
-	reduced.  If these packets are lost, the PL MAY segment the data using
-	the new MPS. If a PL is unable to re-segment a previously sent datagram
-	(e.g., <xref target="RFC4960"></xref>), then the sender either
-	discards the datagram or could perform retransmission using
-	network-layer fragmentation to form multiple IP packets not larger than
-	the PLPMTU.  For IPv4, the use of endpoint fragmentation by the sender
-	is preferred over clearing the DF-bit in the IPv4 header.  Operational
-	experience reveals that IP fragmentation can reduce the reliability of
-	Internet communication <xref
-	target="I-D.ietf-intarea-frag-fragile"></xref>, which may reduce the
-	success of retransmission.</t>
+        <t> If DPLPMTUD results in a change to the MPS, the application needs
+        to adapt to the new MPS. A particular case can arise when packets have
+        been sent with a size less than the MPS and the PLPMTU was subsequently
+        reduced.  If these packets are lost, the PL MAY segment the data using
+        the new MPS. If a PL is unable to re-segment a previously sent datagram
+        (e.g., <xref target="RFC4960"></xref>), then the sender either
+        discards the datagram or could perform retransmission using
+        network-layer fragmentation to form multiple IP packets not larger than
+        the PLPMTU.  For IPv4, the use of endpoint fragmentation by the sender
+        is preferred over clearing the DF bit in the IPv4 header.  Operational
+        experience reveals that IP fragmentation can reduce the reliability of
+        Internet communication <xref
+        target="I-D.ietf-intarea-frag-fragile"></xref>, which may reduce the
+        success of retransmission.</t>
          </section>
 
         <section anchor="outgoingpmtu" title="Disabling the Effect of PMTUD">
-	  <t>A PL implementing this specification MUST suspend network layer
-	  processing of outgoing packets that enforces a PMTU <xref
-	  target="RFC1191"></xref><xref target="RFC8201"></xref> for each flow
-	  utilizing DPLPMTUD, and instead use DPLPMTUD to control the size of
-	  packets that are sent by a flow. This removes the need for the
-	  network layer to drop or fragment sent packets that have a size
-	  greater than the PMTU.</t>
+          <t>A PL implementing this specification MUST suspend network layer
+          processing of outgoing packets that enforces a PMTU <xref
+          target="RFC1191"></xref><xref target="RFC8201"></xref> for each flow
+          utilizing DPLPMTUD, and instead use DPLPMTUD to control the size of
+          packets that are sent by a flow. This removes the need for the
+          network layer to drop or fragment sent packets that have a size
+          greater than the PMTU.</t>
         </section>
 
       <section anchor="mechanism-ptb" title="Response to PTB Messages">
-	<t>This method requires the DPLPMTUD sender to validate any received
-	PTB message before using the PTB information. The response to a PTB
-	message depends on the PL_PTB_SIZE calculated from the PTB_SIZE in the
-	PTB message, the state of the PLPMTUD state machine, and the IP
-	protocol being used.</t>
+        <t>This method requires the DPLPMTUD sender to validate any received
+        PTB message before using the PTB information. The response to a PTB
+        message depends on the PL_PTB_SIZE calculated from the PTB_SIZE in the
+        PTB message, the state of the PLPMTUD state machine, and the IP
+        protocol being used.</t>
 
         <t><xref target="PTB"></xref> first describes validation for both IPv4
         ICMP Unreachable messages (type 3) and ICMPv6 Packet Too Big messages,
@@ -986,11 +990,12 @@
               in this case the PLPMTU is not updated when a PTB message is
               received.</t>
 
-              <t>An implementation that supports PTB messages MUST validate
-              messages before they are further processed.</t>
+              <t>A PL that supports PTB messages MUST validate these messages
+              before they are further processed.</t>
+
             </list></t>
 
-          <t>A PL that receives a PTB message from a router or middlebox,
+          <t>A PL that receives a PTB message from a router or middlebox
           performs ICMP validation as specified in Section 5.2 of <xref
           target="RFC8085"></xref><xref target="RFC8201"></xref>. Because
           DPLPMTUD operates at the PL, the PL needs to check that each
@@ -1007,7 +1012,7 @@
 
           <t>The validation SHOULD utilize information that it is not simple
           for an off-path attacker to determine <xref
-          target="RFC8085"></xref>. For example, by checking the value of a
+          target="RFC8085"></xref>. For example, it could check the value of a
           protocol header field known only to the two PL endpoints. A datagram
           application that uses well-known source and destination ports ought
           to also rely on other information to complete this validation.</t>
@@ -1017,25 +1022,25 @@
           that does not complete the validation MUST NOT be further utilized
           by the DPLPMTUD method.</t>
 
-	  <t>PTB messages that have been validated MAY be utilized by the
-	  DPLPMTUD algorithm, but MUST NOT be used directly to set the PLPMTU.
-	  The PL_PTB_SIZE is smaller than the PTB_SIZE because it is reduced by
-	  headers below the PL including any IP options or extensions added to
-	  the PL packet. A method that utilizes these PTB messages can improve
-	  the speed at which the algorithm detects an appropriate PLPMTU by
-	  triggering an immediate probe for the PL_PTB_SIZE (resulting in a
-	  network-layer packet of size PTB_SIZE), compared to one that relies
-	  solely on probing using a timer-based search algorithm. <xref
-	  target="validPTB_SIZE"></xref> describes this processing.</t>
+          <t>PTB messages that have been validated MAY be utilized by the
+          DPLPMTUD algorithm, but MUST NOT be used directly to set the PLPMTU.
+          The PL_PTB_SIZE is smaller than the PTB_SIZE because it is reduced by
+          headers below the PL including any IP options or extensions added to
+          the PL packet. A method that utilizes these PTB messages can improve
+          the speed at which the algorithm detects an appropriate PLPMTU by
+          triggering an immediate probe for the PL_PTB_SIZE (resulting in a
+          network-layer packet of size PTB_SIZE), compared to one that relies
+          solely on probing using a timer-based search algorithm. <xref
+          target="validPTB_SIZE"></xref> describes this processing.</t>
         </section>
 
         <section anchor="validPTB_SIZE" title="Use of PTB Messages">
-	  <t>Before using the size reported in the PTB message it must first be
-	  converted to a PL_PTB_SIZE. A set of checks are intended to provide
-	  protection from a router that reports an unexpected PTB_SIZE. The PL
-	  also needs to check that the indicated PL_PTB_SIZE is less than the
-	  size used by probe packets and at least the minimum size
-	  accepted.</t>
+          <t>Before using the size reported in the PTB message it must first be
+          converted to a PL_PTB_SIZE. A set of checks are intended to provide
+          protection from a router that reports an unexpected PTB_SIZE. The PL
+          also needs to check that the indicated PL_PTB_SIZE is less than the
+          size used by probe packets and at least the minimum size
+          accepted.</t>
 
           <t>This section provides a summary of how PTB messages can be
           utilized. This processing depends on the PL_PTB_SIZE and the current
@@ -1059,17 +1064,17 @@
 
               <dd>
                 <ul>
-		  <li>A robust PL MAY enter an error state (see <xref
-		  target="States" />) for an IPv4 path when the PL_PTB_SIZE
-		  reported in the PTB message is larger than or equal to 68
-		  bytes <xref target="RFC0791"></xref> and when this is less
-		  than the BASE_PLPMTU.</li>
+                  <li>A robust PL MAY enter an error state (see <xref
+                  target="States" />) for an IPv4 path when the PL_PTB_SIZE
+                  reported in the PTB message is larger than or equal to 68
+                  bytes <xref target="RFC0791"></xref> and when this is less
+                  than the BASE_PLPMTU.</li>
 
-		  <li>A robust PL MAY enter an error state (see <xref
-		  target="States" />) for an IPv6 path when the PL_PTB_SIZE
-		  reported in the PTB message is larger than or equal to 1280
-		  bytes <xref target="RFC8200"></xref> and when this is less
-		  than the BASE_PLPMTU.</li>
+                  <li>A robust PL MAY enter an error state (see <xref
+                  target="States" />) for an IPv6 path when the PL_PTB_SIZE
+                  reported in the PTB message is larger than or equal to 1280
+                  bytes <xref target="RFC8200"></xref> and when this is less
+                  than the BASE_PLPMTU.</li>
                 </ul>
               </dd>
 
@@ -1099,14 +1104,14 @@
 
               <dd>
                 <ul>
-		  <li>This could be an indication of a black hole. The PLPMTU
-		  SHOULD be set to BASE_PLPMTU (the PLPMTU is reduced to the
-		  BASE_PLPMTU to avoid unnecessary packet loss when a black hole
-		  is encountered).</li>
+                  <li>This could be an indication of a black hole. The PLPMTU
+                  SHOULD be set to BASE_PLPMTU (the PLPMTU is reduced to the
+                  BASE_PLPMTU to avoid unnecessary packet loss when a black hole
+                  is encountered).</li>
 
-		  <li> The PL ought to start a search to quickly discover the
-		  new PLPMTU. The PL_PTB_SIZE reported in the PTB message can be
-		  used to initialize a search algorithm.</li>
+                  <li> The PL ought to start a search to quickly discover the
+                  new PLPMTU. The PL_PTB_SIZE reported in the PTB message can be
+                  used to initialize a search algorithm.</li>
                 </ul>
               </dd>
 
@@ -1136,7 +1141,7 @@
       can utilize an appropriate MPS for the current network path. </t>
 
       <t>DPLPMTUD SHOULD NOT be used by an upper PL or application if it is
-      already used in a lower layer, DPLPMTUD SHOULD only be performed once
+      already used in a lower layer DPLPMTUD SHOULD only be performed once
       between a pair of endpoints. A PL MUST adjust the MPS indicated
       by DPLPMTUD to account for any additional overhead introduced by the
       PL.</t>
@@ -1181,14 +1186,14 @@
               <dt>PMTU_RAISE_TIMER:</dt>
 
               <dd>
-		<t>The PMTU_RAISE_TIMER is configured to the period a sender
-		will continue to use the current PLPMTU, after which it
-		re-enters the Search phase. This timer has a period of 600
-		seconds, as recommended by PLPMTUD <xref target="RFC4821"/>.</t>
+                <t>The PMTU_RAISE_TIMER is configured to the period a sender
+                will continue to use the current PLPMTU, after which it
+                re-enters the Search phase. This timer has a period of 600
+                seconds, as recommended by PLPMTUD <xref target="RFC4821"/>.</t>
 
                 <t>DPLPMTUD MAY inhibit sending probe packets when no
                 application data has been sent since the previous probe
-                packet. A PL preferring to use an up-to-data PMTU once user
+                packet. A PL preferring to use an up-to-date PMTU once user
                 data is sent again, can choose to continue PMTU discovery for
                 each path. However, this could result in sending additional
                 packets.</t>
@@ -1217,20 +1222,19 @@
               </dd>
             </dl></t>
 
-          <t>An implementation could implement the various timers using a
-          single timer.</t>
+          <t>The various timers could be implemented using a single timer</t>
         </section>
 
-        <section title="Constants">
+        <section anchor="Constants" title="Constants">
           <t>The following constants are defined: <dl>
               <dt>MAX_PROBES:</dt>
 
-	      <dd>The MAX_PROBES is the maximum value of the PROBE_COUNT
-	      counter (see <xref target="Variables"/>). MAX_PROBES represents
-	      the limit for the number of consecutive probe attempts of any
-	      size. Search algorithms benefit from a MAX_PROBES valugreater
-	      than 1 because this can provide robustness to isolated packet
-	      loss. The default value of MAX_PROBES is 3.</dd>
+              <dd>The MAX_PROBES is the maximum value of the PROBE_COUNT
+              counter (see <xref target="Variables"/>). MAX_PROBES represents
+              the limit for the number of consecutive probe attempts of any
+              size. Search algorithms benefit from a MAX_PROBES value greater
+              than 1 because this can provide robustness to isolated packet
+              loss. The default value of MAX_PROBES is 3.</dd>
 
               <dt>MIN_PLPMTU:</dt>
 
@@ -1247,15 +1251,15 @@
 
               <dt>MAX_PLPMTU:</dt>
 
-	      <dd>The MAX_PLPMTU is the largest size of PLPMTU. This has to be
-	      less than or equal to the maximum size of the PL packet that can
-	      be sent on the outgoing interface (constrained by the local
-	      interface MTU). When known, this also ought to be less than the
-	      maximum size of PL packet that can be received by the remote
-	      endpoint (constrained by EMTU_R). It can be limited by the design
-	      or configuration of the PL being used.  An application, or PL,
-	      MAY choose a smaller MAX_PLPMTU when there is no need to send
-	      packets larger than a specific size.</dd>
+              <dd>The MAX_PLPMTU is the largest size of PLPMTU. This has to be
+              less than or equal to the maximum size of the PL packet that can
+              be sent on the outgoing interface (constrained by the local
+              interface MTU). When known, this also ought to be less than the
+              maximum size of PL packet that can be received by the remote
+              endpoint (constrained by EMTU_R). It can be limited by the design
+              or configuration of the PL being used.  An application, or PL,
+              MAY choose a smaller MAX_PLPMTU when there is no need to send
+              packets larger than a specific size.</dd>
 
               <dt>BASE_PLPMTU:</dt>
 
@@ -1277,11 +1281,11 @@
 
               <dt>PROBE_COUNT:</dt>
 
-	      <dd>The PROBE_COUNT is a count of the number of successive
-	      unsuccessful probe packets that have been sent. Each time a probe
-	      packet is acknowledged, the value is set to zero. (Some probe
-	      loss is expected while searching, therefore loss of a single
-	      probe is not an indication of a PMTU problem.) </dd>
+              <dd>The PROBE_COUNT is a count of the number of successive
+              unsuccessful probe packets that have been sent. Each time a probe
+              packet is acknowledged, the value is set to zero. (Some probe
+              loss is expected while searching, therefore loss of a single
+              probe is not an indication of a PMTU problem.) </dd>
             </dl></t>
 
           <t>The figure below illustrates the relationship between the packet
@@ -1324,25 +1328,25 @@
               <dt>Base:</dt>
 
               <dd>
-		<t>The Base Phase confirms connectivity to the remote peer
-		using packets of the BASE_PLPMTU.  This phase is implicit for a
-		connection-oriented PL (where it can be performed in a PL
-		connection handshake).  A connectionless PL sends a probe
-		packet and uses acknowledgment of this probe packet to confirm
-		that the remote peer is reachable. </t>
+                <t>The Base Phase confirms connectivity to the remote peer
+                using packets of the BASE_PLPMTU.  This phase is implicit for a
+                connection-oriented PL (where it can be performed in a PL
+                connection handshake).  A connectionless PL sends a probe
+                packet and uses acknowledgment of this probe packet to confirm
+                that the remote peer is reachable. </t>
 
-		<t>The sender also confirms that BASE_PLPMTU is supported across
-		the network path. This may be achieved using a PL mechanism
-		(e.g., using a handshake packet of size BASE_PLPMTU), or by
-		sending a probe packet of size BASE_PLPMTU and confirming that
-		this is received.</t>
+                <t>The sender also confirms that BASE_PLPMTU is supported across
+                the network path. This may be achieved using a PL mechanism
+                (e.g., using a handshake packet of size BASE_PLPMTU), or by
+                sending a probe packet of size BASE_PLPMTU and confirming that
+                this is received.</t>
 
-		<t>A probe packet of size BASE_PLPMTU can be sent immediately
-		on the initial entry to the Base Phase (following a
-		connectivity check).  A PL that does not wish to support a path
-		with a PLPMTU less than BASE_PLPMTU can simplify the phase into
-		a single step by performing the connectivity checks with a
-		probe of the BASE_PLPMTU size.</t>
+                <t>A probe packet of size BASE_PLPMTU can be sent immediately
+                on the initial entry to the Base Phase (following a
+                connectivity check).  A PL that does not wish to support a path
+                with a PLPMTU less than BASE_PLPMTU can simplify the phase into
+                a single step by performing the connectivity checks with a
+                probe of the BASE_PLPMTU size.</t>
 
                 <t>Once confirmed, DPLPMTUD enters the Search Phase. If this
                 phase fails to confirm, DPLPMTUD enters the Error Phase.</t>
@@ -1392,10 +1396,10 @@
               </dd>
             </dl></t>
 
-          <t>An implementation that only reduces the PLPMTU to a suitable size
-          would be sufficient to ensure reliable operation, but can be very
-          inefficient when the actual PMTU changes or when the method (for
-          whatever reason) makes a suboptimal choice for the PLPMTU.</t>
+          <t> A method that only reduces the PLPMTU to a suitable size would be
+          sufficient to ensure reliable operation, but can be very inefficient
+          when the actual PMTU changes or when the method (for whatever reason)
+          makes a suboptimal choice for the PLPMTU.</t>
 
           <t>A full implementation of DPLPMTUD provides an algorithm enabling
           the DPLPMTUD sender to increase the PLPMTU following a change in the
@@ -1429,23 +1433,23 @@
         <t><dl>
             <dt>DISABLED:</dt>
 
-	    <dd>The DISABLED state is the initial state before probing has
-	    started. It is also entered from any other state, when the PL
-	    indicates loss of connectivity. This state is left once the PL
-	    indicates connectivity to the remote PL. When transitioning to the
-	    BASE state, a probe packet of size BASE_PLPMTU can be sent
-	    immediately.</dd>
+            <dd>The DISABLED state is the initial state before probing has
+            started. It is also entered from any other state, when the PL
+            indicates loss of connectivity. This state is left once the PL
+            indicates connectivity to the remote PL. When transitioning to the
+            BASE state, a probe packet of size BASE_PLPMTU can be sent
+            immediately.</dd>
 
             <dt>BASE:</dt>
 
             <dd>
-	      <t>The BASE state is used to confirm that the BASE_PLPMTU size is
-	      supported by the network path and is designed to allow an
-	      application to continue working when there are transient
-	      reductions in the actual PMTU.  It also seeks to avoid long
-	      periods when a sender searching for a larger PLPMTU is unaware
-	      that packets are not being delivered due to a packet or ICMP
-	      Black Hole.</t>
+              <t>The BASE state is used to confirm that the BASE_PLPMTU size is
+              supported by the network path and is designed to allow an
+              application to continue working when there are transient
+              reductions in the actual PMTU.  It also seeks to avoid long
+              periods when a sender searching for a larger PLPMTU is unaware
+              that packets are not being delivered due to a packet or ICMP
+              Black Hole.</t>
 
               <t>On entry, the PROBED_SIZE is set to the BASE_PLPMTU size and
               the PROBE_COUNT is set to zero.</t>
@@ -1453,7 +1457,7 @@
               <t>Each time a probe packet is sent, the PROBE_TIMER is started.
               The state is exited when the probe packet is acknowledged, and
               the PL sender enters the SEARCHING state.
-	      </t>
+              </t>
 
               <t>The state is also left when the PROBE_COUNT reaches
               MAX_PROBES or a received PTB message is validated. This causes
@@ -1466,52 +1470,52 @@
               <t>The SEARCHING state is the main probing state. This state is
               entered when probing for the BASE_PLPMTU was successful.</t>
 
-	      <t>Each time a probe packet is acknowledged, the PROBE_COUNT is
-	      set to zero, the PLPMTU is set to the PROBED_SIZE and then the
-	      PROBED_SIZE is increased using the search algorithm.</t>
+              <t>Each time a probe packet is acknowledged, the PROBE_COUNT is
+              set to zero, the PLPMTU is set to the PROBED_SIZE and then the
+              PROBED_SIZE is increased using the search algorithm.</t>
 
               <t>When a probe packet is sent and not acknowledged within the
               period of the PROBE_TIMER, the PROBE_COUNT is incremented and
               a new probe packet is transmitted. </t>
 
-	      <t> The state is exited to enter SEARCH_COMPLETE when the
-	      PROBE_COUNT reaches MAX_PROBES, a validated PTB is received that
-	      corresponds to the last successfully probed size (PL_PTB_SIZE =
-	      PLPMTU), or a probe of size MAX_PLPMTU is acknowledged (PLPMTU =
-	      MAX_PLPMTU).</t>
+              <t> The state is exited to enter SEARCH_COMPLETE when the
+              PROBE_COUNT reaches MAX_PROBES, a validated PTB is received that
+              corresponds to the last successfully probed size (PL_PTB_SIZE =
+              PLPMTU), or a probe of size MAX_PLPMTU is acknowledged (PLPMTU =
+              MAX_PLPMTU).</t>
 
-	      <t> When a black hole is detected in the SEARCHING state, this causes
-	      the PL sender to enter the BASE state.  </t>
+              <t> When a black hole is detected in the SEARCHING state, this causes
+              the PL sender to enter the BASE state.  </t>
             </dd>
 
             <dt>SEARCH_COMPLETE:</dt>
 
             <dd>
-	      <t>The SEARCH_COMPLETE state indicates a successful end to the
-	      SEARCHING state.  DPLPMTUD remains in this state until either the
-	      PMTU_RAISE_TIMER expires or a black hole is detected. </t>
+              <t>The SEARCH_COMPLETE state indicates a successful end to the
+              SEARCHING state.  DPLPMTUD remains in this state until either the
+              PMTU_RAISE_TIMER expires or a black hole is detected. </t>
 
-	      <t>When DPLPMTUD uses an unacknowledged PL and is in the
-	      SEARCH_COMPLETE state, a CONFIRMATION_TIMER periodically resets
-	      the PROBE_COUNT and schedules a probe packet with the size of the
-	      PLPMTU. If MAX_PROBES successive PLPMTUD sized probes fail to be
-	      acknowledged the method enters the BASE state.  When used with an
-	      acknowledged PL (e.g., SCTP), DPLPMTUD SHOULD NOT continue to
-	      generate PLPMTU probes in this state.</t>
+              <t>When DPLPMTUD uses an unacknowledged PL and is in the
+              SEARCH_COMPLETE state, a CONFIRMATION_TIMER periodically resets
+              the PROBE_COUNT and schedules a probe packet with the size of the
+              PLPMTU. If MAX_PROBES successive PLPMTUD sized probes fail to be
+              acknowledged the method enters the BASE state.  When used with an
+              acknowledged PL (e.g., SCTP), DPLPMTUD SHOULD NOT continue to
+              generate PLPMTU probes in this state.</t>
             </dd>
 
             <dt>ERROR:</dt>
 
             <dd>
-	      <t>The ERROR state represents the case where either the network
-	      path is not known to support a PLPMTU of at least the BASE_PLPMTU
-	      size or when there is contradictory information about the network
-	      path that would otherwise result in excessive variation in the
-	      MPS signaled to the higher layer. The state implements a method
-	      to mitigate oscillation in the state-event engine. It signals a
-	      conservative value of the MPS to the higher layer by the PL. The
-	      state is exited when packet probes no longer detect the error.
-	      The PL sender then enters the SEARCHING state.  </t>
+              <t>The ERROR state represents the case where either the network
+              path is not known to support a PLPMTU of at least the BASE_PLPMTU
+              size or when there is contradictory information about the network
+              path that would otherwise result in excessive variation in the
+              MPS signaled to the higher layer. The state implements a method
+              to mitigate oscillation in the state-event engine. It signals a
+              conservative value of the MPS to the higher layer by the PL. The
+              state is exited when packet probes no longer detect the error.
+              The PL sender then enters the SEARCHING state.  </t>
 
               <t>Implementations are permitted to enable endpoint
               fragmentation if the DPLPMTUD is unable to validate MIN_PLPMTU
@@ -1519,8 +1523,8 @@
               MIN_PLPMTU the implementation will transition to the DISABLED
               state.</t>
 
-	      <t>Note: MIN_PLPMTU could be identical to BASE_PLPMTU,
-	      simplifying the actions in this state.</t>
+              <t>Note: MIN_PLPMTU could be identical to BASE_PLPMTU,
+              simplifying the actions in this state.</t>
             </dd>
           </dl></t>
       </section>
@@ -1541,12 +1545,12 @@
           reduced by an application that sets a maximum to the size of
           datagrams it will send.</t>
 
-	  <t> The PROBE_COUNT is initialized to zero when the first probe with
-	  a size greater than or equal to PLPMTUD is sent.  A timer is used
+          <t> The PROBE_COUNT is initialized to zero when the first probe with
+          a size greater than or equal to PLPMTUD is sent.  A timer is used
       to trigger the sending of probe packets of size
-	  PROBED_SIZE, larger than the PLPMTU. Each probe packet successfully
-	  sent to the remote peer is confirmed by acknowledgment at the PL,
-	  see <xref target="Probe"></xref>.</t>
+          PROBED_SIZE, larger than the PLPMTU. Each probe packet successfully
+          sent to the remote peer is confirmed by acknowledgment at the PL,
+          see <xref target="Probe"></xref>.</t>
 
           <t>Each time a probe packet is sent to the destination, the
           PROBE_TIMER is started. The timer is canceled when the PL receives
@@ -1556,14 +1560,14 @@
           to the PLPMTU. The search algorithm can continue to send subsequent
           probe packets of an increasing size.</t>
 
-	  <t>If the timer expires before a probe packet is acknowledged, the
-	  probe has failed to confirm the PROBED_SIZE. Each time the
-	  PROBE_TIMER expires, the PROBE_COUNT is incremented, the PROBE_TIMER
-	  is reinitialized, and a new probe of the same size or any other size
-	  (determined by the search algorithm) can be sent.  The maximum number
-	  of consecutive failed probes is configured (MAX_PROBES).  If the
-	  value of the PROBE_COUNT reaches MAX_PROBES, probing will stop, and
-	  the PL sender enters the SEARCH_COMPLETE state.  </t>
+          <t>If the timer expires before a probe packet is acknowledged, the
+          probe has failed to confirm the PROBED_SIZE. Each time the
+          PROBE_TIMER expires, the PROBE_COUNT is incremented, the PROBE_TIMER
+          is reinitialized, and a new probe of the same size or any other size
+          (determined by the search algorithm) can be sent.  The maximum number
+          of consecutive failed probes is configured (MAX_PROBES).  If the
+          value of the PROBE_COUNT reaches MAX_PROBES, probing will stop, and
+          the PL sender enters the SEARCH_COMPLETE state.  </t>
         </section>
 
         <section title="Selection of Probe Sizes">
@@ -1584,7 +1588,7 @@
         <section title="Resilience to Inconsistent Path Information">
           <t>A decision to increase the PLPMTU needs to be resilient to the
           possibility that information learned about the network path is
-          inconsistent. A path is inconsistent, when, for example, probe
+          inconsistent. A path is inconsistent when, for example, probe
           packets are lost due to other reasons (i.e., not packet size) or due
           to frequent path changes. Frequent path changes could occur by
           unexpected "flapping" - where some packets from a flow pass along
@@ -1602,10 +1606,10 @@
 
       <section anchor="robustness" title="Robustness to Inconsistent Paths">
         <t>Some paths could be unable to sustain packets of the BASE_PLPMTU
-        size. To be robust to these paths an implementation could implement
-        the Error State. This allows fallback to a smaller than desired
-        PLPMTU, rather than suffer connectivity failure. This could utilize
-        methods such as endpoint IP fragmentation to enable the PL sender to
+        size.  The Error State could be implemented to provide rubustness to
+        such paths.  This allows fallback to a smaller than desired PLPMTU,
+        rather than suffer connectivity failure. This could utilize methods
+        such as endpoint IP fragmentation to enable the PL sender to
         communicate using packets smaller than the BASE_PLPMTU.</t>
       </section>
     </section>
@@ -1636,9 +1640,9 @@
         higher-layer protocol features to implement the method <xref
         target="RFC8085"></xref>.</t>
 
-	<t>Some primitives used by DPLPMTUD might not be available via the
-	Datagram API (e.g., the ability to access the PLPMTU from the IP layer
-	cache, or interpret received PTB messages).</t>
+        <t>Some primitives used by DPLPMTUD might not be available via the
+        Datagram API (e.g., the ability to access the PLPMTU from the IP layer
+        cache, or interpret received PTB messages).</t>
 
         <t>In addition, it is desirable that PMTU discovery is not performed
         by multiple protocol layers. An application SHOULD avoid using
@@ -1653,7 +1657,7 @@
           from a destination endpoint. The method SHOULD allow the sender to
           check the value returned in the response to provide additional
           protection from off-path insertion of data <xref
-          target="RFC8085"></xref>, suitable methods include a parameter known
+          target="RFC8085"></xref>. Suitable methods include a parameter known
           only to the two endpoints, such as a session ID or initialized
           sequence number.</t>
         </section>
@@ -1691,33 +1695,33 @@
 
 
         <section anchor="udpopt_ptb_handling" title="Handling of PTB Messages">
-	  <t>An application that is able and wishes to receive PTB messages
-	  MUST perform ICMP validation as specified in Section 5.2 of <xref
-	  target="RFC8085"></xref>. This requires that the application checks
-	  each received PTB message to validate that it was is received in
-	  response to transmitted traffic and that the reported PL_PTB_SIZE is
-	  less than the current probed size (see <xref
-	  target="validPTB_SIZE"></xref>). A validated PTB message MAY be used
-	  as input to the DPLPMTUD algorithm, but MUST NOT be used directly to
-	  set the PLPMTU.</t>
+          <t>An application that is able and wishes to receive PTB messages
+          MUST perform ICMP validation as specified in Section 5.2 of <xref
+          target="RFC8085"></xref>. This requires that the application checks
+          each received PTB message to validate that it was is received in
+          response to transmitted traffic and that the reported PL_PTB_SIZE is
+          less than the current probed size (see <xref
+          target="validPTB_SIZE"></xref>). A validated PTB message MAY be used
+          as input to the DPLPMTUD algorithm, but MUST NOT be used directly to
+          set the PLPMTU.</t>
         </section>
       </section>
 
       <section title="DPLPMTUD for SCTP">
-	<t>Section 10.2 of <xref target="RFC4821"></xref> specified a
-	recommended PLPMTUD probing method for SCTP and Section 7.3 of <xref
-	target="RFC4960"></xref> and recommended an endpoint apply the
-	techniques in RFC4821 on a per-destination-address basis.  The
-	specification for DPLPMTUD continues the practice of using the PL to
-	discover the PMTU, but updates, RFC4960 with a recommendation to use
-	the method specified in this document: The RECOMMENDED method for
-	generating probes is to add a chunk consisting only of padding to an
-	SCTP message.  The PAD chunk defined in <xref target="RFC4820"></xref>
-	SHOULD be attached to a minimum length HEARTBEAT (HB) chunk to build a
-	probe packet. This enables probing without affecting the transfer of
-	user messages and without being limited by congestion control or flow
-	control. This is preferred to using DATA chunks (with padding as
-	required) as path probes.</t>
+        <t>Section 10.2 of <xref target="RFC4821"></xref> specified a
+        recommended PLPMTUD probing method for SCTP and Section 7.3 of <xref
+        target="RFC4960"></xref> and recommended an endpoint apply the
+        techniques in RFC4821 on a per-destination-address basis.  The
+        specification for DPLPMTUD continues the practice of using the PL to
+        discover the PMTU, but updates, RFC4960 with a recommendation to use
+        the method specified in this document: The RECOMMENDED method for
+        generating probes is to add a chunk consisting only of padding to an
+        SCTP message.  The PAD chunk defined in <xref target="RFC4820"></xref>
+        SHOULD be attached to a minimum length HEARTBEAT (HB) chunk to build a
+        probe packet. This enables probing without affecting the transfer of
+        user messages and without being limited by congestion control or flow
+        control. This is preferred to using DATA chunks (with padding as
+        required) as path probes.</t>
     
     <t> Section 6.9 of <xref target="RFC4960"></xref> describes dividing the
     user messages into data chunks sent by the PL when using SCTP.
@@ -1752,11 +1756,11 @@
             SCTP common header, the HEARTBEAT request and the PAD chunk
             header. The payload of the PAD chunk contains arbitrary data.</t>
 
-	    <t> Probing starts directly after the PL handshake, before data is
-	    sent.  Assuming this behavior (i.e., the PMTU is smaller than or
-	    equal to the interface MTU), this process will take several round
-	    trip time periods, dependent on the number of DPLPMTUD probes sent.
-	    The Heartbeat timer can be used to implement the PROBE_TIMER.</t>
+            <t> Probing starts directly after the PL handshake, before data is
+            sent.  Assuming this behavior (i.e., the PMTU is smaller than or
+            equal to the interface MTU), this process will take several round
+            trip time periods, dependent on the number of DPLPMTUD probes sent.
+            The Heartbeat timer can be used to implement the PROBE_TIMER.</t>
 
 
           </section>
@@ -1775,25 +1779,25 @@
             payload of the PTB message, which can be the case for ICMPv4 and
             is normally the case for ICMPv6.</t>
 
-	    <t>When a PTB message has been validated, the PL_PTB_SIZE
-	    calculated from the PTB_SIZE reported in the PTB message SHOULD be
-	    used with the DPLPMTUD algorithm, providing that the reported
-	    PL_PTB_SIZE is less than the current probe size (see <xref
-	    target="mechanism-ptb"></xref>).</t>
+            <t>When a PTB message has been validated, the PL_PTB_SIZE
+            calculated from the PTB_SIZE reported in the PTB message SHOULD be
+            used with the DPLPMTUD algorithm, providing that the reported
+            PL_PTB_SIZE is less than the current probe size (see <xref
+            target="mechanism-ptb"></xref>).</t>
           </section>
         </section>
 
         <section title="DPLPMTUD for SCTP/UDP">
-	  <t>The UDP encapsulation of SCTP is specified in <xref
-	  target="RFC6951"></xref>.</t>  
+          <t>The UDP encapsulation of SCTP is specified in <xref
+          target="RFC6951"></xref>.</t>  
 
-	  <t>This specification updates the reference to RFC 4821 in section
-	  5.6 of RFC 6951 to refer to XXXTHISRFCXXX.  RFC 6951 is updated
-	  by addition of the following sentence is to be added at the end of
-	  section 5.6: "The RECOMMENDED method for determining the MTU of the
-	  path is specified in XXXTHISRFCXXX".</t>
+          <t>This specification updates the reference to RFC 4821 in section
+          5.6 of RFC 6951 to refer to XXXTHISRFCXXX.  RFC 6951 is updated
+          by addition of the following sentence is to be added at the end of
+          section 5.6: "The RECOMMENDED method for determining the MTU of the
+          path is specified in XXXTHISRFCXXX".</t>
 
-	  <t> XXX RFC EDITOR - please replace XXXTHISRFCXXX when published XXX </t>
+          <t> XXX RFC EDITOR - please replace XXXTHISRFCXXX when published XXX </t>
 
           <section title="Initial Connectivity">
             <t>A sender can enter the BASE state as soon as SCTP connectivity
@@ -1816,27 +1820,27 @@
 
           <section anchor="sctp_over_udp_ptb_handling"
                    title="Handling of PTB Messages by SCTP/UDP">
-	    <t>ICMP validation MUST be performed for PTB messages as specified
-	    in Appendix C of <xref target="RFC4960"></xref>. This requires that
-	    the first 8 bytes of the SCTP common header are contained in the
-	    PTB message, which can be the case for ICMPv4 (but note the UDP
-	    header also consumes a part of the quoted packet header) and is
-	    normally the case for ICMPv6. When the validation is completed, the
-	    PL_PTB_SIZE calculated from the PTB_SIZE in the PTB message SHOULD
-	    be used with the DPLPMTUD providing that the reported PL_PTB_SIZE
-	    is less than the current probe size.</t>
+            <t>ICMP validation MUST be performed for PTB messages as specified
+            in Appendix C of <xref target="RFC4960"></xref>. This requires that
+            the first 8 bytes of the SCTP common header are contained in the
+            PTB message, which can be the case for ICMPv4 (but note the UDP
+            header also consumes a part of the quoted packet header) and is
+            normally the case for ICMPv6. When the validation is completed, the
+            PL_PTB_SIZE calculated from the PTB_SIZE in the PTB message SHOULD
+            be used with the DPLPMTUD providing that the reported PL_PTB_SIZE
+            is less than the current probe size.</t>
           </section>
         </section>
 
         <section title="DPLPMTUD for SCTP/DTLS">
-	  <t>The Datagram Transport Layer Security (DTLS) encapsulation of SCTP
-	  is specified in <xref target="RFC8261"></xref>. This is used for
-	  data channels in WebRTC implementations.  This specification updates
-	  the reference to RFC 4821 in section 5 of RFC 8261 to refer to 
-	  XXXTHISRFCXXX.
-	  </t>
+          <t>The Datagram Transport Layer Security (DTLS) encapsulation of SCTP
+          is specified in <xref target="RFC8261"></xref>. This is used for
+          data channels in WebRTC implementations.  This specification updates
+          the reference to RFC 4821 in section 5 of RFC 8261 to refer to 
+          XXXTHISRFCXXX.
+          </t>
 
-	  <t> XXX RFC EDITOR - please replace XXXTHISRFCXXX when published XXX </t>
+          <t> XXX RFC EDITOR - please replace XXXTHISRFCXXX when published XXX </t>
 
           <section title="Initial Connectivity">
             <t>A sender can enter the BASE state as soon as SCTP connectivity
@@ -1858,9 +1862,9 @@
           <section anchor="sctp_over_dtls_ptb_handling"
                    title="Handling of PTB Messages by SCTP/DTLS">
 
-	    <t><xref target="RFC4960"></xref> does not specify a way to
-	    validate SCTP/DTLS ICMP message payload. This can prevent
-	    processing of PTB messages at the PL.</t>
+            <t><xref target="RFC4960"></xref> does not specify a way to
+            validate SCTP/DTLS ICMP message payload. This can prevent
+            processing of PTB messages at the PL.</t>
           </section>
 
         </section>
@@ -1882,14 +1886,14 @@
         Such padding only packets enable probing without affecting the
         transfer of other QUIC frames.</t>
 
-	<t>The recommendation for QUIC endpoints implementing DPLPMTUD is that
-	a MPS is maintained for each combination of local and remote IP
-	addresses <xref target="I-D.ietf-quic-transport"></xref>.  If a QUIC
-	endpoint determines that the PMTU between any pair of local and remote
-	IP addresses has fallen below the size required for an acceptable MPS,
-	it immediately ceases to send QUIC packets on the affected path. This
-	could result in termination of the connection if an alternative path
-	cannot be found <xref target="I-D.ietf-quic-transport"></xref>.</t>
+        <t>The recommendation for QUIC endpoints implementing DPLPMTUD is that
+        a MPS is maintained for each combination of local and remote IP
+        addresses <xref target="I-D.ietf-quic-transport"></xref>.  If a QUIC
+        endpoint determines that the PMTU between any pair of local and remote
+        IP addresses has fallen below the size required for an acceptable MPS,
+        it immediately ceases to send QUIC packets on the affected path. This
+        could result in termination of the connection if an alternative path
+        cannot be found <xref target="I-D.ietf-quic-transport"></xref>.</t>
 
         <section title="Initial Connectivity">
           <t>The base protocol is specified in <xref
@@ -1910,7 +1914,7 @@
               style="symbols">
               <t>BASE_PLPMTU: A QUIC sender pads initial packets
               to confirm the path can support packets of
-              the required size, this sets the BASE_PLPMTU and MIN_PLPMTU.</t>
+              the required size, which sets the BASE_PLPMTU and MIN_PLPMTU.</t>
 
               <t>MIN_PLPMTU:  A QUIC sender that determines the MIN_PLPMTU
               has fallen MUST immediately stop sending on the
@@ -1925,10 +1929,10 @@
         </section>
 
         <section title="Handling of PTB Messages by QUIC">
-	  <t>QUIC validates ICMP PTB messages. In addition to UDP Port
-	  validation, QUIC can validate an ICMP message by using other PL
-	  information (e.g., validation of connection identifiers (CIDs) in the
-	  quoted packet of any received ICMP message).</t>
+          <t>QUIC validates ICMP PTB messages. In addition to UDP Port
+          validation, QUIC can validate an ICMP message by using other PL
+          information (e.g., validation of connection identifiers (CIDs) in the
+          quoted packet of any received ICMP message).</t>
         </section>
       </section>
     </section>
@@ -1962,14 +1966,14 @@
 
       <t>A PL sender needs to ensure that the method used to confirm reception
       of probe packets protects from off-path attackers injecting
-      packets into the path. This protection if provided in IETF-defined
+      packets into the path. This protection is provided in IETF-defined
       protocols (e.g., TCP, SCTP) using a randomly-initialized sequence
       number. A description of one way to do this when using UDP is provided
       in section 5.1 of <xref target="RFC8085"></xref>).</t>
 
       <t>There are cases where ICMP Packet Too Big (PTB) messages are not
       delivered due to policy, configuration or equipment design (see <xref
-      target="Classic-PMTUD"></xref>), this method therefore does not rely
+      target="Classic-PMTUD"></xref>). This method therefore does not rely
       upon PTB messages being received, but is able to utilize these when they
       are received by the sender. PTB messages could potentially be used to
       cause a node to inappropriately reduce the PLPMTU. A node supporting
@@ -1978,7 +1982,7 @@
       (i.e., a reported error condition that corresponds to a datagram
       actually sent by the path layer, see <xref target="PTB"></xref>).</t>
 
-      <t>An on-path attacker, able to create a PTB message could forge PTB
+      <t>An on-path attacker able to create a PTB message could forge PTB
       messages that include a valid quoted IP packet. Such an attack could be
       used to drive down the PLPMTU. There are two ways this method can be
       mitigated against such attacks: First, by ensuring that a PL sender
@@ -2001,12 +2005,11 @@
       method because the path information might be inconsistent.</t>
 
       <t>A node performing DPLPMTUD could experience conflicting information
-      about the size of supported probe packets. This could occur when there
-      are multiple paths are concurrently in use and these exhibit a different
-      PMTU. If not considered, this could result in packets not being delivered
-      (black holed) when the PLPMTU results in a packet larger than the
-      smallest actual PMTU.
-      </t>
+      about the size of supported probe packets. This could occur when multiple
+      paths are concurrently in use and these exhibit a different PMTU. If not
+      considered, this could result in packets not being delivered (black
+      holed) when the PLPMTU results in a packet larger than the smallest
+      actual PMTU.  </t>
 
       <t>
       DPLPMTUD methods can introduce padding data to inflate the length
@@ -2249,16 +2252,16 @@
 
           <t>Add Initial Connectivity sections to each PL</t>
 
-	  <t>Add to disable outgoing pmtu enforcement of packets</t>
+          <t>Add to disable outgoing pmtu enforcement of packets</t>
         </list>Working group draft -10:</t>
       <t><list style="symbols">
           <t>Address comments from Lars Eggert</t>
 
           <t>Reinforce that PROBE_COUNT is successive attempts to probe for any size</t>
 
-	  <t>Redefine MAX_PROBES to 3 </t>
+          <t>Redefine MAX_PROBES to 3 </t>
 
-	  <t>Address PTB_SIZE of 0 or less that MIN_PLPMTU</t>
+          <t>Address PTB_SIZE of 0 or less that MIN_PLPMTU</t>
         </list>Working group draft -11:</t>
       <t><list style="symbols">
           <t>Restore a sentence removed in previous rev</t>
@@ -2270,27 +2273,27 @@
       <t><list style="symbols">
           <t>Add TSVWG, QUIC and implementers to acknowledgments</t>
 
-	  <t>Shorten a diagram line.</t>
+          <t>Shorten a diagram line.</t>
 
-	  <t>Address nits from Julius and Wes.</t>
+          <t>Address nits from Julius and Wes.</t>
 
-	  <t>Be clearer when talking about IP layer caches </t>
+          <t>Be clearer when talking about IP layer caches </t>
       </list> Working group draft -13, -14:</t>
       <t><list style="symbols">
-	  <t> Updated after WGLC.</t>
+          <t> Updated after WGLC.</t>
       </list> Working group draft -15:</t>
       <t><list style="symbols">
-	  <t> Updated after AD evaluation and prepared for IETF-LC.</t>
+          <t> Updated after AD evaluation and prepared for IETF-LC.</t>
       </list> Working group draft -16:</t>
       <t><list style="symbols">
-	  <t> Updated text after SECDIR review.</t>
+          <t> Updated text after SECDIR review.</t>
       </list> Working group draft -17:</t>
       <t><list style="symbols">
-	  <t> Updated text after GENART and IETF-LC.</t>
+          <t> Updated text after GENART and IETF-LC.</t>
       <t> Renamed BASE_MTU to BASE_PLPMTU, and MIN and MAX PMTU to PLPMTU
       (because these are about a base for the
       PLPMTU), and ensured consistent separation of PMTU and PLPMTU.</t>
-	  <t> Adopted US-style English throughout.</t>
+          <t> Adopted US-style English throughout.</t>
       </list> </t>
 
 
