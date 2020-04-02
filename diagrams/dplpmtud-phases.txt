@@ -1,23 +1,23 @@
-                      +------+
-             +------->| Base |-----------------+ Connectivity
-             |        +------+                 | or BASE_PLPMTU
-             |           |                     | confirmation failed
-             |           |                     v
-             |           | Connectivity    +-------+
-             |           | and BASE_PLPMTU | Error |
-             |           | confirmed       +-------+
-             |           |                     | Consistent
-             |           v                     | connectivity
-      PLPMTU |       +--------+                | and BASE_PLPMTU
-confirmation |       | Search |<---------------+ confirmed
-      failed |       +--------+
-             |          ^  |
-             |          |  |
-             |    Raise |  | Search
-             |    timer |  | algorithm
-             |  expired |  | completed
-             |          |  |
-             |          |  v
-             |   +-----------------+
-             +---| Search Complete |
-                 +-----------------+
+                    +------+
+           +------->| Base |-----------------+ Connectivity
+           |        +------+                 | or BASE_PLPMTU
+           |           |                     | confirmation failed
+           |           |                     v
+           |           | Connectivity    +-------+
+           |           | and BASE_PLPMTU | Error |
+           |           | confirmed       +-------+
+           |           |                     | Consistent
+           |           v                     | connectivity
+Black Hole |       +--------+                | and BASE_PLPMTU
+ detected  |       | Search |<---------------+ confirmed
+           |       +--------+
+           |          ^  |
+           |          |  |
+           |    Raise |  | Search
+           |    timer |  | algorithm
+           |  expired |  | completed
+           |          |  |
+           |          |  v
+           |   +-----------------+
+           +---| Search Complete |
+               +-----------------+
