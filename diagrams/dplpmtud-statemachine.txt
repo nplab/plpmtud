@@ -6,7 +6,7 @@
 |    DISABLED   |                                   |     ERROR     |
 +---------------+               PROBE_TIMER expiry: +---------------+
         | PL indicates     PROBE_COUNT = MAX_PROBES or ^         |
-        | connectivity   PTB: PLPTB_SIZE < BASE_PLPMTU |         |
+        | connectivity  PTB: PL_PTB_SIZE < BASE_PLPMTU |         |
         +--------------------+         +---------------+         |
                              |         |                         |
                              v         |       BASE_PLPMTU Probe |
@@ -32,8 +32,8 @@
    |    |    +-----------------------------------------+    |    |
    |    |            MAX_PLPMTU Probe acked or              |    |
    |    |  PROBE_TIMER expiry: PROBE_COUNT = MAX_PROBES or  |    |
-   +----+             PTB: PLPTB_SIZE = PLPMTU              +----+
+   +----+            PTB: PL_PTB_SIZE = PLPMTU              +----+
 CONFIRMATION_TIMER expiry:                        PROBE_TIMER expiry:
 PROBE_COUNT < MAX_PROBES or               PROBE_COUNT < MAX_PROBES or
      PLPMTU Probe acked                           Probe acked or PTB:
-                                    PLPMTU < PLPTB_SIZE < PROBED_SIZE
+                                   PLPMTU < PL_PTB_SIZE < PROBED_SIZE
