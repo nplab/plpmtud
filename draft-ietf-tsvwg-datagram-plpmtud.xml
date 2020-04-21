@@ -726,7 +726,9 @@
 
 	  A valid PTB_SIZE is converted to a PL_PTB_SIZE before it is to be
 	  used in the DPLPMTUD state machine.  A PL_PTB_SIZE that is greater
-	  than that currently probed MUST be ignored.  
+	  than that currently probed SHOULD be ignored (This PTB message ought
+	  to be discarded without further processing, but could be utilized as
+	  an input that enables a resilience mode).
           </t>
 
 	  <t>Probing and congestion control: A PL MAY use a congestion
@@ -750,6 +752,10 @@
           <t> A PL that maintains the congestion window in terms of a limit to
           the number of outstanding fixed size packets SHOULD adapt this limit
           to compensate for the size of the actual packets.</t>
+
+	  <t>The transmission of probe packets can interact with the operation
+	  of a PL that performs burst mitigation or pacing and could need
+	  transmission of probe packets to be regulated by these methods.</t>
 
 	  <t>Probing and flow control:  Flow control at the PL concerns the
 	  end-to-end flow of data using the PL service.  Flow control SHOULD
@@ -1140,14 +1146,6 @@
                 </ul>
               </dd>
 
-              <dt>PL_PTB_SIZE = PLPMTU</dt>
-
-              <dd>
-                <ul>
-                  <li>Completes the search for a larger PLPMTU.</li>
-                </ul>
-              </dd>
-
               <dt>PLPMTU &lt; PL_PTB_SIZE &lt; PROBED_SIZE</dt>
 
               <dd>
@@ -1164,7 +1162,7 @@
                 </ul>
               </dd>
 
-              <dt>PL_PTB_SIZE &gt; PROBED_SIZE</dt>
+              <dt>PL_PTB_SIZE &ge; PROBED_SIZE</dt>
 
               <dd>
                 <ul>
