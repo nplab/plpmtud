@@ -737,23 +737,23 @@
 	  result in transmission of probe packets being delayed or suspended
 	  during congestion.  When the transmission of probe packets is not
 	  controlled by the congestion controller, the interval between probe
-	  packets MUST be at least one RTT.</t>
+	  packets MUST be at least one RTT.
       
-          <t>Loss of a probe packet SHOULD NOT be treated as an indication of
+          Loss of a probe packet SHOULD NOT be treated as an indication of
           congestion and SHOULD NOT trigger a congestion control reaction <xref
           target="RFC4821"></xref>, because this could result in unnecessary
-          reduction of the sending rate.  </t>
+          reduction of the sending rate.
       
-          <t>An update to the PLPMTU (or MPS) MUST NOT increase the congestion
+          An update to the PLPMTU (or MPS) MUST NOT increase the congestion
           window measured in bytes <xref target="RFC4821"></xref>.  Therefore,
           an increase in the packet size does not cause an increase in the data
-          rate in bytes per second.</t>
+          rate in bytes per second.
 
-          <t> A PL that maintains the congestion window in terms of a limit to
+           A PL that maintains the congestion window in terms of a limit to
           the number of outstanding fixed size packets SHOULD adapt this limit
-          to compensate for the size of the actual packets.</t>
+          to compensate for the size of the actual packets.
 
-	  <t>The transmission of probe packets can interact with the operation
+	  The transmission of probe packets can interact with the operation
 	  of a PL that performs burst mitigation or pacing and could need
 	  transmission of probe packets to be regulated by these methods.</t>
 
@@ -2407,7 +2407,8 @@
           and Murray S. Kucherawy.</t>
       </list> Working group draft -20:</t>
       <t><list style="symbols">
-          <t> Address nits from IESG comments</t>
+          <t> Address nits and comments from IESG</t>
+          <t> Refer to BCP 145 rather than RFC 8085 in most places.</t>
       </list> </t>
 
     </section>
