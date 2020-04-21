@@ -43,7 +43,6 @@
 <!ENTITY RFC6951 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6951.xml">
 <!ENTITY RFC6968 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6968.xml">
 <!ENTITY RFC6633 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6633.xml">
-<!ENTITY RFC8085 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8085.xml">
 <!ENTITY RFC8200 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8200.xml">
 <!ENTITY RFC8201 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8201.xml">
 <!ENTITY RFC8261 SYSTEM "http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8261.xml">
@@ -392,7 +391,7 @@
         that does not rely upon reception
         and validation of PTB messages. It is therefore more robust than
         Classical PMTUD. This has become the recommended approach for
-        implementing discovery of the PMTU <xref target="RFC8085"></xref>.</t>
+        implementing discovery of the PMTU <xref target="BCP145"></xref>.</t>
 
         <t>It uses a general strategy where the PL sends probe packets to
         search for the largest size of unfragmented datagram that can be sent
@@ -426,7 +425,7 @@
         messages are made available to the PL.</t>
 
         <t>The message size guidelines in section 3.2 of the UDP Usage
-        Guidelines <xref target="RFC8085"></xref> state "an application SHOULD
+        Guidelines <xref target="BCP145"></xref> state "an application SHOULD
         either use the Path MTU information provided by the IP layer or
         implement Path MTU Discovery (PMTUD)", but does not provide a mechanism
         for discovering the largest size of unfragmented datagram that can be
@@ -590,7 +589,7 @@
 
           <dd> Maximum Segment Lifetime (MSL)  The maximum delay a packet is
           expected to experience across a path, taken as 2 minutes <xref
-          target="RFC8085"></xref>.  </dd>
+          target="BCP145"></xref>.  </dd>
 
           <dt>Packet:</dt>
 
@@ -1035,7 +1034,7 @@
 	  <t>A PL that receives a PTB message from a router or middlebox
 	  performs ICMP validation (see Section 4 of <xref
 	  target="RFC8201"></xref> and Section 5.2 of <xref
-	  target="RFC8085"></xref>).  Because DPLPMTUD operates at the PL, the
+	  target="BCP145"></xref>).  Because DPLPMTUD operates at the PL, the
 	  PL needs to check that each received PTB message is received in
 	  response to a packet transmitted by the endpoint PL performing
 	  DPLPMTUD.</t>
@@ -1050,7 +1049,7 @@
 
           <t>The validation SHOULD utilize information that it is not simple
           for an off-path attacker to determine <xref
-          target="RFC8085"></xref>. For example, it could check the value of a
+          target="BCP145"></xref>. For example, it could check the value of a
           protocol header field known only to the two PL endpoints. A datagram
           application that uses well-known source and destination ports ought
           to also rely on other information to complete this validation.</t>
@@ -1228,7 +1227,7 @@
                 probe packet. This value MUST NOT be smaller than 1 second,
                 and SHOULD be larger than 15 seconds. Guidance on selection of
                 the timer value are provided in Section 3.1.1 of the UDP Usage
-                Guidelines <xref target="RFC8085" />.</t>
+                Guidelines <xref target="BCP145" />.</t>
 
               </dd>
 
@@ -1260,7 +1259,7 @@
                 enough when data is flowing that the sending PL does not black
                 hole extensive amounts of traffic. Guidance on selection of
                 the timer value are provided in Section 3.1.1 of the UDP Usage
-                Guidelines <xref target="RFC8085" />.</t>
+                Guidelines <xref target="BCP145" />.</t>
 
                 <t>DPLPMTUD MAY inhibit sending probe packets when no
                 application data has been sent since the previous probe
@@ -1699,7 +1698,7 @@
         <t>The DPLPMTUD method can be implemented as a part of an application
         built directly or indirectly on UDP or UDP-Lite, but relies on
         higher-layer protocol features to implement the method <xref
-        target="RFC8085"></xref>.</t>
+        target="BCP145"></xref>.</t>
 
         <t>Some primitives used by DPLPMTUD might not be available via the
         Datagram API (e.g., the ability to access the PLPMTU from the IP layer
@@ -1718,7 +1717,7 @@
           from a destination endpoint. The method SHOULD allow the sender to
           check the value returned in the response to provide additional
           protection from off-path insertion of data <xref
-          target="RFC8085"></xref>. Suitable methods include a parameter known
+          target="BCP145"></xref>. Suitable methods include a parameter known
           only to the two endpoints, such as a session ID or initialized
           sequence number.</t>
         </section>
@@ -1758,7 +1757,7 @@
         <section anchor="udpopt_ptb_handling" title="Handling of PTB Messages">
           <t>An application that is able and wishes to receive PTB messages
           MUST perform ICMP validation as specified in Section 5.2 of <xref
-          target="RFC8085"></xref>. This requires that the application checks
+          target="BCP145"></xref>. This requires that the application checks
           each received PTB message to validate that it was is received in
           response to transmitted traffic and that the reported PL_PTB_SIZE is
           less than the current probed size (see <xref
@@ -2034,7 +2033,7 @@
       packets into the path. This protection is provided in IETF-defined
       protocols (e.g., TCP, SCTP) using a randomly-initialized sequence
       number. A description of one way to do this when using UDP is provided
-      in section 5.1 of <xref target="RFC8085"></xref>).</t>
+      in section 5.1 of <xref target="BCP145"></xref>).</t>
 
       <t>There are cases where ICMP Packet Too Big (PTB) messages are not
       delivered due to policy, configuration or equipment design (see <xref
@@ -2116,8 +2115,6 @@
 
       &RFC3828;
 
-      &RFC8085;
-
       &RFC4820;
 
       &RFC4960;
@@ -2131,6 +2128,42 @@
       &RFC8261;
 
       &I-D.ietf-quic-transport;
+
+	<referencegroup anchor="BCP145" target="https://www.rfc-editor.org/info/bcp145">
+	<!-- reference.RFC.8085.xml -->
+	<reference  anchor='RFC8085' target='https://www.rfc-editor.org/info/rfc8085'>
+	<front>
+	<title>UDP Usage Guidelines</title>
+	<author initials='L.' surname='Eggert' fullname='L. Eggert'><organization /></author>
+	<author initials='G.' surname='Fairhurst' fullname='G. Fairhurst'><organization /></author>
+	<author initials='G.' surname='Shepherd' fullname='G. Shepherd'><organization /></author>
+	<date year='2017' month='March' />
+	<abstract><t>The User Datagram Protocol (UDP) provides a minimal
+	message-passing transport that has no inherent congestion control
+	mechanisms.  This document provides guidelines on the use of UDP for
+	the designers of applications, tunnels, and other protocols that use
+	UDP.  Congestion control guidelines are a primary focus, but the
+	document also provides guidance on other topics, including message
+	sizes, reliability, checksums, middlebox traversal, the use of Explicit
+	Congestion Notification (ECN), Differentiated Services Code Points
+	(DSCPs), and ports.</t><t>Because congestion control is critical to the
+	stable operation of the Internet, applications and other protocols that
+	choose to use UDP as an Internet transport must employ mechanisms to
+	prevent congestion collapse and to establish some degree of fairness
+	with concurrent traffic.  They may also need to implement additional
+	mechanisms, depending on how they use UDP.</t><t>Some guidance is also
+	applicable to the design of other protocols (e.g., protocols layered
+	directly on IP or via IP-based tunnels), especially when these
+	protocols do not themselves provide congestion control.</t><t>This
+	document obsoletes RFC 5405 and adds guidelines for multicast UDP
+	usage.</t></abstract>
+	</front>
+	<seriesInfo name='BCP' value='145'/>
+	<seriesInfo name='RFC' value='8085'/>
+	<seriesInfo name='DOI' value='10.17487/RFC8085'/>
+	</reference>
+	</referencegroup>
+
     </references>
 
     <references title="Informative References">
