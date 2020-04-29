@@ -571,13 +571,15 @@
 
           <dt>MAX_PLPMTU:</dt>
 
-          <dd>The MAX_PLPMTU is the largest size of PLPMTU that DPLPMTUD will
-          attempt to use.</dd>
+	  <dd>The MAX_PLPMTU is the largest size of PLPMTU that DPLPMTUD will
+	  attempt to use (See the constants defined in <xref
+	  target="Constants"></xref>).</dd>
 
           <dt>MIN_PLPMTU:</dt>
 
-          <dd>The MIN_PLPMTU is the smallest size of PLPMTU that DPLPMTUD will
-          attempt to use.</dd>
+	  <dd>The MIN_PLPMTU is the smallest size of PLPMTU that DPLPMTUD will
+	  attempt to use (See the constants defined in <xref
+	  target="Constants"></xref>).</dd>
 
           <dt>MPS:</dt>
 
@@ -699,18 +701,18 @@
           probe packets are lost due to other reasons (including link
           transmission error, congestion).</t>
 
-          <t>PMTU parameters: A DPLPMTUD sender is RECOMMENDED to utilize
-          information about the maximum size of packet that can be transmitted
-          by the sender on the local link (e.g., the local Link MTU).  It MAY
-          utilize similar information about the maximum size a receiver can
-          accept when this is supplied (note this could be less than EMTU_R).
-          This avoids implementations trying to send probe packets that can not
-          be transferred by the local link.  Too high of a value could reduce
-          the efficiency of the search algorithm. Some applications also have a
-          maximum transport protocol data unit (PDU) size, in which case there
-          is no benefit from probing for a size larger than this (unless a
-          transport allows multiplexing multiple applications PDUs into the
-          same datagram).</t>
+	  <t>PMTU parameters: A DPLPMTUD sender is RECOMMENDED to utilize
+	  information about the maximum size of packet that can be transmitted
+	  by the sender on the local link (e.g., the local Link MTU).  A PL
+	  sender MAY utilize similar information about the maximum size of
+	  network layer packet that a receiver can accept when this is supplied
+	  (note this could be less than EMTU_R).  This avoids implementations
+	  trying to send probe packets that can not be transferred by the local
+	  link.  Too high of a value could reduce the efficiency of the search
+	  algorithm. Some applications also have a maximum transport protocol
+	  data unit (PDU) size, in which case there is no benefit from probing
+	  for a size larger than this (unless a transport allows multiplexing
+	  multiple applications PDUs into the same datagram).</t>
 
           <t>Processing PTB messages: A DPLPMTUD sender MAY optionally utilize
           PTB messages received from the network layer to help identify when a
@@ -1091,10 +1093,10 @@
 	  the indicated PL_PTB_SIZE is less than the size used by probe packets
 	  and at least the minimum size accepted.</t>
 
-          <t> This section provides a summary of how PTB messages can be
-          utilized.  (This uses the set of constants defined in section 5.1.2).
-          This processing depends on the PL_PTB_SIZE and the current value of a
-          set of variables: </t>
+	  <t> This section provides a summary of how PTB messages can be
+	  utilized.  (This uses the set of constants defined in <xref
+	  target="Constants"></xref>).  This processing depends on the
+	  PL_PTB_SIZE and the current value of a set of variables: </t>
 
           <t><dl newline="true">
 
