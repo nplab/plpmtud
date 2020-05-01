@@ -631,7 +631,8 @@
 
           <dt>PL_PTB_SIZE:</dt>
 
-          <dd>The size reported in a validated PTB message, reduced by the size of all headers added by layers below the PL.
+	  <dd>The size reported in a validated PTB message, reduced by the size
+	  of all headers added by layers below the PL.
           </dd>
 
           <dt>PLPMTU:</dt>
@@ -751,7 +752,7 @@
           an increase in the packet size does not cause an increase in the data
           rate in bytes per second.
 
-           A PL that maintains the congestion window in terms of a limit to
+          A PL that maintains the congestion window in terms of a limit to
           the number of outstanding fixed size packets SHOULD adapt this limit
           to compensate for the size of the actual packets.
 
@@ -1598,19 +1599,17 @@
           determine whether a larger PLPMTU can be supported across a network
           path.</t>
 
-          <t>The method discovers the search range by confirming the minimum
-          PLPMTU and then using the probe method to select a PROBED_SIZE less
-          than or equal to MAX_PLPMTU. MAX_PLPMTU is the minimum of the local MTU
-          and EMTU_R (when this is learned from the remote endpoint). The MAX_PLPMTU MAY be
-          reduced by an application that sets a maximum to the size of
-          datagrams it will send.</t>
+	  <t>The method discovers the search range by confirming the minimum
+	  PLPMTU and then using the probe method to select a PROBED_SIZE less
+	  than or equal to MAX_PLPMTU. MAX_PLPMTU is the minimum of the local
+	  MTU and EMTU_R (when this is learned from the remote endpoint). The
+	  MAX_PLPMTU MAY be reduced by an application that sets a maximum to
+	  the size of datagrams it will send.</t>
 
-          <t> The PROBE_COUNT is initialized to zero when the first probe with
-          a size greater than or equal to PLPMTUD is sent.  A timer is used
-      to trigger the sending of probe packets of size
-          PROBED_SIZE, larger than the PLPMTU. Each probe packet successfully
-          sent to the remote peer is confirmed by acknowledgment at the PL,
-          see <xref target="Probe"></xref>.</t>
+	  <t> The PROBE_COUNT is initialized to zero when the first probe with
+	  a size greater than or equal to PLPMTUD is sent.  Each probe packet
+	  successfully sent to the remote peer is confirmed by acknowledgment
+	  at the PL, see <xref target="Probe"></xref>.</t>
 
           <t>Each time a probe packet is sent to the destination, the
           PROBE_TIMER is started. The timer is canceled when the PL receives
@@ -1809,13 +1808,19 @@
             counters, but an unsuccessful probe is discounted (assumed
             to be a result of choosing too large a PLPMTU).</t>
 
-            <t>The HEARTBEAT chunk carries a Heartbeat Information parameter
-            which includes, besides the information suggested in <xref
-            target="RFC4960"></xref>, the probe size, which is the size of the
-            complete datagram. The size of the PAD chunk is therefore computed
-            by reducing the probing size by the IPv4 or IPv6 header size, the
-            SCTP common header, the HEARTBEAT request and the PAD chunk
-            header. The payload of the PAD chunk contains arbitrary data.</t>
+	    <t>The SCTP sender needs to be able to determine the total size of
+	    a probe packet. The HEARTBEAT chunk could carry a Heartbeat
+	    Information parameter that includes, besides the information
+	    suggested in <xref target="RFC4960"></xref>, the probe size to help
+	    an implementation associate a HEARTBEAT-ACK with the size of probe
+	    that was sent. The sender could also use other methods, such as
+	    sending a nonce and verifying the information returned also
+	    contains the corresponding nonce.  The length of the PAD chunk is
+	    computed by reducing the probing size by the size of the SCTP
+	    common header and the HEARTBEAT chunk.  The payload of the PAD
+	    chunk contains arbitrary data.  When transmitted at the IP layer,
+	    the PMTU size also includes the IPv4 or IPv6 header(s).</t>
+
 
 	    <t> Probing can start directly after the PL handshake, this can be
 	    done before data is sent.  Assuming this behavior (i.e., the PMTU
@@ -1866,16 +1871,16 @@
 
           <section anchor="sctp_over_udp_probing"
                    title="Sending SCTP/UDP Probe Packets">
-            <t>Packet probing can be performed as specified in <xref
-            target="sctp_over_ip_probing"></xref>. The maximum payload is
-            reduced by 8 bytes, which has to be considered when filling the
-            PAD chunk.</t>
+	    <t>Packet probing can be performed as specified in <xref
+	    target="sctp_over_ip_probing"></xref>.  The size of the probe
+	    packet includes the 8 bytes of UDP Header. This has to be
+	    considered when filling the probe packet with the PAD chunk.  </t>
           </section>
 
           <section title="Validating the Path with SCTP/UDP ">
-            <t>Since SCTP provides an acknowledged PL, a sender MUST NOT
-            implement the CONFIRMATION_TIMER while in the SEARCH_COMPLETE
-            state.</t>
+	    <t> SCTP provides an acknowledged PL, therefore a sender does not
+	    implement the CONFIRMATION_TIMER while in the SEARCH_COMPLETE
+	    state.  </t>
           </section>
 
           <section anchor="sctp_over_udp_ptb_handling"
@@ -1909,8 +1914,12 @@
 
           <section anchor="sctp_over_dtls_probing"
                    title="Sending SCTP/DTLS Probe Packets">
-            <t>Packet probing can be done, as specified in <xref
-            target="sctp_over_ip_probing"></xref>.</t>
+	    <t>Packet probing can be done, as specified in <xref
+	    target="sctp_over_ip_probing"></xref>.  The maximum payload is
+	    reduced by the size of the DTLS headers, which has to be considered
+	    when filling the PAD chunk.  The size of the probe packet includes
+	    the DTLS PL headers.  This has to be considered when filling the
+	    probe packet with the PAD chunk. </t>
           </section>
 
           <section title="Validating the Path with SCTP/DTLS">
@@ -1968,11 +1977,11 @@
         </section>
 
         <section title="Sending QUIC Probe Packets">
-          <t>A probe packet consists of a QUIC Header and a payload containing
-          PADDING Frames and a PING Frame. PADDING Frames are a single octet
-          (0x00) and several of these can be used to create a probe packet of
-          size PROBED_SIZE.  </t>
-
+	  <t>Probe packets consist of a QUIC Header and a payload containing a
+	  PING Frame and multiple PADDING Frames. PADDING Frames are only a
+	  single octet (0x00), several of these are used together to control
+	  the length of the probe packet.The PING Frame is used to trigger
+	  generation of an acknowledgement. </t>
 
           <t>The current specification of QUIC sets the following:<list
               style="symbols">
@@ -1987,9 +1996,9 @@
         </section>
 
         <section title="Validating the Path with QUIC">
-          <t>QUIC provides an acknowledged PL. A sender therefore MUST NOT
-          implement the CONFIRMATION_TIMER while in the SEARCH_COMPLETE
-          state. </t>
+	  <t> QUIC provides an acknowledged PL, therefore a sender does not
+	  implement the CONFIRMATION_TIMER while in the SEARCH_COMPLETE state. 
+	  </t>
         </section>
 
         <section title="Handling of PTB Messages by QUIC">
@@ -2048,15 +2057,17 @@
 
       <t>An on-path attacker able to create a PTB message could forge PTB
       messages that include a valid quoted IP packet. Such an attack could be
-      used to drive down the PLPMTU. There are two ways this method can be
-      mitigated against such attacks: First, by ensuring that a PL sender
-      never reduces the PLPMTU below the base size, solely in response to
-      receiving a PTB message. This is achieved by first entering the BASE
-      state when such a message is received. Second, the design does not
-      require processing of PTB messages, a PL sender could therefore suspend
-      processing of PTB messages (e.g., in a robustness mode after detecting
-      that subsequent probes actually confirm that a size larger than the
-      PTB_SIZE is supported by a path).</t>
+      used to drive down the PLPMTU.  An on-path device could similarly force a
+      reduction of the PLPMTU by implementing a policy that drops packets
+      larger than a configured size.  There are two ways this method can be
+      mitigated against such attacks: First, by ensuring that a PL sender never
+      reduces the PLPMTU below the base size, solely in response to receiving a
+      PTB message. This is achieved by first entering the BASE state when such
+      a message is received. Second, the design does not require processing of
+      PTB messages, a PL sender could therefore suspend processing of PTB
+      messages (e.g., in a robustness mode after detecting that subsequent
+      probes actually confirm that a size larger than the PTB_SIZE is supported
+      by a path).</t>
 
       <t>Parsing the quoted packet inside a PTB message can
       introduce addional per-packet processing at the PL sender.
