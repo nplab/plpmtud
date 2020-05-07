@@ -2422,6 +2422,7 @@
       <t><list style="symbols">
           <t> Address nits and comments from IESG</t>
           <t> Refer to BCP 145 rather than RFC 8085 in most places.</t>
+          <t> Update probing method text for SCTP and QUIC.</t>
       </list> </t>
 
     </section>
