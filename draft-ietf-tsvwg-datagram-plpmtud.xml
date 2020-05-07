@@ -225,7 +225,7 @@
       equivalent to the Packetization Layer PMTUD specification for TCP,
       specified in RFC 4821.</t>
        
-      <t> This document updates RFC 4821 to specify the method for datagram
+      <t>This document updates RFC 4821 to specify the PLPMTUD method for datagram
       PLs.  It also updates RFC 8085 to refer to the method specified in this
       document instead of the method in RFC 4821 for use with UDP datagrams.
       Section 7.3 of RFC 4960 recommends an endpoint apply the techniques in
@@ -572,13 +572,13 @@
           <dt>MAX_PLPMTU:</dt>
 
 	  <dd>The MAX_PLPMTU is the largest size of PLPMTU that DPLPMTUD will
-	  attempt to use (See the constants defined in <xref
+	  attempt to use (see the constants defined in <xref
 	  target="Constants"></xref>).</dd>
 
           <dt>MIN_PLPMTU:</dt>
 
 	  <dd>The MIN_PLPMTU is the smallest size of PLPMTU that DPLPMTUD will
-	  attempt to use (See the constants defined in <xref
+	  attempt to use (see the constants defined in <xref
 	  target="Constants"></xref>).</dd>
 
           <dt>MPS:</dt>
@@ -729,7 +729,7 @@
 
 	  A valid PTB_SIZE is converted to a PL_PTB_SIZE before it is to be
 	  used in the DPLPMTUD state machine.  A PL_PTB_SIZE that is greater
-	  than that currently probed SHOULD be ignored (This PTB message ought
+	  than that currently probed SHOULD be ignored. (This PTB message ought
 	  to be discarded without further processing, but could be utilized as
 	  an input that enables a resilience mode).
           </t>
@@ -1002,7 +1002,7 @@
 	over clearing the DF bit in the IPv4 header.  Operational experience
 	reveals that IP fragmentation can reduce the reliability of Internet
 	communication <xref target="I-D.ietf-intarea-frag-fragile"></xref>,
-	which may reduce the probability of success of the of retransmission.
+	which may reduce the probability of successful retransmission.
 	</t>
          </section>
 
@@ -1070,7 +1070,7 @@
           section.</t>
 
 	  <t><xref target="validPTB_SIZE"></xref> describes this processing of
-	  PTB messages</t>
+	  PTB messages.</t>
         </section>
 
         <section anchor="validPTB_SIZE" title="Use of PTB Messages">
@@ -1787,7 +1787,7 @@
     that once an SCTP message has been sent, it cannot be re-segmented.  <xref
     target="RFC4960"></xref> describes the method to retransmit data chunks
     when the MPS has reduced, and the use of IP fragmentation for this case.
-    This is unchanged by this document</t>
+    This is unchanged by this document.</t>
 
         <section anchor="sctp_over_ip" title="SCTP/IPv4 and SCTP/IPv6">
           <section title="Initial Connectivity">
