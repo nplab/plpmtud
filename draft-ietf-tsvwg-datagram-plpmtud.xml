@@ -602,7 +602,7 @@
 
           <dd>The PL is a layer of the network stack that places data into
           packets and performs transport protocol functions. Examples of a PL
-          include: TCP, SCTP, SCTP over DTLS, or QUIC. </dd>
+          include: TCP, SCTP, SCTP over UDP, SCTP over DTLS, or QUIC. </dd>
 
           <dt>Path:</dt>
 

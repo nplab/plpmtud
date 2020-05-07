@@ -11,7 +11,7 @@
                              |         |                         |
                              v         |       BASE_PLPMTU Probe |
                           +---------------+          acked       |
-                          |      BASE     |----------->----------+
+                          |      BASE     |--------------------->+
                           +---------------+                      |
                              ^ |    ^  ^                         |
          Black hole detected | |    |  | Black hole detected     |
