@@ -76,7 +76,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-20"
+<rfc category="std" docName="draft-ietf-tsvwg-datagram-plpmtud-21"
      ipr="trust200902" updates="4821, 4960, 6951, 8085, 8261">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
@@ -1971,9 +1971,9 @@
           acknowledged PL. A sender can therefore enter the BASE state as soon
           as connectivity has been confirmed.</t>
 
-	  <t>QUIC provides an acknowledged PL, a sender can
-          therefore enter the BASE state as soon as connectivity has been
-          confirmed.</t>
+	  <t> QUIC provides an acknowledged PL, a sender can therefore enter
+	  the BASE state as soon as the connection handshake has been completed
+	  and the endpoint has an 1-RTT key established.</t>
         </section>
 
         <section title="Sending QUIC Probe Packets">
