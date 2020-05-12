@@ -2423,6 +2423,9 @@
           <t> Address nits and comments from IESG</t>
           <t> Refer to BCP 145 rather than RFC 8085 in most places.</t>
           <t> Update probing method text for SCTP and QUIC.</t>
+      </list> Working group draft -21:</t>
+      <t><list style="symbols">
+          <t> Update QUIC text for skipping into BASE state.</t>
       </list> </t>
 
     </section>
