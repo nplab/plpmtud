@@ -1966,14 +1966,11 @@
         cannot be found <xref target="I-D.ietf-quic-transport"></xref>.</t>
 
         <section title="Initial Connectivity">
-          <t>The base protocol is specified in <xref
-          target="I-D.ietf-quic-transport"></xref>. This provides an
-          acknowledged PL. A sender can therefore enter the BASE state as soon
-          as connectivity has been confirmed.</t>
-
-	  <t> QUIC provides an acknowledged PL, a sender can therefore enter
-	  the BASE state as soon as the connection handshake has been completed
-	  and the endpoint has an 1-RTT key established.</t>
+	  <t>The base protocol is specified in <xref
+	  target="I-D.ietf-quic-transport"></xref>. QUIC provides an
+	  acknowledged PL, a sender can therefore enter the BASE state as soon
+	  as the connection handshake has been completed and the endpoint has
+	  an 1-RTT key established.</t>
         </section>
 
         <section title="Sending QUIC Probe Packets">
